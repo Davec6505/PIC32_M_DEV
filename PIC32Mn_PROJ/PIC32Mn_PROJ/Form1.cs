@@ -2,6 +2,8 @@
 using System.Configuration;
 using System.Diagnostics;
 using System.Text.Json;
+using System.Windows.Forms;
+using System.Xml.Linq;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PIC32Mn_PROJ
@@ -11,6 +13,8 @@ namespace PIC32Mn_PROJ
 
         string filePath = string.Empty;
         string jsonFilePath = string.Empty;
+        string outputPath = string.Empty;
+
         public Form1()
         {
             InitializeComponent();
@@ -18,26 +22,23 @@ namespace PIC32Mn_PROJ
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            this.Text = "PIC32Mn PROJ - " + Application.ProductVersion;
-
-            filePath = "C:\\Program Files\\Microchip\\MPLABX\\v6.25\\packs\\Microchip\\PIC32MZ-EF_DFP\\1.4.168\\xc32\\32MZ2048EFH064\\configuration.data";
-
-            // Fix the JSON file path - it should be relative to the project directory
-            jsonFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "dependancies", "pic32mz_device.json");
-            jsonFilePath = Path.GetFullPath(jsonFilePath); // Resolve the relative path
-
-            Debug.WriteLine($"JSON file path: {jsonFilePath}");
-            Debug.WriteLine($"JSON file exists: {File.Exists(jsonFilePath)}");
-
-            if (File.Exists(filePath))
+            filePath = "C:\\Program Files\\Microchip\\MPLABX\\v6.25\\packs\\Microchip\\PIC32MZ-EF_DFP\\1.4.168\\edc\\PIC32MZ2048EFH064.PIC"; // Replace with your actual XML file path
+            jsonFilePath = "C:\\Users\\Automation\\GIT\\PIC32_M_DEV\\PIC32Mn_PROJ\\PIC32Mn_PROJ\\dependancies\\pic32mz_device.json";
+            outputPath = "C:\\Users\\Automation\\GIT\\PIC32_M_DEV\\PIC32Mn_PROJ\\PIC32Mn_PROJ\\dependancies\\PinMappings.txt"; // Output file
+            if (!File.Exists(filePath))
             {
-                // File exists, you can proceed with your logic
-                extractConfigData(filePath);
+                MessageBox.Show("Can't find XML for device.");
             }
             else
             {
-                // File does not exist, handle accordingly
-                MessageBox.Show($"The file at path {filePath} does not exist.");
+                if (!File.Exists(outputPath))
+                {
+                    File.Create(outputPath).Close();
+                }
+                LoadPins(filePath, outputPath);
+                MessageBox.Show("XML Converted sucessfully!");
+
+                jasonMappings(filePath, jsonFilePath);
             }
 
         }
@@ -54,195 +55,250 @@ namespace PIC32Mn_PROJ
         }
 
 
-        #region data extraction from config files
-
-        private void extractConfigData(string filePath)
+        #region data extraction from xml pic32mz
+        private void LoadPins(string filePath, string outpath)
         {
-            var blocks = new List<SettingBlock>();
-            SettingBlock currentBlock = null;
 
-            foreach (var line in File.ReadLines(filePath))
+
+            XNamespace edc = "http://crownking/edc"; // Replace with actual namespace URI
+            XDocument doc = XDocument.Load(filePath);
+
+            var pins = doc.Descendants(edc + "Pin")
+                          .Select((pin, index) => new
+                          {
+                              Index = index + 1,
+                              VirtualPins = pin.Elements(edc + "VirtualPin")
+                                               .Select(vp => new
+                                               {
+                                                   Name = vp.Attribute(edc + "name")?.Value,
+                                                   Group = vp.Attribute(edc + "ppsgroup")?.Value,
+                                                   Val = vp.Attribute(edc + "ppsval")?.Value
+                                               }).ToList()
+                          });
+
+
+            // Build remappable function map: ppsgroup → { direction → [functions] }
+            var remappableMap = doc.Descendants(edc + "RemappablePin")
+                .SelectMany(rp =>
+                {
+                    string direction = rp.Attribute(edc + "direction")?.Value ?? "unknown";
+                    return rp.Elements(edc + "VirtualPin")
+                             .Where(vp => vp.Attribute(edc + "ppsgroup") != null)
+                             .Select(vp => new
+                             {
+                                 Group = vp.Attribute(edc + "ppsgroup")?.Value,
+                                 Name = vp.Attribute(edc + "name")?.Value,
+                                 Direction = direction
+                             });
+                })
+                .GroupBy(x => x.Group)
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.GroupBy(x => x.Direction)
+                          .ToDictionary(
+                              d => d.Key,
+                              d => d.Select(x => x.Name).Distinct().ToList()
+                          )
+                );
+
+            using (StreamWriter writer = new StreamWriter(outputPath))
             {
-                if (string.IsNullOrWhiteSpace(line)) continue;
+                int pinIndex = 1;
 
-                var parts = line.Split(':');
-                if (parts.Length < 4) continue;
-
-                var type = parts[0].Trim();
-
-                if (type == "CSETTING")
+                foreach (var pin in doc.Descendants(edc + "Pin"))
                 {
-                    currentBlock = new SettingBlock
+                    var virtualPins = pin.Elements(edc + "VirtualPin").ToList();
+
+                    string pinName = virtualPins.FirstOrDefault()?.Attribute(edc + "name")?.Value;
+                    string pmd = virtualPins.FirstOrDefault(vp => vp.Attribute(edc + "name")?.Value?.StartsWith("PMD") == true)
+                                 ?.Attribute(edc + "name")?.Value;
+
+                    var ppsPin = virtualPins.FirstOrDefault(vp =>
+                        vp.Attribute(edc + "ppsgroup") != null &&
+                        vp.Attribute(edc + "ppsval") != null);
+
+                    string ppsName = ppsPin?.Attribute(edc + "name")?.Value;
+                    string ppsGroup = ppsPin?.Attribute(edc + "ppsgroup")?.Value;
+                    string ppsVal = ppsPin?.Attribute(edc + "ppsval")?.Value;
+
+                    var staticFunctions = virtualPins
+                        .Where(vp => vp.Attribute(edc + "ppsgroup") == null &&
+                                     vp.Attribute(edc + "ppsval") == null &&
+                                     !(vp.Attribute(edc + "name")?.Value?.StartsWith("PMD") ?? false) &&
+                                     vp != virtualPins.First())
+                        .Select(vp => vp.Attribute(edc + "name")?.Value)
+                        .ToList();
+
+                    // Merge remappable functions
+                    Dictionary<string, List<string>> directionalFunctions = new();
+
+                    if (ppsGroup != null && remappableMap.ContainsKey(ppsGroup))
                     {
-                        Address = parts[1].Trim(),
-                        Label = parts[2].Trim(),
-                        Description = parts[3].Trim()
-                    };
-                    blocks.Add(currentBlock);
-                }
-                else if (type == "CVALUE" && currentBlock != null)
-                {
-                    var value = parts[2].Trim();
-                    if (!string.IsNullOrEmpty(value))
-                    {
-                        currentBlock.Values.Add(new ValueEntry
+                        foreach (var dir in remappableMap[ppsGroup])
                         {
-                            Address = parts[1].Trim(),
-                            Value = value,
-                            Description = parts[3].Trim()
-                        });
-                    }
-                }
+                            if (!directionalFunctions.ContainsKey(dir.Key))
+                                directionalFunctions[dir.Key] = new List<string>();
 
-
-            }
-
-            // Example output
-            foreach (var block in blocks)
-            {
-                Debug.WriteLine($"CSETTING: {block.Label} @ {block.Address} → {block.Description}");
-                foreach (var val in block.Values)
-                {
-                    Debug.WriteLine($"  CVALUE: {val.Value} @ {val.Address} → {val.Description}");
-                }
-                Debug.WriteLine(Environment.NewLine);
-            }
-
-            if(File.Exists(jsonFilePath))
-            {
-                SaveConfigurationToJson(blocks);
-
-            }
-            else
-            {
-                MessageBox.Show($"No existing JSON found. A new file will be created at: {jsonFilePath}");
-            }
-        }
-
-        private void SaveConfigurationToJson(List<SettingBlock> blocks)
-        {
-            try
-            {
-                // Load existing JSON or create new structure
-                PIC32DeviceConfig deviceConfig;
-
-                if (File.Exists(jsonFilePath))
-                {
-                    var existingJson = File.ReadAllText(jsonFilePath);
-                    try
-                    {
-                        deviceConfig = JsonSerializer.Deserialize<PIC32DeviceConfig>(existingJson) ?? new PIC32DeviceConfig();
-                    }
-                    catch
-                    {
-                        // If deserialization fails, create new config but preserve exclude if it exists
-                        deviceConfig = new PIC32DeviceConfig();
-                        if (existingJson.Contains("exclude"))
-                        {
-                            var tempConfig = JsonSerializer.Deserialize<Dictionary<string, object>>(existingJson);
-                            if (tempConfig?.ContainsKey("exclude") == true)
-                            {
-                                deviceConfig.Exclude = JsonSerializer.Deserialize<string[]>(tempConfig["exclude"].ToString());
-                            }
+                            directionalFunctions[dir.Key].AddRange(dir.Value);
                         }
                     }
-                }
-                else
-                {
-                    deviceConfig = new PIC32DeviceConfig();
-                }
 
-                // Clear existing configuration settings and add new ones
-                deviceConfig.ConfigurationSettings.Clear();
-
-                foreach (var block in blocks)
-                {
-                    var setting = new ConfigurationSetting
+                    if (staticFunctions.Any())
                     {
-                        Address = block.Address,
-                        Label = block.Label,
-                        Description = block.Description,
-                        Values = block.Values.Select(v => new ConfigurationValue
-                        {
-                            Address = v.Address,
-                            Value = v.Value,
-                            Description = v.Description
-                        }).ToList()
-                    };
+                        if (!directionalFunctions.ContainsKey("in"))
+                            directionalFunctions["in"] = new List<string>();
 
-                    deviceConfig.ConfigurationSettings.Add(setting);
+                        directionalFunctions["in"].AddRange(staticFunctions);
+                    }
+
+                    foreach (var key in directionalFunctions.Keys.ToList())
+                    {
+                        directionalFunctions[key] = directionalFunctions[key].Distinct().ToList();
+                    }
+
+                    // Write to file
+                    writer.WriteLine($"PIN{pinIndex}:");
+                    writer.WriteLine($"  Physical Pin: {pinName}");
+                    if (!string.IsNullOrEmpty(pmd))
+                        writer.WriteLine($"  PMD: {pmd}");
+
+                    if (ppsPin != null)
+                    {
+                        writer.WriteLine($"  PPS Mapping:");
+                        writer.WriteLine($"    Name: {ppsName}");
+                        writer.WriteLine($"    Group: {ppsGroup}");
+                        writer.WriteLine($"    Value: {ppsVal}");
+                    }
+
+                    writer.WriteLine($"  Pin Functions:");
+                    foreach (var dir in directionalFunctions)
+                    {
+                        writer.WriteLine($"    Direction: {dir.Key}");
+                        foreach (var func in dir.Value)
+                        {
+                            writer.WriteLine($"      - {func}");
+                        }
+                    }
+
+                    writer.WriteLine(); // spacing
+                    pinIndex++;
                 }
 
-                // Serialize with pretty formatting
-                var options = new JsonSerializerOptions
-                {
-                    WriteIndented = true,
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-                };
-
-                var jsonString = JsonSerializer.Serialize(deviceConfig, options);
-
-                // Ensure directory exists
-                Directory.CreateDirectory(Path.GetDirectoryName(jsonFilePath));
-
-                File.WriteAllText(jsonFilePath, jsonString);
-
-                Debug.WriteLine($"Configuration data saved to: {jsonFilePath}");
+                Console.WriteLine($"✅ Pin mappings written to {outputPath}");
             }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Error saving configuration to JSON: {ex.Message}");
-            }
+
+
         }
 
-        #endregion
-    }
+        
 
 
-    public class SettingBlock
-    {
-        public string Address { get; set; }
-        public string Label { get; set; }
-        public string Description { get; set; }
-        public List<ValueEntry> Values { get; set; } = new();
-    }
-
-    public class ValueEntry
-    {
-        public string Address { get; set; }
-        public string Value { get; set; }
-        public string Description { get; set; }
-    }
-
-    // JSON structure classes
-    public class PIC32DeviceConfig
-    {
-        public string[] Exclude { get; set; } = new[]
+        private void jasonMappings(string xmlPath, string jsonPath)
         {
-            "**/bin",
-            "**/bower_components",
-            "**/jspm_packages",
-            "**/node_modules",
-            "**/obj",
-            "**/platforms"
-        };
 
-        public List<ConfigurationSetting> ConfigurationSettings { get; set; } = new();
+            XNamespace edc = "http://crownking/edc";
+            XDocument doc = XDocument.Load(xmlPath);
+
+
+            // Build remappable function map: ppsgroup → { direction → [functions] }
+            var remappableMap = doc.Descendants(edc + "RemappablePin")
+                .SelectMany(rp =>
+                {
+                    string direction = rp.Attribute(edc + "direction")?.Value ?? "unknown";
+                    return rp.Elements(edc + "VirtualPin")
+                             .Where(vp => vp.Attribute(edc + "ppsgroup") != null)
+                             .Select(vp => new
+                             {
+                                 Group = vp.Attribute(edc + "ppsgroup")?.Value,
+                                 Name = vp.Attribute(edc + "name")?.Value,
+                                 Direction = direction
+                             });
+                })
+                .GroupBy(x => x.Group)
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.GroupBy(x => x.Direction)
+                          .ToDictionary(
+                              d => d.Key,
+                              d => d.Select(x => x.Name).Distinct().ToList()
+                          )
+                );
+
+            // Build pin mappings with sequential PINx
+            var pinDict = new Dictionary<string, object>();
+            var pins = doc.Descendants(edc + "Pin").ToList();
+
+            for (int i = 0; i < pins.Count; i++)
+            {
+                var pin = pins[i];
+                var virtualPins = pin.Elements(edc + "VirtualPin").ToList();
+
+                string pinName = virtualPins.FirstOrDefault()?.Attribute(edc + "name")?.Value;
+                string pmd = virtualPins.FirstOrDefault(vp => vp.Attribute(edc + "name")?.Value?.StartsWith("PMD") == true)
+                             ?.Attribute(edc + "name")?.Value;
+
+                var ppsPin = virtualPins
+                    .FirstOrDefault(vp => vp.Attribute(edc + "ppsgroup") != null && vp.Attribute(edc + "ppsval") != null);
+
+                var pps = ppsPin != null ? new
+                {
+                    name = ppsPin.Attribute(edc + "name")?.Value,
+                    ppsgroup = int.Parse(ppsPin.Attribute(edc + "ppsgroup")?.Value ?? "0"),
+                    ppsval = int.Parse(ppsPin.Attribute(edc + "ppsval")?.Value ?? "0")
+                } : null;
+
+                var staticFunctions = virtualPins
+                    .Where(vp => vp.Attribute(edc + "ppsgroup") == null &&
+                                 vp.Attribute(edc + "ppsval") == null &&
+                                 !(vp.Attribute(edc + "name")?.Value?.StartsWith("PMD") ?? false) &&
+                                 vp != virtualPins.First())
+                    .Select(vp => vp.Attribute(edc + "name")?.Value)
+                    .ToList();
+
+                Dictionary<string, List<string>> directionalFunctions = new();
+
+                if (pps != null && remappableMap.ContainsKey(pps.ppsgroup.ToString()))
+                {
+                    foreach (var dir in remappableMap[pps.ppsgroup.ToString()])
+                    {
+                        if (!directionalFunctions.ContainsKey(dir.Key))
+                            directionalFunctions[dir.Key] = new List<string>();
+
+                        directionalFunctions[dir.Key].AddRange(dir.Value);
+                    }
+                }
+
+                if (staticFunctions.Any())
+                {
+                    if (!directionalFunctions.ContainsKey("in"))
+                        directionalFunctions["in"] = new List<string>();
+
+                    directionalFunctions["in"].AddRange(staticFunctions);
+                }
+
+                foreach (var key in directionalFunctions.Keys.ToList())
+                {
+                    directionalFunctions[key] = directionalFunctions[key].Distinct().ToList();
+                }
+
+                var pinObject = new
+                {
+                    PIN = pinName,
+                    PMD = pmd,
+                    PPS = pps,
+                    PinFunctions = new { direction = directionalFunctions }
+                };
+
+                pinDict[$"PIN{i + 1}"] = pinObject;
+            }
+
+            var finalJson = new Dictionary<string, object> { ["pins"] = pinDict };
+            string json = JsonSerializer.Serialize(finalJson, new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText(jsonPath, json);
+
+            Console.WriteLine($"✅ Pin mapping written to {jsonPath}");
+        }
+        #endregion 
+
     }
-
-    public class ConfigurationSetting
-    {
-        public string Address { get; set; }
-        public string Label { get; set; }
-        public string Description { get; set; }
-        public List<ConfigurationValue> Values { get; set; } = new();
-    }
-
-    public class ConfigurationValue
-    {
-        public string Address { get; set; }
-        public string Value { get; set; }
-        public string Description { get; set; }
-    }
-
 }
