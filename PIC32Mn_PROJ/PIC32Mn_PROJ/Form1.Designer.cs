@@ -37,8 +37,10 @@
             tabControl1 = new TabControl();
             tabPage_System = new TabPage();
             tabPage_Gpio = new TabPage();
+            flowPanelPins = new FlowLayoutPanel();
             menuStrip1.SuspendLayout();
             tabControl1.SuspendLayout();
+            tabPage_Gpio.SuspendLayout();
             SuspendLayout();
             // 
             // menuStrip1
@@ -61,26 +63,26 @@
             // openToolStripMenuItem
             // 
             openToolStripMenuItem.Name = "openToolStripMenuItem";
-            openToolStripMenuItem.Size = new Size(224, 26);
+            openToolStripMenuItem.Size = new Size(143, 26);
             openToolStripMenuItem.Text = "Open";
             openToolStripMenuItem.Click += openToolStripMenuItem_Click;
             // 
             // saveToolStripMenuItem
             // 
             saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            saveToolStripMenuItem.Size = new Size(224, 26);
+            saveToolStripMenuItem.Size = new Size(143, 26);
             saveToolStripMenuItem.Text = "Save";
             // 
             // saveAsToolStripMenuItem
             // 
             saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            saveAsToolStripMenuItem.Size = new Size(224, 26);
+            saveAsToolStripMenuItem.Size = new Size(143, 26);
             saveAsToolStripMenuItem.Text = "Save As";
             // 
             // exitToolStripMenuItem
             // 
             exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            exitToolStripMenuItem.Size = new Size(224, 26);
+            exitToolStripMenuItem.Size = new Size(143, 26);
             exitToolStripMenuItem.Text = "Exit";
             // 
             // tabControl1
@@ -106,6 +108,7 @@
             // 
             // tabPage_Gpio
             // 
+            tabPage_Gpio.Controls.Add(flowPanelPins);
             tabPage_Gpio.Location = new Point(4, 29);
             tabPage_Gpio.Name = "tabPage_Gpio";
             tabPage_Gpio.Padding = new Padding(3);
@@ -113,6 +116,17 @@
             tabPage_Gpio.TabIndex = 1;
             tabPage_Gpio.Text = "GPIO";
             tabPage_Gpio.UseVisualStyleBackColor = true;
+            // 
+            // flowPanelPins
+            // 
+            flowPanelPins.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            flowPanelPins.AutoScroll = true;
+            flowPanelPins.FlowDirection = FlowDirection.TopDown;
+            flowPanelPins.Location = new Point(3, 3);
+            flowPanelPins.Name = "flowPanelPins";
+            flowPanelPins.Size = new Size(1195, 772);
+            flowPanelPins.TabIndex = 0;
+            flowPanelPins.WrapContents = false;
             // 
             // Form1
             // 
@@ -128,6 +142,7 @@
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
             tabControl1.ResumeLayout(false);
+            tabPage_Gpio.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -143,5 +158,6 @@
         private TabControl tabControl1;
         private TabPage tabPage_System;
         private TabPage tabPage_Gpio;
+        private FlowLayoutPanel flowPanelPins;
     }
 }

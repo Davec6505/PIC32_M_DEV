@@ -12,8 +12,12 @@ namespace PIC32Mn_PROJ
     {
 
         string filePath = string.Empty;
-        string jsonFilePath = string.Empty;
-        string outputPath = string.Empty;
+
+        string configPath = string.Empty;   //path to .atdf
+        string configOutput = string.Empty; //path to .json
+
+        string jsonFilePath = string.Empty; //path to pin .data
+        string outputPath = string.Empty;   //path to pin .json
 
         public Form1()
         {
@@ -23,8 +27,12 @@ namespace PIC32Mn_PROJ
         private void Form1_Load(object sender, EventArgs e)
         {
             filePath = "C:\\Program Files\\Microchip\\MPLABX\\v6.25\\packs\\Microchip\\PIC32MZ-EF_DFP\\1.4.168\\edc\\PIC32MZ2048EFH064.PIC"; // Replace with your actual XML file path
-            jsonFilePath = "C:\\Users\\Automation\\GIT\\PIC32_M_DEV\\PIC32Mn_PROJ\\PIC32Mn_PROJ\\dependancies\\pic32mz_device.json";
-            outputPath = "C:\\Users\\Automation\\GIT\\PIC32_M_DEV\\PIC32Mn_PROJ\\PIC32Mn_PROJ\\dependancies\\PinMappings.txt"; // Output file
+            configPath = "C:\\Program Files\\Microchip\\MPLABX\\v6.25\\packs\\Microchip\\PIC32MZ-EF_DFP\\1.4.168\\atdf\\PIC32MZ2048EFH064.atdf";
+            configOutput = "C:\\Users\\davec\\GIT\\PIC32_M_DEV\\PIC32Mn_PROJ\\PIC32Mn_PROJ\\dependancies\\ConfigValues.json";
+
+            jsonFilePath = "C:\\Users\\davec\\GIT\\PIC32_M_DEV\\PIC32Mn_PROJ\\PIC32Mn_PROJ\\dependancies\\pic32mz_device.json";
+            outputPath = "C:\\Users\\davec\\GIT\\PIC32_M_DEV\\PIC32Mn_PROJ\\PIC32Mn_PROJ\\dependancies\\PinMappings.txt"; // Output file
+           
             if (!File.Exists(filePath))
             {
                 MessageBox.Show("Can't find XML for device.");
@@ -36,13 +44,16 @@ namespace PIC32Mn_PROJ
                     File.Create(outputPath).Close();
                 }
                 LoadPins(filePath, outputPath);
-                MessageBox.Show("XML Converted sucessfully!");
+              //  MessageBox.Show("XML Converted sucessfully!");
 
-                jasonMappings(filePath, jsonFilePath);
+                jsonMappings(filePath, jsonFilePath);
+
+                load_pinForm(jsonFilePath);
             }
 
         }
 
+        #region  menu
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
@@ -54,6 +65,7 @@ namespace PIC32Mn_PROJ
             Application.Exit();
         }
 
+        #endregion menu
 
         #region data extraction from xml pic32mz
         private void LoadPins(string filePath, string outpath)
@@ -193,7 +205,7 @@ namespace PIC32Mn_PROJ
         
 
 
-        private void jasonMappings(string xmlPath, string jsonPath)
+        private void jsonMappings(string xmlPath, string jsonPath)
         {
 
             XNamespace edc = "http://crownking/edc";
@@ -298,7 +310,127 @@ namespace PIC32Mn_PROJ
 
             Console.WriteLine($"✅ Pin mapping written to {jsonPath}");
         }
-        #endregion 
+        #endregion
+
+
+        #region config form load
+        private void LoadConfig(string config)
+        {
+            var doc = XDocument.Load("yourConfig.xml");
+
+            var registers = doc.Descendants("register")
+                .ToDictionary(
+                    reg => reg.Attribute("name")?.Value,
+                    reg => reg.Elements("bitfield")
+                        .Where(bf => bf.Attribute("values") != null)
+                        .ToDictionary(
+                            bf => bf.Attribute("name")?.Value,
+                            bf =>
+                            {
+                                var valueGroupName = bf.Attribute("values")?.Value;
+                                var valueGroup = doc.Descendants("value-group")
+                                    .FirstOrDefault(vg => vg.Attribute("name")?.Value == valueGroupName);
+
+                                return valueGroup?.Elements("value")
+                                    .ToDictionary(
+                                        v => v.Attribute("name")?.Value,
+                                        v => v.Attribute("value")?.Value
+                                    ) ?? new Dictionary<string, string>();
+                            }
+                        )
+                );
+
+        }
+
+        #endregion config form load
+
+        #region  pins form load
+
+        private void load_pinForm(string jsonPath)
+        {
+            string json = File.ReadAllText(jsonPath);
+            JsonDocument doc = JsonDocument.Parse(json);
+
+            JsonElement pinsElement = doc.RootElement.GetProperty("pins");
+
+            foreach (JsonProperty pinEntry in pinsElement.EnumerateObject())
+            {
+                JsonElement pinData = pinEntry.Value;
+
+                string pinName = pinData.GetProperty("PIN").GetString();
+                string pmd = pinData.TryGetProperty("PMD", out var pmdProp) ? pmdProp.GetString() : null;
+
+                var directionFunctions = new Dictionary<string, List<string>>();
+
+                if (pinData.TryGetProperty("PinFunctions", out var pinFunctions) &&
+                    pinFunctions.TryGetProperty("direction", out var directionElement))
+                {
+                    foreach (JsonProperty dir in directionElement.EnumerateObject())
+                    {
+                        directionFunctions[dir.Name] = dir.Value.EnumerateArray()
+                            .Select(f => f.GetString())
+                            .Where(f => !string.IsNullOrEmpty(f))
+                            .ToList();
+                    }
+                }
+
+                BuildPinRow(pinName,pinData);// directionFunctions);
+            }
+
+        }
+
+        private void BuildPinRow(string pinKey, JsonElement pinData)
+        {
+            var rowPanel = new Panel
+            {
+                Width = 450,//flowPanelPins.Width - 25,
+                Height = 35,
+                Margin = new Padding(5),
+                BorderStyle = BorderStyle.FixedSingle,
+                Tag = pinKey // for later reference
+            };
+
+            var enableCheck = new CheckBox {Text = "En", Width = 50, Checked = false , Anchor = AnchorStyles.Left };
+            var pinNameBox = new TextBox { Width = 100, Text = pinData.GetProperty("PIN").GetString() };
+            var directionToggle = new CheckBox { Text = "Out", Width = 60, Checked = false , Anchor = AnchorStyles.Left };
+            var functionCombo = new ComboBox { Width = 200, DropDownStyle = ComboBoxStyle.DropDownList , Anchor = AnchorStyles.Left | AnchorStyles.Right };
+
+            var directionFunctions = new Dictionary<string, List<string>>();
+            if (pinData.TryGetProperty("PinFunctions", out var pinFunctions) &&
+                pinFunctions.TryGetProperty("direction", out var directionElement))
+            {
+                foreach (JsonProperty dir in directionElement.EnumerateObject())
+                {
+                    directionFunctions[dir.Name] = dir.Value.EnumerateArray().Select(f => f.GetString()).Where(f => !string.IsNullOrEmpty(f)).ToList();
+                }
+            }
+
+            // Initial population
+            if (directionFunctions.TryGetValue("in", out var inFunctions))
+                functionCombo.Items.AddRange(inFunctions.ToArray());
+
+            directionToggle.CheckedChanged += (s, e) =>
+            {
+                string dir = directionToggle.Checked ? "out" : "in";
+                functionCombo.Items.Clear();
+                if (directionFunctions.TryGetValue(dir, out var functions))
+                    functionCombo.Items.AddRange(functions.ToArray());
+            };
+
+            // Positioning
+            enableCheck.Location = new Point(5, 5);
+            pinNameBox.Location = new Point(60, 5);
+            directionToggle.Location = new Point(170, 5);
+            functionCombo.Location = new Point(240, 5);
+
+            rowPanel.Controls.Add(enableCheck);
+            rowPanel.Controls.Add(pinNameBox);
+            rowPanel.Controls.Add(directionToggle);
+            rowPanel.Controls.Add(functionCombo);
+
+            flowPanelPins.Controls.Add(rowPanel);
+        }
+        #endregion pins form load
 
     }
 }
