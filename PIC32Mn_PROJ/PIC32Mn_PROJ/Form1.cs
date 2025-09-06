@@ -1,8 +1,10 @@
 ﻿using Microsoft.VisualBasic.ApplicationServices;
+using PIC32Mn_PROJ.classes;
 using System.Configuration;
 using System.Diagnostics;
 using System.Text.Json;
 using System.Windows.Forms;
+using System.Xml;
 using System.Xml.Linq;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -10,7 +12,7 @@ namespace PIC32Mn_PROJ
 {
     public partial class Form1 : Form
     {
-
+        ConfigLoader configLoader = new();
         string filePath = string.Empty;
 
         string configPath = string.Empty;   //path to .atdf
@@ -32,7 +34,7 @@ namespace PIC32Mn_PROJ
 
             jsonFilePath = "C:\\Users\\davec\\GIT\\PIC32_M_DEV\\PIC32Mn_PROJ\\PIC32Mn_PROJ\\dependancies\\pic32mz_device.json";
             outputPath = "C:\\Users\\davec\\GIT\\PIC32_M_DEV\\PIC32Mn_PROJ\\PIC32Mn_PROJ\\dependancies\\PinMappings.txt"; // Output file
-           
+
             if (!File.Exists(filePath))
             {
                 MessageBox.Show("Can't find XML for device.");
@@ -44,13 +46,20 @@ namespace PIC32Mn_PROJ
                     File.Create(outputPath).Close();
                 }
                 LoadPins(filePath, outputPath);
-              //  MessageBox.Show("XML Converted sucessfully!");
+                //  MessageBox.Show("XML Converted sucessfully!");
 
                 jsonMappings(filePath, jsonFilePath);
 
                 load_pinForm(jsonFilePath);
-            }
 
+                if (!File.Exists(configOutput))
+                {
+                    File.Create(configOutput).Close();
+                }
+
+                ConfigLoader.LoadConfig(configPath, configOutput, "FUSECONFIG");
+
+            }
         }
 
         #region  menu
@@ -314,32 +323,46 @@ namespace PIC32Mn_PROJ
 
 
         #region config form load
-        private void LoadConfig(string config)
+        private void LoadConfig(string config, string output)
         {
-            var doc = XDocument.Load("yourConfig.xml");
+            var doc = XDocument.Load(config);
 
-            var registers = doc.Descendants("register")
+            var modules = doc.Descendants("module");
+
+            var registers = modules
+                .SelectMany(m => m.Descendants("register"))
+                .Where(reg => reg.Attribute("name") != null)
                 .ToDictionary(
-                    reg => reg.Attribute("name")?.Value,
+                    reg => reg.Attribute("name")!.Value,
                     reg => reg.Elements("bitfield")
-                        .Where(bf => bf.Attribute("values") != null)
+                        .Where(bf => bf.Attribute("name") != null && bf.Attribute("values") != null)
                         .ToDictionary(
-                            bf => bf.Attribute("name")?.Value,
-                            bf =>
-                            {
-                                var valueGroupName = bf.Attribute("values")?.Value;
-                                var valueGroup = doc.Descendants("value-group")
+                            bf => bf.Attribute("name")!.Value,
+                            bf => {
+                                var valueGroupName = bf.Attribute("values")!.Value;
+                                var valueGroup = modules
+                                    .SelectMany(m => m.Elements("value-group"))
                                     .FirstOrDefault(vg => vg.Attribute("name")?.Value == valueGroupName);
 
-                                return valueGroup?.Elements("value")
+                                if (valueGroup == null)
+                                    return new Dictionary<string, string>();
+
+                                return valueGroup.Elements("value")
+                                    .Where(v => v.Attribute("name") != null && v.Attribute("value") != null)
+                                    .GroupBy(v => v.Attribute("name")!.Value)
+                                    .Where(g => !string.IsNullOrWhiteSpace(g.Key))
                                     .ToDictionary(
-                                        v => v.Attribute("name")?.Value,
-                                        v => v.Attribute("value")?.Value
-                                    ) ?? new Dictionary<string, string>();
+                                        g => g.Key!,
+                                        g => g.First().Attribute("value")?.Value ?? "0x0"
+                                    );
                             }
                         )
                 );
 
+            var json = JsonSerializer.Serialize(registers, new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText(output, json);
+
+            Console.WriteLine($"Saved to {output}");
         }
 
         #endregion config form load
