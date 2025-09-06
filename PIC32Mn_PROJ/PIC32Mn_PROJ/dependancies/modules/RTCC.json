@@ -1,0 +1,532 @@
+{
+  "RTCC": {
+    "RTCCON": [
+      {
+        "name": "RTCOE",
+        "mask": "0x00000001",
+        "caption": "RTCC Output Enable bit",
+        "values": [
+          {
+            "caption": "RTCC output is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "RTCC output is not enabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "HALFSEC",
+        "mask": "0x00000002",
+        "caption": "Half-Second Status bit",
+        "values": [
+          {
+            "caption": "Second half period of a second",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "First half period of a second",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RTCSYNC",
+        "mask": "0x00000004",
+        "caption": "Real-Time Clock Value Registers Read Synchronization bit",
+        "values": [
+          {
+            "caption": "Real-time clock value registers can change while reading (due to a rollover ripple that results in an invalid data read). If the register is read twice and results in the same data",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Real-time clock value registers can be read without concern about a rollover ripple",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RTCWREN",
+        "mask": "0x00000008",
+        "caption": "Real-Time Clock Value Registers Write Enable bit",
+        "values": [
+          {
+            "caption": "Real-Time Clock Value registers can be written to by the user",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Real-Time Clock Value registers are locked out from being written to by the user",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RTCCLKON",
+        "mask": "0x00000040",
+        "caption": "RTCC Clock Enable Status bit",
+        "values": [
+          {
+            "caption": "RTCC Clock is actively running",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "RTCC Clock is not running",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RTCOUTSEL",
+        "mask": "0x00000180",
+        "caption": "RTCC Output Data Select bits",
+        "values": [
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "RTCC Clock is presented on the RTCC pin",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Seconds Clock is presented on the RTCC pin",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Alarm Pulse is presented on the RTCC pin when the alarm interrupt is triggered",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RTCCLKSEL",
+        "mask": "0x00000600",
+        "caption": "RTCC Clock Select bits",
+        "values": [
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "RTCC uses the external 32.768 kHz Secondary Oscillator (SOSC)",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "RTCC uses the internal 32 kHz oscillator (LPRC)",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "SIDL",
+        "mask": "0x00002000",
+        "caption": "Stop in Idle Mode bit",
+        "values": [
+          {
+            "caption": "Disables RTCC operation when CPU enters Idle mode",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Continue normal operation when CPU enters Idle mode",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "ON",
+        "mask": "0x00008000",
+        "caption": "RTCC On bit",
+        "values": [
+          {
+            "caption": "RTCC module is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "RTCC module is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "CAL",
+        "mask": "0x03FF0000",
+        "caption": "Real-Time Clock Drift Calibration bits",
+        "values": [
+          {
+            "caption": "Maximum positive adjustment",
+            "name": "",
+            "value": "0x1ff"
+          },
+          {
+            "caption": "Minimum positive adjustment",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No adjustment",
+            "name": "",
+            "value": "0x0"
+          },
+          {
+            "caption": "Minimum negative adjustment",
+            "name": "",
+            "value": "0x3ff"
+          },
+          {
+            "caption": "Minimum negative adjustment",
+            "name": "",
+            "value": "0x200"
+          }
+        ]
+      }
+    ],
+    "RTCALRM": [
+      {
+        "name": "ARPT",
+        "mask": "0x000000FF",
+        "caption": "Alarm Repeat Counter Value bits",
+        "values": [
+          {
+            "caption": "Alarm will trigger 256 times",
+            "name": "",
+            "value": "0xff"
+          },
+          {
+            "caption": "Alarm will trigger 255 times",
+            "name": "",
+            "value": "0xfe"
+          },
+          {
+            "caption": "Alarm will trigger two times",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Alarm will trigger one time",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "AMASK",
+        "mask": "0x00000F00",
+        "caption": "Alarm Mask Configuration bits",
+        "values": [
+          {
+            "caption": "Every half-second",
+            "name": "",
+            "value": "0x0"
+          },
+          {
+            "caption": "Every second",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Every 10 seconds",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Every minute",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Every 10 minutes",
+            "name": "",
+            "value": "0x4"
+          },
+          {
+            "caption": "Every hour",
+            "name": "",
+            "value": "0x5"
+          },
+          {
+            "caption": "Once a day",
+            "name": "",
+            "value": "0x6"
+          },
+          {
+            "caption": "Once a week",
+            "name": "",
+            "value": "0x7"
+          },
+          {
+            "caption": "Once a month",
+            "name": "",
+            "value": "0x8"
+          },
+          {
+            "caption": "Once a year (except when configured for February 29",
+            "name": "",
+            "value": "0x9"
+          },
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0xa"
+          },
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0xb"
+          },
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "11xx"
+          }
+        ]
+      },
+      {
+        "name": "ALRMSYNC",
+        "mask": "0x00001000",
+        "caption": "Alarm Sync bit",
+        "values": [
+          {
+            "caption": "ARPT and ALRMEN may change as a result of a half second rollover during a read. The ARPT must be read repeatedly until the same value is read twice. This must be done since multiple bits may be changing.",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "ARPT and ALRMEN can be read without concerns of rollover because the prescaler is more than 32 real-time clocks away from a half-second rollover",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "PIV",
+        "mask": "0x00002000",
+        "caption": "Alarm Pulse Initial Value bit",
+        "values": [
+          {
+            "caption": "low initial value of the Alarm Pulse (When ALRMEN = 0)",
+            "name": "",
+            "value": "0x0"
+          },
+          {
+            "caption": "high initial value of the Alarm Pulse (When ALRMEN = 0)",
+            "name": "",
+            "value": "0x1"
+          }
+        ]
+      },
+      {
+        "name": "CHIME",
+        "mask": "0x00004000",
+        "caption": "Chime Enable bit",
+        "values": [
+          {
+            "caption": "Chime is enabled ARPT is allowed to rollover from 0x00 to 0xFF",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Chime is disabled ARPT stops once it reaches 0x00",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "ALRMEN",
+        "mask": "0x00008000",
+        "caption": "Alarm Enable bit",
+        "values": [
+          {
+            "caption": "Alarm is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Alarm is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "RTCTIME": [
+      {
+        "name": "SEC01",
+        "mask": "0x00000F00",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "SEC10",
+        "mask": "0x0000F000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MIN01",
+        "mask": "0x000F0000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MIN10",
+        "mask": "0x00F00000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "HR01",
+        "mask": "0x0F000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "HR10",
+        "mask": "0xF0000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "RTCDATE": [
+      {
+        "name": "WDAY01",
+        "mask": "0x0000000F",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DAY01",
+        "mask": "0x00000F00",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DAY10",
+        "mask": "0x0000F000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MONTH01",
+        "mask": "0x000F0000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MONTH10",
+        "mask": "0x00F00000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "YEAR01",
+        "mask": "0x0F000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "YEAR10",
+        "mask": "0xF0000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "ALRMTIME": [
+      {
+        "name": "SEC01",
+        "mask": "0x00000F00",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "SEC10",
+        "mask": "0x0000F000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MIN01",
+        "mask": "0x000F0000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MIN10",
+        "mask": "0x00F00000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "HR01",
+        "mask": "0x0F000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "HR10",
+        "mask": "0xF0000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "ALRMDATE": [
+      {
+        "name": "WDAY01",
+        "mask": "0x0000000F",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DAY01",
+        "mask": "0x00000F00",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DAY10",
+        "mask": "0x0000F000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MONTH01",
+        "mask": "0x000F0000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MONTH10",
+        "mask": "0x00F00000",
+        "caption": null,
+        "values": []
+      }
+    ]
+  }
+}

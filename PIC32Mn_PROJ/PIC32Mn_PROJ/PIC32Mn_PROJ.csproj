@@ -9,6 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="dependancies\modules\" />
+    <Folder Include="dependancies\gpio\" />
     <Folder Include="interfaces\" />
   </ItemGroup>
 

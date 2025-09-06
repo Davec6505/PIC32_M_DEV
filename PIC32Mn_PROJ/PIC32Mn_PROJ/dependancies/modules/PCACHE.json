@@ -1,0 +1,160 @@
+{
+  "PCACHE": {
+    "PRECON": [
+      {
+        "name": "PFMWS",
+        "mask": "0x00000007",
+        "caption": "PFM Access Time Defined in Terms of SYSCLK Wait States bits",
+        "values": [
+          {
+            "caption": "Seven Wait states",
+            "name": "",
+            "value": "0x7"
+          },
+          {
+            "caption": "Six Wait states",
+            "name": "",
+            "value": "0x6"
+          },
+          {
+            "caption": "Five Wait states",
+            "name": "",
+            "value": "0x5"
+          },
+          {
+            "caption": "Four Wait states",
+            "name": "",
+            "value": "0x4"
+          },
+          {
+            "caption": "Three Wait states",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Two Wait states",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "One Wait state",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Zero Wait states",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "PREFEN",
+        "mask": "0x00000030",
+        "caption": "Predictive Prefetch Enable bits",
+        "values": [
+          {
+            "caption": "Enable predictive prefetch for any address",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Enable predictive prefetch for CPU instructions and CPU data",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Enable predictive prefetch for CPU instructions only",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Disable predictive prefetch",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "PFMSECEN",
+        "mask": "0x04000000",
+        "caption": "Flash SEC Interrupt Enable bit",
+        "values": [
+          {
+            "caption": "Generate an interrupt when the PFMSEC bit (PRESTAT) is set",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Do not generate an interrupt when the PFMSEC bit is set",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "PRESTAT": [
+      {
+        "name": "PFMSECCNT",
+        "mask": "0x000000FF",
+        "caption": "Flash SEC Count bits",
+        "values": [
+          {
+            "caption": "SEC count of 255",
+            "name": "",
+            "value": "0xff"
+          },
+          {
+            "caption": "SEC count of 254",
+            "name": "",
+            "value": "0xfe"
+          },
+          {
+            "caption": "SEC count of 1",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "SEC count of 0",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "PFMSEC",
+        "mask": "0x04000000",
+        "caption": "Flash Single-bit Error Corrected Status bit",
+        "values": [
+          {
+            "caption": "A SEC error occurred when PFMSECCNT was equal to zero",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "A SEC error has not occurred",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "PFMDED",
+        "mask": "0x08000000",
+        "caption": "Flash Double-bit Error Detected Status bit",
+        "values": [
+          {
+            "caption": "A DED error has occurred",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "A DED error has not occurred",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ]
+  }
+}

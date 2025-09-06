@@ -1,0 +1,3081 @@
+{
+  "UART": {
+    "U1MODE": [
+      {
+        "name": "STSEL",
+        "mask": "0x00000001",
+        "caption": "Stop Selection bit",
+        "values": [
+          {
+            "caption": "2 Stop bits",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "1 Stop bit",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "PDSEL",
+        "mask": "0x00000006",
+        "caption": "Parity and Data Selection bits",
+        "values": [
+          {
+            "caption": "9-bit data, no parity",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "8-bit data, odd parity",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "8-bit data, even parity",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "8-bit data, no parity",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "BRGH",
+        "mask": "0x00000008",
+        "caption": "High Baud Rate Enable bit",
+        "values": [
+          {
+            "caption": "High-Speed mode 4x baud clock enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Standard Speed mode 16x baud clock enabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RXINV",
+        "mask": "0x00000010",
+        "caption": "Receive Polarity Inversion bit",
+        "values": [
+          {
+            "caption": "UxRX Idle state is 0",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "UxRX Idle state is 1",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "ABAUD",
+        "mask": "0x00000020",
+        "caption": "Auto-Baud Enable bit",
+        "values": [
+          {
+            "caption": "Enable baud rate measurement on the next character requires reception of Sync character (0x55); cleared by hardware upon completion",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Baud rate measurement is disabled or completed",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "LPBACK",
+        "mask": "0x00000040",
+        "caption": "UARTx Loopback Mode Select bit",
+        "values": [
+          {
+            "caption": "Loopback mode is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Loopback mode is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "WAKE",
+        "mask": "0x00000080",
+        "caption": "Enable Wake-up on Start bit Detect During Sleep Mode bit",
+        "values": [
+          {
+            "caption": "Wake-up is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Wake-up is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "UEN",
+        "mask": "0x00000300",
+        "caption": "UARTx Enable bits",
+        "values": [
+          {
+            "caption": "UxTX",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "UxTX",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "UxTX",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "UxTX and UxRX pins are enabled and used; UxCTS and UxRTS/UxBCLK pins are controlled by corresponding bits in the PORTx register",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RTSMD",
+        "mask": "0x00000800",
+        "caption": "Mode Selection for UxRTS Pin bit",
+        "values": [
+          {
+            "caption": "UxRTS pin is in Simplex mode",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "UxRTS pin is in Flow Control mode",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "IREN",
+        "mask": "0x00001000",
+        "caption": "IrDA Encoder and Decoder Enable bit",
+        "values": [
+          {
+            "caption": "IrDA is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "IrDA is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "SIDL",
+        "mask": "0x00002000",
+        "caption": "Stop in Idle Mode bit",
+        "values": [
+          {
+            "caption": "Discontinue operation when device enters Idle mode",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Continue operation in Idle mode",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "ON",
+        "mask": "0x00008000",
+        "caption": "UARTx Enable bit",
+        "values": [
+          {
+            "caption": "UARTx is enabled. UARTx pins are controlled by UARTx as defined by UEN and UTXEN control bits",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "UARTx is disabled. All UARTx pins are controlled by corresponding bits in the PORTx",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "U2MODE": [
+      {
+        "name": "STSEL",
+        "mask": "0x00000001",
+        "caption": "Stop Selection bit",
+        "values": [
+          {
+            "caption": "2 Stop bits",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "1 Stop bit",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "PDSEL",
+        "mask": "0x00000006",
+        "caption": "Parity and Data Selection bits",
+        "values": [
+          {
+            "caption": "9-bit data",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "8-bit data",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "8-bit data",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "8-bit data",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "BRGH",
+        "mask": "0x00000008",
+        "caption": "High Baud Rate Enable bit",
+        "values": [
+          {
+            "caption": "High-Speed mode 4x baud clock enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Standard Speed mode 16x baud clock enabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RXINV",
+        "mask": "0x00000010",
+        "caption": "Receive Polarity Inversion bit",
+        "values": [
+          {
+            "caption": "UxRX Idle state is 0",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "UxRX Idle state is 1",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "ABAUD",
+        "mask": "0x00000020",
+        "caption": "Auto-Baud Enable bit",
+        "values": [
+          {
+            "caption": "Enable baud rate measurement on the next character requires reception of Sync character (0x55); cleared by hardware upon completion",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Baud rate measurement is disabled or completed",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "LPBACK",
+        "mask": "0x00000040",
+        "caption": "UARTx Loopback Mode Select bit",
+        "values": [
+          {
+            "caption": "Loopback mode is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Loopback mode is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "WAKE",
+        "mask": "0x00000080",
+        "caption": "Enable Wake-up on Start bit Detect During Sleep Mode bit",
+        "values": [
+          {
+            "caption": "Wake-up is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Wake-up is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "UEN",
+        "mask": "0x00000300",
+        "caption": "UARTx Enable bits",
+        "values": [
+          {
+            "caption": "UxTX",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "UxTX",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "UxTX",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "UxTX and UxRX pins are enabled and used; UxCTS and UxRTS/UxBCLK pins are controlled by corresponding bits in the PORTx register",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RTSMD",
+        "mask": "0x00000800",
+        "caption": "Mode Selection for UxRTS Pin bit",
+        "values": [
+          {
+            "caption": "UxRTS pin is in Simplex mode",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "UxRTS pin is in Flow Control mode",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "IREN",
+        "mask": "0x00001000",
+        "caption": "IrDA Encoder and Decoder Enable bit",
+        "values": [
+          {
+            "caption": "IrDA is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "IrDA is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "SIDL",
+        "mask": "0x00002000",
+        "caption": "Stop in Idle Mode bit",
+        "values": [
+          {
+            "caption": "Discontinue operation when device enters Idle mode",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Continue operation in Idle mode",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "ON",
+        "mask": "0x00008000",
+        "caption": "UARTx Enable bit",
+        "values": [
+          {
+            "caption": "UARTx is enabled. UARTx pins are controlled by UARTx as defined by UEN and UTXEN control bits",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "UARTx is disabled. All UARTx pins are controlled by corresponding bits in the PORTx",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "U3MODE": [
+      {
+        "name": "STSEL",
+        "mask": "0x00000001",
+        "caption": "Stop Selection bit",
+        "values": [
+          {
+            "caption": "2 Stop bits",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "1 Stop bit",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "PDSEL",
+        "mask": "0x00000006",
+        "caption": "Parity and Data Selection bits",
+        "values": [
+          {
+            "caption": "9-bit data",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "8-bit data",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "8-bit data",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "8-bit data",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "BRGH",
+        "mask": "0x00000008",
+        "caption": "High Baud Rate Enable bit",
+        "values": [
+          {
+            "caption": "High-Speed mode 4x baud clock enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Standard Speed mode 16x baud clock enabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RXINV",
+        "mask": "0x00000010",
+        "caption": "Receive Polarity Inversion bit",
+        "values": [
+          {
+            "caption": "UxRX Idle state is 0",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "UxRX Idle state is 1",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "ABAUD",
+        "mask": "0x00000020",
+        "caption": "Auto-Baud Enable bit",
+        "values": [
+          {
+            "caption": "Enable baud rate measurement on the next character requires reception of Sync character (0x55); cleared by hardware upon completion",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Baud rate measurement is disabled or completed",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "LPBACK",
+        "mask": "0x00000040",
+        "caption": "UARTx Loopback Mode Select bit",
+        "values": [
+          {
+            "caption": "Loopback mode is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Loopback mode is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "WAKE",
+        "mask": "0x00000080",
+        "caption": "Enable Wake-up on Start bit Detect During Sleep Mode bit",
+        "values": [
+          {
+            "caption": "Wake-up is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Wake-up is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "UEN",
+        "mask": "0x00000300",
+        "caption": "UARTx Enable bits",
+        "values": [
+          {
+            "caption": "UxTX",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "UxTX",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "UxTX",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "UxTX and UxRX pins are enabled and used; UxCTS and UxRTS/UxBCLK pins are controlled by corresponding bits in the PORTx register",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RTSMD",
+        "mask": "0x00000800",
+        "caption": "Mode Selection for UxRTS Pin bit",
+        "values": [
+          {
+            "caption": "UxRTS pin is in Simplex mode",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "UxRTS pin is in Flow Control mode",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "IREN",
+        "mask": "0x00001000",
+        "caption": "IrDA Encoder and Decoder Enable bit",
+        "values": [
+          {
+            "caption": "IrDA is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "IrDA is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "SIDL",
+        "mask": "0x00002000",
+        "caption": "Stop in Idle Mode bit",
+        "values": [
+          {
+            "caption": "Discontinue operation when device enters Idle mode",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Continue operation in Idle mode",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "ON",
+        "mask": "0x00008000",
+        "caption": "UARTx Enable bit",
+        "values": [
+          {
+            "caption": "UARTx is enabled. UARTx pins are controlled by UARTx as defined by UEN and UTXEN control bits",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "UARTx is disabled. All UARTx pins are controlled by corresponding bits in the PORTx",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "U4MODE": [
+      {
+        "name": "STSEL",
+        "mask": "0x00000001",
+        "caption": "Stop Selection bit",
+        "values": [
+          {
+            "caption": "2 Stop bits",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "1 Stop bit",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "PDSEL",
+        "mask": "0x00000006",
+        "caption": "Parity and Data Selection bits",
+        "values": [
+          {
+            "caption": "9-bit data",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "8-bit data",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "8-bit data",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "8-bit data",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "BRGH",
+        "mask": "0x00000008",
+        "caption": "High Baud Rate Enable bit",
+        "values": [
+          {
+            "caption": "High-Speed mode 4x baud clock enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Standard Speed mode 16x baud clock enabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RXINV",
+        "mask": "0x00000010",
+        "caption": "Receive Polarity Inversion bit",
+        "values": [
+          {
+            "caption": "UxRX Idle state is 0",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "UxRX Idle state is 1",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "ABAUD",
+        "mask": "0x00000020",
+        "caption": "Auto-Baud Enable bit",
+        "values": [
+          {
+            "caption": "Enable baud rate measurement on the next character requires reception of Sync character (0x55); cleared by hardware upon completion",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Baud rate measurement is disabled or completed",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "LPBACK",
+        "mask": "0x00000040",
+        "caption": "UARTx Loopback Mode Select bit",
+        "values": [
+          {
+            "caption": "Loopback mode is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Loopback mode is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "WAKE",
+        "mask": "0x00000080",
+        "caption": "Enable Wake-up on Start bit Detect During Sleep Mode bit",
+        "values": [
+          {
+            "caption": "Wake-up is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Wake-up is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "UEN",
+        "mask": "0x00000300",
+        "caption": "UARTx Enable bits",
+        "values": [
+          {
+            "caption": "UxTX",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "UxTX",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "UxTX",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "UxTX and UxRX pins are enabled and used; UxCTS and UxRTS/UxBCLK pins are controlled by corresponding bits in the PORTx register",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RTSMD",
+        "mask": "0x00000800",
+        "caption": "Mode Selection for UxRTS Pin bit",
+        "values": [
+          {
+            "caption": "UxRTS pin is in Simplex mode",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "UxRTS pin is in Flow Control mode",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "IREN",
+        "mask": "0x00001000",
+        "caption": "IrDA Encoder and Decoder Enable bit",
+        "values": [
+          {
+            "caption": "IrDA is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "IrDA is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "SIDL",
+        "mask": "0x00002000",
+        "caption": "Stop in Idle Mode bit",
+        "values": [
+          {
+            "caption": "Discontinue operation when device enters Idle mode",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Continue operation in Idle mode",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "ON",
+        "mask": "0x00008000",
+        "caption": "UARTx Enable bit",
+        "values": [
+          {
+            "caption": "UARTx is enabled. UARTx pins are controlled by UARTx as defined by UEN and UTXEN control bits",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "UARTx is disabled. All UARTx pins are controlled by corresponding bits in the PORTx",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "U5MODE": [
+      {
+        "name": "STSEL",
+        "mask": "0x00000001",
+        "caption": "Stop Selection bit",
+        "values": [
+          {
+            "caption": "2 Stop bits",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "1 Stop bit",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "PDSEL",
+        "mask": "0x00000006",
+        "caption": "Parity and Data Selection bits",
+        "values": [
+          {
+            "caption": "9-bit data",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "8-bit data",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "8-bit data",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "8-bit data",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "BRGH",
+        "mask": "0x00000008",
+        "caption": "High Baud Rate Enable bit",
+        "values": [
+          {
+            "caption": "High-Speed mode 4x baud clock enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Standard Speed mode 16x baud clock enabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RXINV",
+        "mask": "0x00000010",
+        "caption": "Receive Polarity Inversion bit",
+        "values": [
+          {
+            "caption": "UxRX Idle state is 0",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "UxRX Idle state is 1",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "ABAUD",
+        "mask": "0x00000020",
+        "caption": "Auto-Baud Enable bit",
+        "values": [
+          {
+            "caption": "Enable baud rate measurement on the next character requires reception of Sync character (0x55); cleared by hardware upon completion",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Baud rate measurement is disabled or completed",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "LPBACK",
+        "mask": "0x00000040",
+        "caption": "UARTx Loopback Mode Select bit",
+        "values": [
+          {
+            "caption": "Loopback mode is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Loopback mode is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "WAKE",
+        "mask": "0x00000080",
+        "caption": "Enable Wake-up on Start bit Detect During Sleep Mode bit",
+        "values": [
+          {
+            "caption": "Wake-up is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Wake-up is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "UEN",
+        "mask": "0x00000300",
+        "caption": "UARTx Enable bits",
+        "values": [
+          {
+            "caption": "UxTX",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "UxTX",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "UxTX",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "UxTX and UxRX pins are enabled and used; UxCTS and UxRTS/UxBCLK pins are controlled by corresponding bits in the PORTx register",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RTSMD",
+        "mask": "0x00000800",
+        "caption": "Mode Selection for UxRTS Pin bit",
+        "values": [
+          {
+            "caption": "UxRTS pin is in Simplex mode",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "UxRTS pin is in Flow Control mode",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "IREN",
+        "mask": "0x00001000",
+        "caption": "IrDA Encoder and Decoder Enable bit",
+        "values": [
+          {
+            "caption": "IrDA is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "IrDA is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "SIDL",
+        "mask": "0x00002000",
+        "caption": "Stop in Idle Mode bit",
+        "values": [
+          {
+            "caption": "Discontinue operation when device enters Idle mode",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Continue operation in Idle mode",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "ON",
+        "mask": "0x00008000",
+        "caption": "UARTx Enable bit",
+        "values": [
+          {
+            "caption": "UARTx is enabled. UARTx pins are controlled by UARTx as defined by UEN and UTXEN control bits",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "UARTx is disabled. All UARTx pins are controlled by corresponding bits in the PORTx",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "U6MODE": [
+      {
+        "name": "STSEL",
+        "mask": "0x00000001",
+        "caption": "Stop Selection bit",
+        "values": [
+          {
+            "caption": "2 Stop bits",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "1 Stop bit",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "PDSEL",
+        "mask": "0x00000006",
+        "caption": "Parity and Data Selection bits",
+        "values": [
+          {
+            "caption": "9-bit data",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "8-bit data",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "8-bit data",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "8-bit data",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "BRGH",
+        "mask": "0x00000008",
+        "caption": "High Baud Rate Enable bit",
+        "values": [
+          {
+            "caption": "High-Speed mode 4x baud clock enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Standard Speed mode 16x baud clock enabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RXINV",
+        "mask": "0x00000010",
+        "caption": "Receive Polarity Inversion bit",
+        "values": [
+          {
+            "caption": "UxRX Idle state is 0",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "UxRX Idle state is 1",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "ABAUD",
+        "mask": "0x00000020",
+        "caption": "Auto-Baud Enable bit",
+        "values": [
+          {
+            "caption": "Enable baud rate measurement on the next character requires reception of Sync character (0x55); cleared by hardware upon completion",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Baud rate measurement is disabled or completed",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "LPBACK",
+        "mask": "0x00000040",
+        "caption": "UARTx Loopback Mode Select bit",
+        "values": [
+          {
+            "caption": "Loopback mode is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Loopback mode is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "WAKE",
+        "mask": "0x00000080",
+        "caption": "Enable Wake-up on Start bit Detect During Sleep Mode bit",
+        "values": [
+          {
+            "caption": "Wake-up is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Wake-up is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "UEN",
+        "mask": "0x00000300",
+        "caption": "UARTx Enable bits",
+        "values": [
+          {
+            "caption": "UxTX",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "UxTX",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "UxTX",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "UxTX and UxRX pins are enabled and used; UxCTS and UxRTS/UxBCLK pins are controlled by corresponding bits in the PORTx register",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RTSMD",
+        "mask": "0x00000800",
+        "caption": "Mode Selection for UxRTS Pin bit",
+        "values": [
+          {
+            "caption": "UxRTS pin is in Simplex mode",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "UxRTS pin is in Flow Control mode",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "IREN",
+        "mask": "0x00001000",
+        "caption": "IrDA Encoder and Decoder Enable bit",
+        "values": [
+          {
+            "caption": "IrDA is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "IrDA is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "SIDL",
+        "mask": "0x00002000",
+        "caption": "Stop in Idle Mode bit",
+        "values": [
+          {
+            "caption": "Discontinue operation when device enters Idle mode",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Continue operation in Idle mode",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "ON",
+        "mask": "0x00008000",
+        "caption": "UARTx Enable bit",
+        "values": [
+          {
+            "caption": "UARTx is enabled. UARTx pins are controlled by UARTx as defined by UEN and UTXEN control bits",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "UARTx is disabled. All UARTx pins are controlled by corresponding bits in the PORTx",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "U1STA": [
+      {
+        "name": "URXDA",
+        "mask": "0x00000001",
+        "caption": "Receive Buffer Data Available bit",
+        "values": [
+          {
+            "caption": "Receive buffer has data, at least one more character can be read",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Receive buffer is empty",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "OERR",
+        "mask": "0x00000002",
+        "caption": "Receive Buffer Overrun Error Status bit.",
+        "values": [
+          {
+            "caption": "Receive buffer has overflowed",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Receive buffer has not overflowed",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "FERR",
+        "mask": "0x00000004",
+        "caption": "Framing Error Status bit",
+        "values": [
+          {
+            "caption": "Framing error has been detected for the current character",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Framing error has not been detected",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "PERR",
+        "mask": "0x00000008",
+        "caption": "Parity Error Status bit",
+        "values": [
+          {
+            "caption": "Parity error has been detected for the current character",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Parity error has not been detected",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RIDLE",
+        "mask": "0x00000010",
+        "caption": "Receiver Idle bit",
+        "values": [
+          {
+            "caption": "Receiver is Idle",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Data is being received",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "ADDEN",
+        "mask": "0x00000020",
+        "caption": "Address Character Detect bit",
+        "values": [
+          {
+            "caption": "Address Detect mode is enabled. If 9-bit mode is not selected",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Address Detect mode is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "URXISEL",
+        "mask": "0x000000C0",
+        "caption": "Receive Interrupt Mode Selection bit",
+        "values": [
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Interrupt flag bit is asserted while receive buffer is 3/4 or more full",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Interrupt flag bit is asserted while receive buffer is 1/2 or more full",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Interrupt flag bit is asserted while receive buffer is not empty (i.e.",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "TRMT",
+        "mask": "0x00000100",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "UTXBF",
+        "mask": "0x00000200",
+        "caption": "Transmit Buffer Full Status bit",
+        "values": [
+          {
+            "caption": "Transmit buffer is full",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Transmit buffer is not full",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "UTXEN",
+        "mask": "0x00000400",
+        "caption": "Transmit Enable bit",
+        "values": [
+          {
+            "caption": "UARTx transmitter is enabled. UxTX pin is controlled by UARTx (if ON = 1)",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "UARTx transmitter is disabled. Any pending transmission is aborted and buffer is reset",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "UTXBRK",
+        "mask": "0x00000800",
+        "caption": "Transmit Break bit",
+        "values": [
+          {
+            "caption": "Send Break on next transmission. Start bit followed by twelve 0 bits",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Break transmission is disabled or completed",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "URXEN",
+        "mask": "0x00001000",
+        "caption": "Receiver Enable bit",
+        "values": [
+          {
+            "caption": "UARTx receiver is enabled. UxRX pin is controlled by UARTx (if ON = 1)",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "UARTx receiver is disabled. UxRX pin is ignored by the UARTx module",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "UTXINV",
+        "mask": "0x00002000",
+        "caption": "Transmit Polarity Inversion bit",
+        "values": [
+          {
+            "caption": "(If IrDA mode is disabled (i.e.",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "(If IrDA mode is disabled (i.e.",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "UTXISEL",
+        "mask": "0x0000C000",
+        "caption": "TX Interrupt Mode Selection bits",
+        "values": [
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Interrupt is generated and asserted while the transmit buffer is empty",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Interrupt is generated and asserted when all characters have been transmitted",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Interrupt is generated and asserted while the transmit buffer contains at least one empty space",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "ADDR",
+        "mask": "0x00FF0000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "ADM_EN",
+        "mask": "0x01000000",
+        "caption": "Automatic Address Detect Mode Enable bit",
+        "values": [
+          {
+            "caption": "Automatic Address Detect mode is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Automatic Address Detect mode is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "U2STA": [
+      {
+        "name": "URXDA",
+        "mask": "0x00000001",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "OERR",
+        "mask": "0x00000002",
+        "caption": "Receive Buffer Overrun Error Status bit.",
+        "values": [
+          {
+            "caption": "Receive buffer has overflowed",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Receive buffer has not overflowed",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "FERR",
+        "mask": "0x00000004",
+        "caption": "Framing Error Status bit",
+        "values": [
+          {
+            "caption": "Framing error has been detected for the current character",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Framing error has not been detected",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "PERR",
+        "mask": "0x00000008",
+        "caption": "Parity Error Status bit",
+        "values": [
+          {
+            "caption": "Parity error has been detected for the current character",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Parity error has not been detected",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RIDLE",
+        "mask": "0x00000010",
+        "caption": "Receiver Idle bit",
+        "values": [
+          {
+            "caption": "Receiver is Idle",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Data is being received",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "ADDEN",
+        "mask": "0x00000020",
+        "caption": "Address Character Detect bit",
+        "values": [
+          {
+            "caption": "Address Detect mode is enabled. If 9-bit mode is not selected",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Address Detect mode is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "URXISEL",
+        "mask": "0x000000C0",
+        "caption": "Receive Interrupt Mode Selection bit",
+        "values": [
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Interrupt flag bit is asserted while receive buffer is 3/4 or more full",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Interrupt flag bit is asserted while receive buffer is 1/2 or more full",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Interrupt flag bit is asserted while receive buffer is not empty (i.e.",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "TRMT",
+        "mask": "0x00000100",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "UTXBF",
+        "mask": "0x00000200",
+        "caption": "Transmit Buffer Full Status bit",
+        "values": [
+          {
+            "caption": "Transmit buffer is full",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Transmit buffer is not full",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "UTXEN",
+        "mask": "0x00000400",
+        "caption": "Transmit Enable bit",
+        "values": [
+          {
+            "caption": "UARTx transmitter is enabled. UxTX pin is controlled by UARTx (if ON = 1)",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "UARTx transmitter is disabled. Any pending transmission is aborted and buffer is reset",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "UTXBRK",
+        "mask": "0x00000800",
+        "caption": "Transmit Break bit",
+        "values": [
+          {
+            "caption": "Send Break on next transmission. Start bit followed by twelve 0 bits",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Break transmission is disabled or completed",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "URXEN",
+        "mask": "0x00001000",
+        "caption": "Receiver Enable bit",
+        "values": [
+          {
+            "caption": "UARTx receiver is enabled. UxRX pin is controlled by UARTx (if ON = 1)",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "UARTx receiver is disabled. UxRX pin is ignored by the UARTx module",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "UTXINV",
+        "mask": "0x00002000",
+        "caption": "Transmit Polarity Inversion bit",
+        "values": [
+          {
+            "caption": "(If IrDA mode is disabled (i.e.",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "(If IrDA mode is disabled (i.e.",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "UTXISEL",
+        "mask": "0x0000C000",
+        "caption": "TX Interrupt Mode Selection bits",
+        "values": [
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Interrupt is generated and asserted while the transmit buffer is empty",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Interrupt is generated and asserted when all characters have been transmitted",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Interrupt is generated and asserted while the transmit buffer contains at least one empty space",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "ADDR",
+        "mask": "0x00FF0000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "ADM_EN",
+        "mask": "0x01000000",
+        "caption": "Automatic Address Detect Mode Enable bit",
+        "values": [
+          {
+            "caption": "Automatic Address Detect mode is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Automatic Address Detect mode is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "U3STA": [
+      {
+        "name": "URXDA",
+        "mask": "0x00000001",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "OERR",
+        "mask": "0x00000002",
+        "caption": "Receive Buffer Overrun Error Status bit.",
+        "values": [
+          {
+            "caption": "Receive buffer has overflowed",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Receive buffer has not overflowed",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "FERR",
+        "mask": "0x00000004",
+        "caption": "Framing Error Status bit",
+        "values": [
+          {
+            "caption": "Framing error has been detected for the current character",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Framing error has not been detected",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "PERR",
+        "mask": "0x00000008",
+        "caption": "Parity Error Status bit",
+        "values": [
+          {
+            "caption": "Parity error has been detected for the current character",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Parity error has not been detected",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RIDLE",
+        "mask": "0x00000010",
+        "caption": "Receiver Idle bit",
+        "values": [
+          {
+            "caption": "Receiver is Idle",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Data is being received",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "ADDEN",
+        "mask": "0x00000020",
+        "caption": "Address Character Detect bit",
+        "values": [
+          {
+            "caption": "Address Detect mode is enabled. If 9-bit mode is not selected",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Address Detect mode is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "URXISEL",
+        "mask": "0x000000C0",
+        "caption": "Receive Interrupt Mode Selection bit",
+        "values": [
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Interrupt flag bit is asserted while receive buffer is 3/4 or more full",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Interrupt flag bit is asserted while receive buffer is 1/2 or more full",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Interrupt flag bit is asserted while receive buffer is not empty (i.e.",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "TRMT",
+        "mask": "0x00000100",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "UTXBF",
+        "mask": "0x00000200",
+        "caption": "Transmit Buffer Full Status bit",
+        "values": [
+          {
+            "caption": "Transmit buffer is full",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Transmit buffer is not full",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "UTXEN",
+        "mask": "0x00000400",
+        "caption": "Transmit Enable bit",
+        "values": [
+          {
+            "caption": "UARTx transmitter is enabled. UxTX pin is controlled by UARTx (if ON = 1)",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "UARTx transmitter is disabled. Any pending transmission is aborted and buffer is reset",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "UTXBRK",
+        "mask": "0x00000800",
+        "caption": "Transmit Break bit",
+        "values": [
+          {
+            "caption": "Send Break on next transmission. Start bit followed by twelve 0 bits",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Break transmission is disabled or completed",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "URXEN",
+        "mask": "0x00001000",
+        "caption": "Receiver Enable bit",
+        "values": [
+          {
+            "caption": "UARTx receiver is enabled. UxRX pin is controlled by UARTx (if ON = 1)",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "UARTx receiver is disabled. UxRX pin is ignored by the UARTx module",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "UTXINV",
+        "mask": "0x00002000",
+        "caption": "Transmit Polarity Inversion bit",
+        "values": [
+          {
+            "caption": "(If IrDA mode is disabled (i.e.",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "(If IrDA mode is disabled (i.e.",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "UTXISEL",
+        "mask": "0x0000C000",
+        "caption": "TX Interrupt Mode Selection bits",
+        "values": [
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Interrupt is generated and asserted while the transmit buffer is empty",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Interrupt is generated and asserted when all characters have been transmitted",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Interrupt is generated and asserted while the transmit buffer contains at least one empty space",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "ADDR",
+        "mask": "0x00FF0000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "ADM_EN",
+        "mask": "0x01000000",
+        "caption": "Automatic Address Detect Mode Enable bit",
+        "values": [
+          {
+            "caption": "Automatic Address Detect mode is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Automatic Address Detect mode is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "U4STA": [
+      {
+        "name": "URXDA",
+        "mask": "0x00000001",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "OERR",
+        "mask": "0x00000002",
+        "caption": "Receive Buffer Overrun Error Status bit.",
+        "values": [
+          {
+            "caption": "Receive buffer has overflowed",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Receive buffer has not overflowed",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "FERR",
+        "mask": "0x00000004",
+        "caption": "Framing Error Status bit",
+        "values": [
+          {
+            "caption": "Framing error has been detected for the current character",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Framing error has not been detected",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "PERR",
+        "mask": "0x00000008",
+        "caption": "Parity Error Status bit",
+        "values": [
+          {
+            "caption": "Parity error has been detected for the current character",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Parity error has not been detected",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RIDLE",
+        "mask": "0x00000010",
+        "caption": "Receiver Idle bit",
+        "values": [
+          {
+            "caption": "Receiver is Idle",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Data is being received",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "ADDEN",
+        "mask": "0x00000020",
+        "caption": "Address Character Detect bit",
+        "values": [
+          {
+            "caption": "Address Detect mode is enabled. If 9-bit mode is not selected",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Address Detect mode is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "URXISEL",
+        "mask": "0x000000C0",
+        "caption": "Receive Interrupt Mode Selection bit",
+        "values": [
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Interrupt flag bit is asserted while receive buffer is 3/4 or more full",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Interrupt flag bit is asserted while receive buffer is 1/2 or more full",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Interrupt flag bit is asserted while receive buffer is not empty (i.e.",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "TRMT",
+        "mask": "0x00000100",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "UTXBF",
+        "mask": "0x00000200",
+        "caption": "Transmit Buffer Full Status bit",
+        "values": [
+          {
+            "caption": "Transmit buffer is full",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Transmit buffer is not full",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "UTXEN",
+        "mask": "0x00000400",
+        "caption": "Transmit Enable bit",
+        "values": [
+          {
+            "caption": "UARTx transmitter is enabled. UxTX pin is controlled by UARTx (if ON = 1)",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "UARTx transmitter is disabled. Any pending transmission is aborted and buffer is reset",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "UTXBRK",
+        "mask": "0x00000800",
+        "caption": "Transmit Break bit",
+        "values": [
+          {
+            "caption": "Send Break on next transmission. Start bit followed by twelve 0 bits",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Break transmission is disabled or completed",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "URXEN",
+        "mask": "0x00001000",
+        "caption": "Receiver Enable bit",
+        "values": [
+          {
+            "caption": "UARTx receiver is enabled. UxRX pin is controlled by UARTx (if ON = 1)",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "UARTx receiver is disabled. UxRX pin is ignored by the UARTx module",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "UTXINV",
+        "mask": "0x00002000",
+        "caption": "Transmit Polarity Inversion bit",
+        "values": [
+          {
+            "caption": "(If IrDA mode is disabled (i.e.",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "(If IrDA mode is disabled (i.e.",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "UTXISEL",
+        "mask": "0x0000C000",
+        "caption": "TX Interrupt Mode Selection bits",
+        "values": [
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Interrupt is generated and asserted while the transmit buffer is empty",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Interrupt is generated and asserted when all characters have been transmitted",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Interrupt is generated and asserted while the transmit buffer contains at least one empty space",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "ADDR",
+        "mask": "0x00FF0000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "ADM_EN",
+        "mask": "0x01000000",
+        "caption": "Automatic Address Detect Mode Enable bit",
+        "values": [
+          {
+            "caption": "Automatic Address Detect mode is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Automatic Address Detect mode is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "U5STA": [
+      {
+        "name": "URXDA",
+        "mask": "0x00000001",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "OERR",
+        "mask": "0x00000002",
+        "caption": "Receive Buffer Overrun Error Status bit.",
+        "values": [
+          {
+            "caption": "Receive buffer has overflowed",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Receive buffer has not overflowed",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "FERR",
+        "mask": "0x00000004",
+        "caption": "Framing Error Status bit",
+        "values": [
+          {
+            "caption": "Framing error has been detected for the current character",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Framing error has not been detected",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "PERR",
+        "mask": "0x00000008",
+        "caption": "Parity Error Status bit",
+        "values": [
+          {
+            "caption": "Parity error has been detected for the current character",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Parity error has not been detected",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RIDLE",
+        "mask": "0x00000010",
+        "caption": "Receiver Idle bit",
+        "values": [
+          {
+            "caption": "Receiver is Idle",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Data is being received",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "ADDEN",
+        "mask": "0x00000020",
+        "caption": "Address Character Detect bit",
+        "values": [
+          {
+            "caption": "Address Detect mode is enabled. If 9-bit mode is not selected",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Address Detect mode is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "URXISEL",
+        "mask": "0x000000C0",
+        "caption": "Receive Interrupt Mode Selection bit",
+        "values": [
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Interrupt flag bit is asserted while receive buffer is 3/4 or more full",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Interrupt flag bit is asserted while receive buffer is 1/2 or more full",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Interrupt flag bit is asserted while receive buffer is not empty (i.e.",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "TRMT",
+        "mask": "0x00000100",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "UTXBF",
+        "mask": "0x00000200",
+        "caption": "Transmit Buffer Full Status bit",
+        "values": [
+          {
+            "caption": "Transmit buffer is full",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Transmit buffer is not full",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "UTXEN",
+        "mask": "0x00000400",
+        "caption": "Transmit Enable bit",
+        "values": [
+          {
+            "caption": "UARTx transmitter is enabled. UxTX pin is controlled by UARTx (if ON = 1)",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "UARTx transmitter is disabled. Any pending transmission is aborted and buffer is reset",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "UTXBRK",
+        "mask": "0x00000800",
+        "caption": "Transmit Break bit",
+        "values": [
+          {
+            "caption": "Send Break on next transmission. Start bit followed by twelve 0 bits",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Break transmission is disabled or completed",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "URXEN",
+        "mask": "0x00001000",
+        "caption": "Receiver Enable bit",
+        "values": [
+          {
+            "caption": "UARTx receiver is enabled. UxRX pin is controlled by UARTx (if ON = 1)",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "UARTx receiver is disabled. UxRX pin is ignored by the UARTx module",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "UTXINV",
+        "mask": "0x00002000",
+        "caption": "Transmit Polarity Inversion bit",
+        "values": [
+          {
+            "caption": "(If IrDA mode is disabled (i.e.",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "(If IrDA mode is disabled (i.e.",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "UTXISEL",
+        "mask": "0x0000C000",
+        "caption": "TX Interrupt Mode Selection bits",
+        "values": [
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Interrupt is generated and asserted while the transmit buffer is empty",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Interrupt is generated and asserted when all characters have been transmitted",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Interrupt is generated and asserted while the transmit buffer contains at least one empty space",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "ADDR",
+        "mask": "0x00FF0000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "ADM_EN",
+        "mask": "0x01000000",
+        "caption": "Automatic Address Detect Mode Enable bit",
+        "values": [
+          {
+            "caption": "Automatic Address Detect mode is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Automatic Address Detect mode is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "U6STA": [
+      {
+        "name": "URXDA",
+        "mask": "0x00000001",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "OERR",
+        "mask": "0x00000002",
+        "caption": "Receive Buffer Overrun Error Status bit.",
+        "values": [
+          {
+            "caption": "Receive buffer has overflowed",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Receive buffer has not overflowed",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "FERR",
+        "mask": "0x00000004",
+        "caption": "Framing Error Status bit",
+        "values": [
+          {
+            "caption": "Framing error has been detected for the current character",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Framing error has not been detected",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "PERR",
+        "mask": "0x00000008",
+        "caption": "Parity Error Status bit",
+        "values": [
+          {
+            "caption": "Parity error has been detected for the current character",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Parity error has not been detected",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RIDLE",
+        "mask": "0x00000010",
+        "caption": "Receiver Idle bit",
+        "values": [
+          {
+            "caption": "Receiver is Idle",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Data is being received",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "ADDEN",
+        "mask": "0x00000020",
+        "caption": "Address Character Detect bit",
+        "values": [
+          {
+            "caption": "Address Detect mode is enabled. If 9-bit mode is not selected",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Address Detect mode is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "URXISEL",
+        "mask": "0x000000C0",
+        "caption": "Receive Interrupt Mode Selection bit",
+        "values": [
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Interrupt flag bit is asserted while receive buffer is 3/4 or more full",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Interrupt flag bit is asserted while receive buffer is 1/2 or more full",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Interrupt flag bit is asserted while receive buffer is not empty (i.e.",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "TRMT",
+        "mask": "0x00000100",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "UTXBF",
+        "mask": "0x00000200",
+        "caption": "Transmit Buffer Full Status bit",
+        "values": [
+          {
+            "caption": "Transmit buffer is full",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Transmit buffer is not full",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "UTXEN",
+        "mask": "0x00000400",
+        "caption": "Transmit Enable bit",
+        "values": [
+          {
+            "caption": "UARTx transmitter is enabled. UxTX pin is controlled by UARTx (if ON = 1)",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "UARTx transmitter is disabled. Any pending transmission is aborted and buffer is reset",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "UTXBRK",
+        "mask": "0x00000800",
+        "caption": "Transmit Break bit",
+        "values": [
+          {
+            "caption": "Send Break on next transmission. Start bit followed by twelve 0 bits",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Break transmission is disabled or completed",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "URXEN",
+        "mask": "0x00001000",
+        "caption": "Receiver Enable bit",
+        "values": [
+          {
+            "caption": "UARTx receiver is enabled. UxRX pin is controlled by UARTx (if ON = 1)",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "UARTx receiver is disabled. UxRX pin is ignored by the UARTx module",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "UTXINV",
+        "mask": "0x00002000",
+        "caption": "Transmit Polarity Inversion bit",
+        "values": [
+          {
+            "caption": "(If IrDA mode is disabled (i.e.",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "(If IrDA mode is disabled (i.e.",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "UTXISEL",
+        "mask": "0x0000C000",
+        "caption": "TX Interrupt Mode Selection bits",
+        "values": [
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Interrupt is generated and asserted while the transmit buffer is empty",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Interrupt is generated and asserted when all characters have been transmitted",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Interrupt is generated and asserted while the transmit buffer contains at least one empty space",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "ADDR",
+        "mask": "0x00FF0000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "ADM_EN",
+        "mask": "0x01000000",
+        "caption": "Automatic Address Detect Mode Enable bit",
+        "values": [
+          {
+            "caption": "Automatic Address Detect mode is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Automatic Address Detect mode is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "U1TXREG": [
+      {
+        "name": "U1TXREG",
+        "mask": "0x000001FF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "U2TXREG": [
+      {
+        "name": "U2TXREG",
+        "mask": "0x000001FF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "U3TXREG": [
+      {
+        "name": "U3TXREG",
+        "mask": "0x000001FF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "U4TXREG": [
+      {
+        "name": "U4TXREG",
+        "mask": "0x000001FF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "U5TXREG": [
+      {
+        "name": "U5TXREG",
+        "mask": "0x000001FF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "U6TXREG": [
+      {
+        "name": "U6TXREG",
+        "mask": "0x000001FF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "U1RXREG": [
+      {
+        "name": "U1RXREG",
+        "mask": "0x000001FF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "U2RXREG": [
+      {
+        "name": "U2RXREG",
+        "mask": "0x000001FF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "U3RXREG": [
+      {
+        "name": "U3RXREG",
+        "mask": "0x000001FF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "U4RXREG": [
+      {
+        "name": "U4RXREG",
+        "mask": "0x000001FF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "U5RXREG": [
+      {
+        "name": "U5RXREG",
+        "mask": "0x000001FF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "U6RXREG": [
+      {
+        "name": "U6RXREG",
+        "mask": "0x000001FF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "U1BRG": [
+      {
+        "name": "BRG",
+        "mask": "0x0000FFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "U2BRG": [
+      {
+        "name": "BRG",
+        "mask": "0x0000FFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "U3BRG": [
+      {
+        "name": "BRG",
+        "mask": "0x0000FFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "U4BRG": [
+      {
+        "name": "BRG",
+        "mask": "0x0000FFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "U5BRG": [
+      {
+        "name": "BRG",
+        "mask": "0x0000FFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "U6BRG": [
+      {
+        "name": "BRG",
+        "mask": "0x0000FFFF",
+        "caption": null,
+        "values": []
+      }
+    ]
+  }
+}

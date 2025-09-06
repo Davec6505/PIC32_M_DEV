@@ -1,0 +1,1354 @@
+{
+  "OCMP": {
+    "OC1CON": [
+      {
+        "name": "OCM",
+        "mask": "0x00000007",
+        "caption": "Output Compare Mode Select bits",
+        "values": [
+          {
+            "caption": "PWM mode on OCx; Fault pin enabled",
+            "name": "",
+            "value": "0x7"
+          },
+          {
+            "caption": "PWM mode on OCx; Fault pin diabled",
+            "name": "",
+            "value": "0x6"
+          },
+          {
+            "caption": "Initialize OCx pin low; generate continious output pulses on OCx pin",
+            "name": "",
+            "value": "0x5"
+          },
+          {
+            "caption": "Initialize OCx pin low; generate single output pulse on OCx pin",
+            "name": "",
+            "value": "0x4"
+          },
+          {
+            "caption": "Compare event toggles OCx pin",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Initialize OCx pin high; compare event forces OCx pin low",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Initialize OCx pin low; compare event forces OCx pin high",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Output compare peripheral is disabled but continues to draw current",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "OCTSEL",
+        "mask": "0x00000008",
+        "caption": "Output Compare Timer Select bit",
+        "values": [
+          {
+            "caption": "Timery is the clock source for this Output Compare module",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Timerx is the clock source for this Output Compare module",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "OCFLT",
+        "mask": "0x00000010",
+        "caption": "PWM Fault Condition Status bit",
+        "values": [
+          {
+            "caption": "PWM Fault condition has occurred (cleared in HW only)",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No PWM Fault condition has occurred",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "OC32",
+        "mask": "0x00000020",
+        "caption": "32-bit Compare Mode bit",
+        "values": [
+          {
+            "caption": "OCxR and/or OCxRS\u003C31:0\u003E are used for comparisions to the 32-bit timer source",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "OCxR and OCxRS\u003C15:0\u003E are used for comparisons to the 16-bit timer source",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "SIDL",
+        "mask": "0x00002000",
+        "caption": "Stop in Idle Mode bit",
+        "values": [
+          {
+            "caption": "Discontinue operation when CPU enters Idle mode",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Continue operation in Idle mode",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "ON",
+        "mask": "0x00008000",
+        "caption": "Output Compare Peripheral On bit",
+        "values": [
+          {
+            "caption": "Output Compare peripheral is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Output Compare peripheral is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "OC2CON": [
+      {
+        "name": "OCM",
+        "mask": "0x00000007",
+        "caption": "Output Compare Mode Select bits",
+        "values": [
+          {
+            "caption": "PWM mode on OCx; Fault pin enabled",
+            "name": "",
+            "value": "0x7"
+          },
+          {
+            "caption": "PWM mode on OCx; Fault pin diabled",
+            "name": "",
+            "value": "0x6"
+          },
+          {
+            "caption": "Initialize OCx pin low; generate continious output pulses on OCx pin",
+            "name": "",
+            "value": "0x5"
+          },
+          {
+            "caption": "Initialize OCx pin low; generate single output pulse on OCx pin",
+            "name": "",
+            "value": "0x4"
+          },
+          {
+            "caption": "Compare event toggles OCx pin",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Initialize OCx pin high; compare event forces OCx pin low",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Initialize OCx pin low; compare event forces OCx pin high",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Output compare peripheral is disabled but continues to draw current",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "OCTSEL",
+        "mask": "0x00000008",
+        "caption": "Output Compare Timer Select bit",
+        "values": [
+          {
+            "caption": "Timery is the clock source for this Output Compare module",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Timerx is the clock source for this Output Compare module",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "OCFLT",
+        "mask": "0x00000010",
+        "caption": "PWM Fault Condition Status bit",
+        "values": [
+          {
+            "caption": "PWM Fault condition has occurred (cleared in HW only)",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No PWM Fault condition has occurred",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "OC32",
+        "mask": "0x00000020",
+        "caption": "32-bit Compare Mode bit",
+        "values": [
+          {
+            "caption": "OCxR and/or OCxRS\u003C31:0\u003E are used for comparisions to the 32-bit timer source",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "OCxR and OCxRS\u003C15:0\u003E are used for comparisons to the 16-bit timer source",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "SIDL",
+        "mask": "0x00002000",
+        "caption": "Stop in Idle Mode bit",
+        "values": [
+          {
+            "caption": "Discontinue operation when CPU enters Idle mode",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Continue operation in Idle mode",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "ON",
+        "mask": "0x00008000",
+        "caption": "Output Compare Peripheral On bit",
+        "values": [
+          {
+            "caption": "Output Compare peripheral is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Output Compare peripheral is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "OC3CON": [
+      {
+        "name": "OCM",
+        "mask": "0x00000007",
+        "caption": "Output Compare Mode Select bits",
+        "values": [
+          {
+            "caption": "PWM mode on OCx; Fault pin enabled",
+            "name": "",
+            "value": "0x7"
+          },
+          {
+            "caption": "PWM mode on OCx; Fault pin diabled",
+            "name": "",
+            "value": "0x6"
+          },
+          {
+            "caption": "Initialize OCx pin low; generate continious output pulses on OCx pin",
+            "name": "",
+            "value": "0x5"
+          },
+          {
+            "caption": "Initialize OCx pin low; generate single output pulse on OCx pin",
+            "name": "",
+            "value": "0x4"
+          },
+          {
+            "caption": "Compare event toggles OCx pin",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Initialize OCx pin high; compare event forces OCx pin low",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Initialize OCx pin low; compare event forces OCx pin high",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Output compare peripheral is disabled but continues to draw current",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "OCTSEL",
+        "mask": "0x00000008",
+        "caption": "Output Compare Timer Select bit",
+        "values": [
+          {
+            "caption": "Timery is the clock source for this Output Compare module",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Timerx is the clock source for this Output Compare module",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "OCFLT",
+        "mask": "0x00000010",
+        "caption": "PWM Fault Condition Status bit",
+        "values": [
+          {
+            "caption": "PWM Fault condition has occurred (cleared in HW only)",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No PWM Fault condition has occurred",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "OC32",
+        "mask": "0x00000020",
+        "caption": "32-bit Compare Mode bit",
+        "values": [
+          {
+            "caption": "OCxR and/or OCxRS\u003C31:0\u003E are used for comparisions to the 32-bit timer source",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "OCxR and OCxRS\u003C15:0\u003E are used for comparisons to the 16-bit timer source",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "SIDL",
+        "mask": "0x00002000",
+        "caption": "Stop in Idle Mode bit",
+        "values": [
+          {
+            "caption": "Discontinue operation when CPU enters Idle mode",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Continue operation in Idle mode",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "ON",
+        "mask": "0x00008000",
+        "caption": "Output Compare Peripheral On bit",
+        "values": [
+          {
+            "caption": "Output Compare peripheral is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Output Compare peripheral is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "OC4CON": [
+      {
+        "name": "OCM",
+        "mask": "0x00000007",
+        "caption": "Output Compare Mode Select bits",
+        "values": [
+          {
+            "caption": "PWM mode on OCx; Fault pin enabled",
+            "name": "",
+            "value": "0x7"
+          },
+          {
+            "caption": "PWM mode on OCx; Fault pin diabled",
+            "name": "",
+            "value": "0x6"
+          },
+          {
+            "caption": "Initialize OCx pin low; generate continious output pulses on OCx pin",
+            "name": "",
+            "value": "0x5"
+          },
+          {
+            "caption": "Initialize OCx pin low; generate single output pulse on OCx pin",
+            "name": "",
+            "value": "0x4"
+          },
+          {
+            "caption": "Compare event toggles OCx pin",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Initialize OCx pin high; compare event forces OCx pin low",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Initialize OCx pin low; compare event forces OCx pin high",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Output compare peripheral is disabled but continues to draw current",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "OCTSEL",
+        "mask": "0x00000008",
+        "caption": "Output Compare Timer Select bit",
+        "values": [
+          {
+            "caption": "Timery is the clock source for this Output Compare module",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Timerx is the clock source for this Output Compare module",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "OCFLT",
+        "mask": "0x00000010",
+        "caption": "PWM Fault Condition Status bit",
+        "values": [
+          {
+            "caption": "PWM Fault condition has occurred (cleared in HW only)",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No PWM Fault condition has occurred",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "OC32",
+        "mask": "0x00000020",
+        "caption": "32-bit Compare Mode bit",
+        "values": [
+          {
+            "caption": "OCxR and/or OCxRS\u003C31:0\u003E are used for comparisions to the 32-bit timer source",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "OCxR and OCxRS\u003C15:0\u003E are used for comparisons to the 16-bit timer source",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "SIDL",
+        "mask": "0x00002000",
+        "caption": "Stop in Idle Mode bit",
+        "values": [
+          {
+            "caption": "Discontinue operation when CPU enters Idle mode",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Continue operation in Idle mode",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "ON",
+        "mask": "0x00008000",
+        "caption": "Output Compare Peripheral On bit",
+        "values": [
+          {
+            "caption": "Output Compare peripheral is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Output Compare peripheral is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "OC5CON": [
+      {
+        "name": "OCM",
+        "mask": "0x00000007",
+        "caption": "Output Compare Mode Select bits",
+        "values": [
+          {
+            "caption": "PWM mode on OCx; Fault pin enabled",
+            "name": "",
+            "value": "0x7"
+          },
+          {
+            "caption": "PWM mode on OCx; Fault pin diabled",
+            "name": "",
+            "value": "0x6"
+          },
+          {
+            "caption": "Initialize OCx pin low; generate continious output pulses on OCx pin",
+            "name": "",
+            "value": "0x5"
+          },
+          {
+            "caption": "Initialize OCx pin low; generate single output pulse on OCx pin",
+            "name": "",
+            "value": "0x4"
+          },
+          {
+            "caption": "Compare event toggles OCx pin",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Initialize OCx pin high; compare event forces OCx pin low",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Initialize OCx pin low; compare event forces OCx pin high",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Output compare peripheral is disabled but continues to draw current",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "OCTSEL",
+        "mask": "0x00000008",
+        "caption": "Output Compare Timer Select bit",
+        "values": [
+          {
+            "caption": "Timery is the clock source for this Output Compare module",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Timerx is the clock source for this Output Compare module",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "OCFLT",
+        "mask": "0x00000010",
+        "caption": "PWM Fault Condition Status bit",
+        "values": [
+          {
+            "caption": "PWM Fault condition has occurred (cleared in HW only)",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No PWM Fault condition has occurred",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "OC32",
+        "mask": "0x00000020",
+        "caption": "32-bit Compare Mode bit",
+        "values": [
+          {
+            "caption": "OCxR and/or OCxRS\u003C31:0\u003E are used for comparisions to the 32-bit timer source",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "OCxR and OCxRS\u003C15:0\u003E are used for comparisons to the 16-bit timer source",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "SIDL",
+        "mask": "0x00002000",
+        "caption": "Stop in Idle Mode bit",
+        "values": [
+          {
+            "caption": "Discontinue operation when CPU enters Idle mode",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Continue operation in Idle mode",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "ON",
+        "mask": "0x00008000",
+        "caption": "Output Compare Peripheral On bit",
+        "values": [
+          {
+            "caption": "Output Compare peripheral is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Output Compare peripheral is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "OC6CON": [
+      {
+        "name": "OCM",
+        "mask": "0x00000007",
+        "caption": "Output Compare Mode Select bits",
+        "values": [
+          {
+            "caption": "PWM mode on OCx; Fault pin enabled",
+            "name": "",
+            "value": "0x7"
+          },
+          {
+            "caption": "PWM mode on OCx; Fault pin diabled",
+            "name": "",
+            "value": "0x6"
+          },
+          {
+            "caption": "Initialize OCx pin low; generate continious output pulses on OCx pin",
+            "name": "",
+            "value": "0x5"
+          },
+          {
+            "caption": "Initialize OCx pin low; generate single output pulse on OCx pin",
+            "name": "",
+            "value": "0x4"
+          },
+          {
+            "caption": "Compare event toggles OCx pin",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Initialize OCx pin high; compare event forces OCx pin low",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Initialize OCx pin low; compare event forces OCx pin high",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Output compare peripheral is disabled but continues to draw current",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "OCTSEL",
+        "mask": "0x00000008",
+        "caption": "Output Compare Timer Select bit",
+        "values": [
+          {
+            "caption": "Timery is the clock source for this Output Compare module",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Timerx is the clock source for this Output Compare module",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "OCFLT",
+        "mask": "0x00000010",
+        "caption": "PWM Fault Condition Status bit",
+        "values": [
+          {
+            "caption": "PWM Fault condition has occurred (cleared in HW only)",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No PWM Fault condition has occurred",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "OC32",
+        "mask": "0x00000020",
+        "caption": "32-bit Compare Mode bit",
+        "values": [
+          {
+            "caption": "OCxR and/or OCxRS\u003C31:0\u003E are used for comparisions to the 32-bit timer source",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "OCxR and OCxRS\u003C15:0\u003E are used for comparisons to the 16-bit timer source",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "SIDL",
+        "mask": "0x00002000",
+        "caption": "Stop in Idle Mode bit",
+        "values": [
+          {
+            "caption": "Discontinue operation when CPU enters Idle mode",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Continue operation in Idle mode",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "ON",
+        "mask": "0x00008000",
+        "caption": "Output Compare Peripheral On bit",
+        "values": [
+          {
+            "caption": "Output Compare peripheral is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Output Compare peripheral is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "OC7CON": [
+      {
+        "name": "OCM",
+        "mask": "0x00000007",
+        "caption": "Output Compare Mode Select bits",
+        "values": [
+          {
+            "caption": "PWM mode on OCx; Fault pin enabled",
+            "name": "",
+            "value": "0x7"
+          },
+          {
+            "caption": "PWM mode on OCx; Fault pin diabled",
+            "name": "",
+            "value": "0x6"
+          },
+          {
+            "caption": "Initialize OCx pin low; generate continious output pulses on OCx pin",
+            "name": "",
+            "value": "0x5"
+          },
+          {
+            "caption": "Initialize OCx pin low; generate single output pulse on OCx pin",
+            "name": "",
+            "value": "0x4"
+          },
+          {
+            "caption": "Compare event toggles OCx pin",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Initialize OCx pin high; compare event forces OCx pin low",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Initialize OCx pin low; compare event forces OCx pin high",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Output compare peripheral is disabled but continues to draw current",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "OCTSEL",
+        "mask": "0x00000008",
+        "caption": "Output Compare Timer Select bit",
+        "values": [
+          {
+            "caption": "Timery is the clock source for this Output Compare module",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Timerx is the clock source for this Output Compare module",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "OCFLT",
+        "mask": "0x00000010",
+        "caption": "PWM Fault Condition Status bit",
+        "values": [
+          {
+            "caption": "PWM Fault condition has occurred (cleared in HW only)",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No PWM Fault condition has occurred",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "OC32",
+        "mask": "0x00000020",
+        "caption": "32-bit Compare Mode bit",
+        "values": [
+          {
+            "caption": "OCxR and/or OCxRS\u003C31:0\u003E are used for comparisions to the 32-bit timer source",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "OCxR and OCxRS\u003C15:0\u003E are used for comparisons to the 16-bit timer source",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "SIDL",
+        "mask": "0x00002000",
+        "caption": "Stop in Idle Mode bit",
+        "values": [
+          {
+            "caption": "Discontinue operation when CPU enters Idle mode",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Continue operation in Idle mode",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "ON",
+        "mask": "0x00008000",
+        "caption": "Output Compare Peripheral On bit",
+        "values": [
+          {
+            "caption": "Output Compare peripheral is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Output Compare peripheral is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "OC8CON": [
+      {
+        "name": "OCM",
+        "mask": "0x00000007",
+        "caption": "Output Compare Mode Select bits",
+        "values": [
+          {
+            "caption": "PWM mode on OCx; Fault pin enabled",
+            "name": "",
+            "value": "0x7"
+          },
+          {
+            "caption": "PWM mode on OCx; Fault pin diabled",
+            "name": "",
+            "value": "0x6"
+          },
+          {
+            "caption": "Initialize OCx pin low; generate continious output pulses on OCx pin",
+            "name": "",
+            "value": "0x5"
+          },
+          {
+            "caption": "Initialize OCx pin low; generate single output pulse on OCx pin",
+            "name": "",
+            "value": "0x4"
+          },
+          {
+            "caption": "Compare event toggles OCx pin",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Initialize OCx pin high; compare event forces OCx pin low",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Initialize OCx pin low; compare event forces OCx pin high",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Output compare peripheral is disabled but continues to draw current",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "OCTSEL",
+        "mask": "0x00000008",
+        "caption": "Output Compare Timer Select bit",
+        "values": [
+          {
+            "caption": "Timery is the clock source for this Output Compare module",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Timerx is the clock source for this Output Compare module",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "OCFLT",
+        "mask": "0x00000010",
+        "caption": "PWM Fault Condition Status bit",
+        "values": [
+          {
+            "caption": "PWM Fault condition has occurred (cleared in HW only)",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No PWM Fault condition has occurred",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "OC32",
+        "mask": "0x00000020",
+        "caption": "32-bit Compare Mode bit",
+        "values": [
+          {
+            "caption": "OCxR and/or OCxRS\u003C31:0\u003E are used for comparisions to the 32-bit timer source",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "OCxR and OCxRS\u003C15:0\u003E are used for comparisons to the 16-bit timer source",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "SIDL",
+        "mask": "0x00002000",
+        "caption": "Stop in Idle Mode bit",
+        "values": [
+          {
+            "caption": "Discontinue operation when CPU enters Idle mode",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Continue operation in Idle mode",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "ON",
+        "mask": "0x00008000",
+        "caption": "Output Compare Peripheral On bit",
+        "values": [
+          {
+            "caption": "Output Compare peripheral is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Output Compare peripheral is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "OC9CON": [
+      {
+        "name": "OCM",
+        "mask": "0x00000007",
+        "caption": "Output Compare Mode Select bits",
+        "values": [
+          {
+            "caption": "PWM mode on OCx; Fault pin enabled",
+            "name": "",
+            "value": "0x7"
+          },
+          {
+            "caption": "PWM mode on OCx; Fault pin diabled",
+            "name": "",
+            "value": "0x6"
+          },
+          {
+            "caption": "Initialize OCx pin low; generate continious output pulses on OCx pin",
+            "name": "",
+            "value": "0x5"
+          },
+          {
+            "caption": "Initialize OCx pin low; generate single output pulse on OCx pin",
+            "name": "",
+            "value": "0x4"
+          },
+          {
+            "caption": "Compare event toggles OCx pin",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Initialize OCx pin high; compare event forces OCx pin low",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Initialize OCx pin low; compare event forces OCx pin high",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Output compare peripheral is disabled but continues to draw current",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "OCTSEL",
+        "mask": "0x00000008",
+        "caption": "Output Compare Timer Select bit",
+        "values": [
+          {
+            "caption": "Timery is the clock source for this Output Compare module",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Timerx is the clock source for this Output Compare module",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "OCFLT",
+        "mask": "0x00000010",
+        "caption": "PWM Fault Condition Status bit",
+        "values": [
+          {
+            "caption": "PWM Fault condition has occurred (cleared in HW only)",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No PWM Fault condition has occurred",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "OC32",
+        "mask": "0x00000020",
+        "caption": "32-bit Compare Mode bit",
+        "values": [
+          {
+            "caption": "OCxR and/or OCxRS\u003C31:0\u003E are used for comparisions to the 32-bit timer source",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "OCxR and OCxRS\u003C15:0\u003E are used for comparisons to the 16-bit timer source",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "SIDL",
+        "mask": "0x00002000",
+        "caption": "Stop in Idle Mode bit",
+        "values": [
+          {
+            "caption": "Discontinue operation when CPU enters Idle mode",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Continue operation in Idle mode",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "ON",
+        "mask": "0x00008000",
+        "caption": "Output Compare Peripheral On bit",
+        "values": [
+          {
+            "caption": "Output Compare peripheral is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Output Compare peripheral is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "OC1R": [
+      {
+        "name": "OC1R",
+        "mask": "0xFFFFFFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "OC2R": [
+      {
+        "name": "OC2R",
+        "mask": "0xFFFFFFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "OC3R": [
+      {
+        "name": "OC3R",
+        "mask": "0xFFFFFFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "OC4R": [
+      {
+        "name": "OC4R",
+        "mask": "0xFFFFFFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "OC5R": [
+      {
+        "name": "OC5R",
+        "mask": "0xFFFFFFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "OC6R": [
+      {
+        "name": "OC6R",
+        "mask": "0xFFFFFFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "OC7R": [
+      {
+        "name": "OC7R",
+        "mask": "0xFFFFFFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "OC8R": [
+      {
+        "name": "OC8R",
+        "mask": "0xFFFFFFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "OC9R": [
+      {
+        "name": "OC9R",
+        "mask": "0xFFFFFFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "OC1RS": [
+      {
+        "name": "OC1RS",
+        "mask": "0xFFFFFFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "OC2RS": [
+      {
+        "name": "OC2RS",
+        "mask": "0xFFFFFFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "OC3RS": [
+      {
+        "name": "OC3RS",
+        "mask": "0xFFFFFFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "OC4RS": [
+      {
+        "name": "OC4RS",
+        "mask": "0xFFFFFFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "OC5RS": [
+      {
+        "name": "OC5RS",
+        "mask": "0xFFFFFFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "OC6RS": [
+      {
+        "name": "OC6RS",
+        "mask": "0xFFFFFFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "OC7RS": [
+      {
+        "name": "OC7RS",
+        "mask": "0xFFFFFFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "OC8RS": [
+      {
+        "name": "OC8RS",
+        "mask": "0xFFFFFFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "OC9RS": [
+      {
+        "name": "OC9RS",
+        "mask": "0xFFFFFFFF",
+        "caption": null,
+        "values": []
+      }
+    ]
+  }
+}

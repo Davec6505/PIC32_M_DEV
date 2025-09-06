@@ -1,0 +1,5437 @@
+{
+  "USB": {
+    "USBCSR0": [
+      {
+        "name": "FUNC",
+        "mask": "0x0000007F",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "SUSPEN",
+        "mask": "0x00000100",
+        "caption": "Suspend Mode Enable bit",
+        "values": [
+          {
+            "caption": "Suspend mode is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Suspend mode is not enabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "SUSPMODE",
+        "mask": "0x00000200",
+        "caption": "Suspend Mode status bit",
+        "values": [
+          {
+            "caption": "The USB module is in Suspend mode",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "The USB module is in Normal operations",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RESUME",
+        "mask": "0x00000400",
+        "caption": "Resume from Suspend control bit",
+        "values": [
+          {
+            "caption": "Generate Resume signaling when the device is in Suspend mode",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Stop Resume signaling",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RESET",
+        "mask": "0x00000800",
+        "caption": "Module Reset Status bit",
+        "values": [
+          {
+            "caption": "Reset signaling is present on the bus",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Normal module operation",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "HSMODE",
+        "mask": "0x00001000",
+        "caption": "Hi-Speed Mode Status bit",
+        "values": [
+          {
+            "caption": "Hi-Speed mode successfully negotiated during USB reset",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Module is not in Hi-Speed mode",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "HSEN",
+        "mask": "0x00002000",
+        "caption": "Hi-Speed Enable bit",
+        "values": [
+          {
+            "caption": "The USB module will negotiate for Hi-Speed mode when the device is reset by the hub",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Module only operates in Full-Speed mode",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "SOFTCONN",
+        "mask": "0x00004000",
+        "caption": "Soft Connect/Disconnect Feature Selection bit",
+        "values": [
+          {
+            "caption": "The USB D\u002B/D- lines are enabled and active",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "The USB D\u002B/D- lines are disabled and are tri-stated",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "ISOUPD",
+        "mask": "0x00008000",
+        "caption": "ISO Update bit (",
+        "values": [
+          {
+            "caption": "USB module will wait for a SOF token from the time TXPKTRDY is set before sending the packet",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No change in behavior",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "EP0IF",
+        "mask": "0x00010000",
+        "caption": "Endpoint 0 Interrupt bit",
+        "values": [
+          {
+            "caption": "Endpoint 0 has an interrupt to be serviced",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No interrupt event",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "EP1TXIF",
+        "mask": "0x00020000",
+        "caption": "Endpoint 1 TX Interrupt Flag bit",
+        "values": [
+          {
+            "caption": "Endpoint has a transmit interrupt to be serviced",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No interrupt event",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "EP2TXIF",
+        "mask": "0x00040000",
+        "caption": "Endpoint 2 TX Interrupt Flag bit",
+        "values": [
+          {
+            "caption": "Endpoint has a transmit interrupt to be serviced",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No interrupt event",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "EP3TXIF",
+        "mask": "0x00080000",
+        "caption": "Endpoint 3 TX Interrupt Flag bit",
+        "values": [
+          {
+            "caption": "Endpoint has a transmit interrupt to be serviced",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No interrupt event",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "EP4TXIF",
+        "mask": "0x00100000",
+        "caption": "Endpoint 4 TX Interrupt Flag bit",
+        "values": [
+          {
+            "caption": "Endpoint has a transmit interrupt to be serviced",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No interrupt event",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "EP5TXIF",
+        "mask": "0x00200000",
+        "caption": "Endpoint 5 TX Interrupt Flag bit",
+        "values": [
+          {
+            "caption": "Endpoint has a transmit interrupt to be serviced",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No interrupt event",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "EP6TXIF",
+        "mask": "0x00400000",
+        "caption": "Endpoint 6 TX Interrupt Flag bit",
+        "values": [
+          {
+            "caption": "Endpoint has a transmit interrupt to be serviced",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No interrupt event",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "EP7TXIF",
+        "mask": "0x00800000",
+        "caption": "Endpoint 7 TX Interrupt Flag bit",
+        "values": [
+          {
+            "caption": "Endpoint has a transmit interrupt to be serviced",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No interrupt event",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "USBCSR1": [
+      {
+        "name": "EP1RXIF",
+        "mask": "0x00000002",
+        "caption": "Endpoint 1 RX Interrupt bit",
+        "values": [
+          {
+            "caption": "Endpoint has a receive event to be serviced",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No interrupt event",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "EP2RXIF",
+        "mask": "0x00000004",
+        "caption": "Endpoint 2 RX Interrupt bit",
+        "values": [
+          {
+            "caption": "Endpoint has a receive event to be serviced",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No interrupt event",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "EP3RXIF",
+        "mask": "0x00000008",
+        "caption": "Endpoint 3 RX Interrupt bit",
+        "values": [
+          {
+            "caption": "Endpoint has a receive event to be serviced",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No interrupt event",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "EP4RXIF",
+        "mask": "0x00000010",
+        "caption": "Endpoint 4 RX Interrupt bit",
+        "values": [
+          {
+            "caption": "Endpoint has a receive event to be serviced",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No interrupt event",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "EP5RXIF",
+        "mask": "0x00000020",
+        "caption": "Endpoint 5 RX Interrupt bit",
+        "values": [
+          {
+            "caption": "Endpoint has a receive event to be serviced",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No interrupt event",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "EP6RXIF",
+        "mask": "0x00000040",
+        "caption": "Endpoint 6 RX Interrupt bit",
+        "values": [
+          {
+            "caption": "Endpoint has a receive event to be serviced",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No interrupt event",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "EP7RXIF",
+        "mask": "0x00000080",
+        "caption": "Endpoint 7 RX Interrupt bit",
+        "values": [
+          {
+            "caption": "Endpoint has a receive event to be serviced",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No interrupt event",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "EP0IE",
+        "mask": "0x00010000",
+        "caption": "Endpoint 0 Interrupt Enable bit",
+        "values": [
+          {
+            "caption": "Endpoint 0 interrupt events are enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Endpoint 0 interrupt events are not enabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "EP1TXIE",
+        "mask": "0x00020000",
+        "caption": "Endpoint 1 Transmit Interrupt Enable bits",
+        "values": [
+          {
+            "caption": "Endpoint Transmit interrupt events are enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Endpoint Transmit interrupt events are not enabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "EP2TXIE",
+        "mask": "0x00040000",
+        "caption": "Endpoint 2 Transmit Interrupt Enable bits",
+        "values": [
+          {
+            "caption": "Endpoint Transmit interrupt events are enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Endpoint Transmit interrupt events are not enabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "EP3TXIE",
+        "mask": "0x00080000",
+        "caption": "Endpoint 3 Transmit Interrupt Enable bits",
+        "values": [
+          {
+            "caption": "Endpoint Transmit interrupt events are enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Endpoint Transmit interrupt events are not enabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "EP4TXIE",
+        "mask": "0x00100000",
+        "caption": "Endpoint 4 Transmit Interrupt Enable bits",
+        "values": [
+          {
+            "caption": "Endpoint Transmit interrupt events are enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Endpoint Transmit interrupt events are not enabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "EP5TXIE",
+        "mask": "0x00200000",
+        "caption": "Endpoint 5 Transmit Interrupt Enable bits",
+        "values": [
+          {
+            "caption": "Endpoint Transmit interrupt events are enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Endpoint Transmit interrupt events are not enabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "EP6TXIE",
+        "mask": "0x00400000",
+        "caption": "Endpoint 6 Transmit Interrupt Enable bits",
+        "values": [
+          {
+            "caption": "Endpoint Transmit interrupt events are enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Endpoint Transmit interrupt events are not enabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "EP7TXIE",
+        "mask": "0x00800000",
+        "caption": "Endpoint 7 Transmit Interrupt Enable bits",
+        "values": [
+          {
+            "caption": "Endpoint Transmit interrupt events are enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Endpoint Transmit interrupt events are not enabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "USBCSR2": [
+      {
+        "name": "EP1RXIE",
+        "mask": "0x00000002",
+        "caption": "Endpoint 1 Receive Interrupt Enable bit",
+        "values": [
+          {
+            "caption": "Receive interrupt is enabled for this endpoint",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Receive interrupt is not enabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "EP2RXIE",
+        "mask": "0x00000004",
+        "caption": "Endpoint 2 Receive Interrupt Enable bit",
+        "values": [
+          {
+            "caption": "Receive interrupt is enabled for this endpoint",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Receive interrupt is not enabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "EP3RXIE",
+        "mask": "0x00000008",
+        "caption": "Endpoint 3 Receive Interrupt Enable bit",
+        "values": [
+          {
+            "caption": "Receive interrupt is enabled for this endpoint",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Receive interrupt is not enabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "EP4RXIE",
+        "mask": "0x00000010",
+        "caption": "Endpoint 4 Receive Interrupt Enable bit",
+        "values": [
+          {
+            "caption": "Receive interrupt is enabled for this endpoint",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Receive interrupt is not enabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "EP5RXIE",
+        "mask": "0x00000020",
+        "caption": "Endpoint 5 Receive Interrupt Enable bit",
+        "values": [
+          {
+            "caption": "Receive interrupt is enabled for this endpoint",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Receive interrupt is not enabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "EP6RXIE",
+        "mask": "0x00000040",
+        "caption": "Endpoint 6 Receive Interrupt Enable bit",
+        "values": [
+          {
+            "caption": "Receive interrupt is enabled for this endpoint",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Receive interrupt is not enabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "EP7RXIE",
+        "mask": "0x00000080",
+        "caption": "Endpoint 7 Receive Interrupt Enable bit",
+        "values": [
+          {
+            "caption": "Receive interrupt is enabled for this endpoint",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Receive interrupt is not enabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "SUSPIF",
+        "mask": "0x00010000",
+        "caption": "Suspend Interrupt bit",
+        "values": [
+          {
+            "caption": "Suspend signaling is detected on the bus (Device mode)",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No suspend signaling detected",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RESUMEIF",
+        "mask": "0x00020000",
+        "caption": "Resume Interrupt bit",
+        "values": [
+          {
+            "caption": "Resume signaling is detected on the bus while USB module is in Suspend mode",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No Resume signaling detected",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RESETIF",
+        "mask": "0x00040000",
+        "caption": "Reset/Babble Interrupt bit",
+        "values": [
+          {
+            "caption": "(In Host mode): indicates babble is detected / (In Device mode): indicates reset signaling is detected on the bus.",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No reset/babble detected",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "SOFIF",
+        "mask": "0x00080000",
+        "caption": "Start of Frame Interrupt bit",
+        "values": [
+          {
+            "caption": "A new frame has started",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No start of frame detected",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "CONNIF",
+        "mask": "0x00100000",
+        "caption": "Device Connection Interrupt bit",
+        "values": [
+          {
+            "caption": "In Host mode",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No device connection detected",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "DISCONIF",
+        "mask": "0x00200000",
+        "caption": "Device Disconnect Interrupt bit",
+        "values": [
+          {
+            "caption": "In Host mode",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No device disconnect detected",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "SESSRQIF",
+        "mask": "0x00400000",
+        "caption": "Session Request Interrupt bit",
+        "values": [
+          {
+            "caption": "Session request signaling has been detected",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No session request detected",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "VBUSERRIF",
+        "mask": "0x00800000",
+        "caption": "Vbus Error Interrupt bit",
+        "values": [
+          {
+            "caption": "Vbus has dropped below the Vbus valid threshold during a session",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No interrupt",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "SUSPIE",
+        "mask": "0x01000000",
+        "caption": "Suspend Interrupt Enable bit",
+        "values": [
+          {
+            "caption": "Suspend signaling interrupt is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Suspend signaling interrupt is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RESUMEIE",
+        "mask": "0x02000000",
+        "caption": "Resume Interrupt Enable bit",
+        "values": [
+          {
+            "caption": "Resume signaling interrupt is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Resume signaling interrupt is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RESETIE",
+        "mask": "0x04000000",
+        "caption": "Reset/Babble Interrupt Enable bit",
+        "values": [
+          {
+            "caption": "Interrupt when reset (",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Reset/Babble interrupt is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "SOFIE",
+        "mask": "0x08000000",
+        "caption": "Start of Frame Interrupt Enable bit",
+        "values": [
+          {
+            "caption": "Start of Frame event interrupt is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Start of Frame event interrupt is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "CONNIE",
+        "mask": "0x10000000",
+        "caption": "Device Connection Interrupt Enable bit",
+        "values": [
+          {
+            "caption": "Device connection interrupt is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Device connection interrupt is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "DISCONIE",
+        "mask": "0x20000000",
+        "caption": "Device Disconnect Interrupt Enable bit",
+        "values": [
+          {
+            "caption": "Device disconnect interrupt is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Device disconnect interrupt is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "SESSRQIE",
+        "mask": "0x40000000",
+        "caption": "Session Request Interrupt Enable bit",
+        "values": [
+          {
+            "caption": "Session request interrupt is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Session request interrupt is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "VBUSERRIE",
+        "mask": "0x80000000",
+        "caption": "Vbus Error Interrupt Enable bit",
+        "values": [
+          {
+            "caption": "Vbus error interrupt is enabled",
+            "name": "",
+            "value": "0x1L"
+          },
+          {
+            "caption": "Vbus error interrupt is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "USBCSR3": [
+      {
+        "name": "RFRMNUM",
+        "mask": "0x000007FF",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "ENDPOINT",
+        "mask": "0x000F0000",
+        "caption": "Endpoint Registers Select bits",
+        "values": [
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0xf"
+          },
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0xe"
+          },
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0xd"
+          },
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0xc"
+          },
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0xb"
+          },
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0xa"
+          },
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x9"
+          },
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x8"
+          },
+          {
+            "caption": "Endpoint 7",
+            "name": "",
+            "value": "0x7"
+          },
+          {
+            "caption": "Endpoint 6",
+            "name": "",
+            "value": "0x6"
+          },
+          {
+            "caption": "Endpoint 5",
+            "name": "",
+            "value": "0x5"
+          },
+          {
+            "caption": "Endpoint 4",
+            "name": "",
+            "value": "0x4"
+          },
+          {
+            "caption": "Endpoint 3",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Endpoint 2",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Endpoint 1",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Endpoint 0",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "NAK",
+        "mask": "0x01000000",
+        "caption": "Test_SE0_NAK Test Mode Select bit",
+        "values": [
+          {
+            "caption": "Enter Test_SE0_NAK test mode. The USB module remains in Hi-Speed mode but responds to any valid IN token with a NAK",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Normal operation",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "TESTJ",
+        "mask": "0x02000000",
+        "caption": "Test_J Test Mode Select bit",
+        "values": [
+          {
+            "caption": "Enters Test_J test mode. The USB module transmits a continuous J on the bus.",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Normal operation",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "TESTK",
+        "mask": "0x04000000",
+        "caption": "Test_K Test Mode Select bit",
+        "values": [
+          {
+            "caption": "Enters Test_K test mode. The USB module transmits a continuous K on the bus.",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Normal operation",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "PACKET",
+        "mask": "0x08000000",
+        "caption": "Test_Packet Test Mode Select bit",
+        "values": [
+          {
+            "caption": "The USB module repetitively transmits on the bus a 53-byte test packet. Test packet must be loaded into the Endpoint 0 FIFO before the test mode is entered.",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Normal operation",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "FORCEHS",
+        "mask": "0x10000000",
+        "caption": "Test mode Force Hi-Speed Mode Select bit",
+        "values": [
+          {
+            "caption": "Forces USB module into Hi-Speed mode. Undefined behavior if FORCEFS = 1.",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "If FORCEFS is 0",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "FORCEFS",
+        "mask": "0x20000000",
+        "caption": "Test mode Force Full-Speed Mode Select bit",
+        "values": [
+          {
+            "caption": "Forces USB module into Full-Speed mode. Undefined behavior if FORCEHS is 1",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "(If FORCEHS is 0): places USB module into Low-Speed mode.",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "FIFOACC",
+        "mask": "0x40000000",
+        "caption": "Test Mode Endpoint 0 FIFO Transfer Force bit",
+        "values": [
+          {
+            "caption": "Transfers the packet in the Endpoint 0 TX FIFO to the Endpoint 0 RX FIFO",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No transfer",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "FORCEHST",
+        "mask": "0x80000000",
+        "caption": "Test Mode Force Host Select bit",
+        "values": [
+          {
+            "caption": "Forces USB module into Host mode",
+            "name": "",
+            "value": "0x1L"
+          },
+          {
+            "caption": "Normal operation",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "USBIE0CSR0": [
+      {
+        "name": "TXMAXP",
+        "mask": "0x000007FF",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RXRDY",
+        "mask": "0x00010000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "TXRDY",
+        "mask": "0x00020000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "STALLED",
+        "mask": "0x00040000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "SETUP",
+        "mask": "0x00080000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "ERROR",
+        "mask": "0x00100000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "REQPKT",
+        "mask": "0x00200000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "STATUS",
+        "mask": "0x00400000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "NAKTO",
+        "mask": "0x00800000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "FLUSH",
+        "mask": "0x01000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DT",
+        "mask": "0x02000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DTWE",
+        "mask": "0x04000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBIENCSR0": [
+      {
+        "name": "TXMAXP",
+        "mask": "0x000007FF",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MULT",
+        "mask": "0x0000F800",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "TXPKTRDY",
+        "mask": "0x00010000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "FIFONE",
+        "mask": "0x00020000",
+        "caption": "FIFO Not Empty status bit",
+        "values": [
+          {
+            "caption": "There is at least 1 packet in the TX FIFO",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "TX FIFO is empty",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "ERROR",
+        "mask": "0x00040000",
+        "caption": "Underrun status bit",
+        "values": [
+          {
+            "caption": "Meaning of bitfield depends on Host / Device mode of operation.",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Meaning of bitfield depends on Host / Device mode of operation.",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "FLUSH",
+        "mask": "0x00080000",
+        "caption": "FIFO Flush control bit",
+        "values": [
+          {
+            "caption": "Flush the latest packet from the endpoint TX FIFO. The FIFO pointer is reset",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Do not flush the FIFO",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "SETUPPKT",
+        "mask": "0x00100000",
+        "caption": "STALL handshake transmission control bit",
+        "values": [
+          {
+            "caption": "Meaning of bitfield depends on Host / Device mode of operation",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Meaning of bitfield depends on Host / Device mode of operation",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RXSTALL",
+        "mask": "0x00200000",
+        "caption": "STALL handshake transmission status bit",
+        "values": [
+          {
+            "caption": "Meaning of bitfield depends on Host / Device mode of operation.",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Meaning of bitfield depends on Host / Device mode of operation",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "CLRDT",
+        "mask": "0x00400000",
+        "caption": "Clear Data Toggle Control bit",
+        "values": [
+          {
+            "caption": "Resets the endpoint data toggle to 0",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Do not clear the data toggle",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "NAKTMOUT",
+        "mask": "0x00800000",
+        "caption": "Incomplete TX Status bit",
+        "values": [
+          {
+            "caption": "Meaning of bitfield depends on Host / Device mode of operation.",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Meaning of bitfield depends on Host / Device mode of operation.",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "DATATGGL",
+        "mask": "0x01000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DTWREN",
+        "mask": "0x02000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DMAREQMD",
+        "mask": "0x04000000",
+        "caption": "Endpoint DMA Request Mode Control bit",
+        "values": [
+          {
+            "caption": "DMA Request Mode 1",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "DMA Request Mode 0",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "FRCDATTG",
+        "mask": "0x08000000",
+        "caption": "Force Endpoint Data Toggle Control bit",
+        "values": [
+          {
+            "caption": "Forces the endpoint data toggle to switch and the data packet to be cleared from the FIFO",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No forced behavior",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "DMAREQEN",
+        "mask": "0x10000000",
+        "caption": "Endpoint DMA Request Enable bit",
+        "values": [
+          {
+            "caption": "DMA requests are enabled for this endpoint",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "DMA requests are disabled for this endpoint",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "MODE",
+        "mask": "0x20000000",
+        "caption": "Endpoint Direction Control bit",
+        "values": [
+          {
+            "caption": "Endpoint is TX",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Endpoint is RX",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "AUTOSET",
+        "mask": "0x80000000",
+        "caption": "Auto Set Control bit",
+        "values": [
+          {
+            "caption": "TXPKTRDY will be automatically set when data of the maximum packet size (value in TXMAXP) is loaded into the TX FIFO. If a packet of less than the maximum packet size is loaded",
+            "name": "",
+            "value": "0x1L"
+          },
+          {
+            "caption": "TXPKTRDY must be set manually for all packet sizes",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "USBIENCSR1": [
+      {
+        "name": "RXMAXP",
+        "mask": "0x000007FF",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MULT",
+        "mask": "0x0000F800",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RXPKTRDY",
+        "mask": "0x00010000",
+        "caption": "Data Packet Reception Status bit",
+        "values": [
+          {
+            "caption": "A data packet has been received. An interrupt is generated.",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Written by software to clear this bit when the packet has been unloaded from the RX FIFO.",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "FIFOFULL",
+        "mask": "0x00020000",
+        "caption": "FIFO Full Status bit",
+        "values": [
+          {
+            "caption": "No more packets can be loaded into the RX FIFO",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "The RX FIFO has at least one free space",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "ERROR",
+        "mask": "0x00040000",
+        "caption": "Data Overrun Status bit",
+        "values": [
+          {
+            "caption": "Meaning of bitfield depends on Host / Device mode of operation",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Meaning of bitfield depends on Host / Device mode of operation",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "DERRNAKT",
+        "mask": "0x00080000",
+        "caption": "Data Packet Error Status bit",
+        "values": [
+          {
+            "caption": "Meaning of bitfield depends on Host / Device mode of operation.",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Meaning of bitfield depends on Host / Device mode of operation",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "FLUSH",
+        "mask": "0x00100000",
+        "caption": "Flush FIFO Control bit",
+        "values": [
+          {
+            "caption": "Flush the next packet to be read from the endpoint RX FIFO. The FIFO pointer is reset and the RXPKTRDY bit is cleared. This should only be used when RXPKTRDY is set. If the FIFO is double-buffered",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Normal FIFO operation",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "REQPKT",
+        "mask": "0x00200000",
+        "caption": "STALL Handshake Control bit",
+        "values": [
+          {
+            "caption": "Meaning of bitfield depends on Host / Device mode of operation",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Meaning of bitfield depends on Host / Device mode of operation",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RXSTALL",
+        "mask": "0x00400000",
+        "caption": "STALL Handshake Status bit",
+        "values": [
+          {
+            "caption": "Meaning of bitfield depends on Host / Device mode of operation",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Meaning of bitfield depends on Host / Device mode of operation",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "CLRDT",
+        "mask": "0x00800000",
+        "caption": "Clear Data Toggle Control bit",
+        "values": [
+          {
+            "caption": "Reset the endpoint data toggle to 0",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Leave endpoint data toggle alone",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "INCOMPRX",
+        "mask": "0x01000000",
+        "caption": "Incomplete Packet Status bit",
+        "values": [
+          {
+            "caption": "The packet in the RX FIFO during a high-bandwidth Isochronous/Interrupt transfer is incomplete because parts of the data were not received",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Written by then software to clear this bit",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "DATATGGL",
+        "mask": "0x02000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DATATWEN",
+        "mask": "0x04000000",
+        "caption": "Data Toggle Write Enable Control bit (",
+        "values": [
+          {
+            "caption": "DATATGGL can be written",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "DATATGGL is not writable",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "DMAREQMD",
+        "mask": "0x08000000",
+        "caption": "DMA Request Mode Selection bit",
+        "values": [
+          {
+            "caption": "DMA Request Mode 1",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "DMA Request Mode 0",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "PIDERR",
+        "mask": "0x10000000",
+        "caption": "Disable NYET Handshakes Control/PID Error Status bit",
+        "values": [
+          {
+            "caption": "Meaning of bitfield depends on Host / Device mode of operation.",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Meaning of bitfield depends on Host / Device mode of operation.",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "DMAREQEN",
+        "mask": "0x20000000",
+        "caption": "DMA Request Enable Control bit",
+        "values": [
+          {
+            "caption": "Enable DMA requests for the RX endpoint.",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Disable DMA requests for the RX endpoint.",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "AUTORQ",
+        "mask": "0x40000000",
+        "caption": "Isochronous Endpoint Control bit",
+        "values": [
+          {
+            "caption": "Meaning of bitfield depends on Host / Device mode of operation",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Meaning of bitfield depends on Host / Device mode of operation",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "AUTOCLR",
+        "mask": "0x80000000",
+        "caption": "RXPKTRDY Automatic Clear Control bit",
+        "values": [
+          {
+            "caption": "RXPKTRDY will be automatically cleared when a packet of RXMAXP bytes has been unloaded from the RX FIFO. When packets of less than the maximum packet size are unloaded",
+            "name": "",
+            "value": "0x1L"
+          },
+          {
+            "caption": "No automatic clearing of RXPKTRDY",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "USBIE0CSR2": [
+      {
+        "name": "RXCNT",
+        "mask": "0x0000007F",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "SPEED",
+        "mask": "0x00C00000",
+        "caption": "Operating Speed Control bits",
+        "values": [
+          {
+            "caption": "Low-Speed",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Full-Speed",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Hi-Speed",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "NAKLIM",
+        "mask": "0x0F000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBIENCSR2": [
+      {
+        "name": "RXCNT",
+        "mask": "0x00003FFF",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "TEP",
+        "mask": "0x000F0000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "PROTOCOL",
+        "mask": "0x00300000",
+        "caption": "TX Endpoint Protocol Control bits",
+        "values": [
+          {
+            "caption": "Interrupt",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Bulk",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Isochronous",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Control",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "SPEED",
+        "mask": "0x00C00000",
+        "caption": "TX Endpoint Operating Speed Control bits (",
+        "values": [
+          {
+            "caption": "Low-Speed",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Full-Speed",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Hi-Speed",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "TXINTERV",
+        "mask": "0xFF000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBIE0CSR3": [
+      {
+        "name": "UTMIDWID",
+        "mask": "0x01000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "SOFTCONE",
+        "mask": "0x02000000",
+        "caption": "Soft Connect/Disconnect Option bit",
+        "values": [
+          {
+            "caption": "Soft Connect/Disconnect is supported",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Soft Connect/Disconnect is not supported",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "DYNFIFOS",
+        "mask": "0x04000000",
+        "caption": "Dynamic FIFO Sizing Option bit",
+        "values": [
+          {
+            "caption": "Dynamic FIFO sizing is supported",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No Dynamic FIFO sizing",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "HBTXEN",
+        "mask": "0x08000000",
+        "caption": "High-bandwidth TX ISO Option bit",
+        "values": [
+          {
+            "caption": "High-bandwidth TX ISO endpoint support is selected",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No High-bandwidth TX ISO support",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "HBRXEN",
+        "mask": "0x10000000",
+        "caption": "High-bandwidth RX ISO Option bit",
+        "values": [
+          {
+            "caption": "High-bandwidth RX ISO endpoint support is selected",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No High-bandwidth RX ISO support",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "BIGEND",
+        "mask": "0x20000000",
+        "caption": "Byte Ordering Option bit",
+        "values": [
+          {
+            "caption": "Big Endian ordering",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Little Endian ordering",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "MPTXEN",
+        "mask": "0x40000000",
+        "caption": "Automatic Splitting Option bit",
+        "values": [
+          {
+            "caption": "Automatic splitting of bulk packets is done",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No automatic splitting",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "MPRXEN",
+        "mask": "0x80000000",
+        "caption": "Automatic Amalgamation Option bit",
+        "values": [
+          {
+            "caption": "Automatic amalgamation of bulk packets is done",
+            "name": "",
+            "value": "0x1L"
+          },
+          {
+            "caption": "No automatic amalgamation",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "USBIENCSR3": [
+      {
+        "name": "TEP",
+        "mask": "0x0000000F",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "PROTOCOL",
+        "mask": "0x00000030",
+        "caption": "RX Endpoint Protocol Control bits",
+        "values": [
+          {
+            "caption": "Interrupt",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Bulk",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Isochronous",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Control",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "SPEED",
+        "mask": "0x000000C0",
+        "caption": "RX Endpoint Operating Speed Control bits",
+        "values": [
+          {
+            "caption": "Low-Speed",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Full-Speed",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Hi-Speed",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RXINTERV",
+        "mask": "0x0000FF00",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "TXFIFOSZ",
+        "mask": "0x0F000000",
+        "caption": "Transmit FIFO Size bits",
+        "values": [
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0xf"
+          },
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0xe"
+          },
+          {
+            "caption": "8192 bytes",
+            "name": "",
+            "value": "0xd"
+          },
+          {
+            "caption": "4096 bytes",
+            "name": "",
+            "value": "0xc"
+          },
+          {
+            "caption": "2048 bytes",
+            "name": "",
+            "value": "0xb"
+          },
+          {
+            "caption": "1024 bytes",
+            "name": "",
+            "value": "0xa"
+          },
+          {
+            "caption": "512 bytes",
+            "name": "",
+            "value": "0x9"
+          },
+          {
+            "caption": "256 bytes",
+            "name": "",
+            "value": "0x8"
+          },
+          {
+            "caption": "128 bytes",
+            "name": "",
+            "value": "0x7"
+          },
+          {
+            "caption": "64 bytes",
+            "name": "",
+            "value": "0x6"
+          },
+          {
+            "caption": "32 bytes",
+            "name": "",
+            "value": "0x5"
+          },
+          {
+            "caption": "16 bytes",
+            "name": "",
+            "value": "0x4"
+          },
+          {
+            "caption": "8 bytes",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Reserved or endpoint has not been configured",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RXFIFOSZ",
+        "mask": "0xF0000000",
+        "caption": "Receive FIFO Size bits",
+        "values": [
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0xfL"
+          },
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0xeL"
+          },
+          {
+            "caption": "8192 bytes",
+            "name": "",
+            "value": "0xdL"
+          },
+          {
+            "caption": "4096 bytes",
+            "name": "",
+            "value": "0xcL"
+          },
+          {
+            "caption": "2048 bytes",
+            "name": "",
+            "value": "0xbL"
+          },
+          {
+            "caption": "1024 bytes",
+            "name": "",
+            "value": "0xaL"
+          },
+          {
+            "caption": "512 bytes",
+            "name": "",
+            "value": "0x9L"
+          },
+          {
+            "caption": "256 bytes",
+            "name": "",
+            "value": "0x8L"
+          },
+          {
+            "caption": "128 bytes",
+            "name": "",
+            "value": "0x7"
+          },
+          {
+            "caption": "64 bytes",
+            "name": "",
+            "value": "0x6"
+          },
+          {
+            "caption": "32 bytes",
+            "name": "",
+            "value": "0x5"
+          },
+          {
+            "caption": "16 bytes",
+            "name": "",
+            "value": "0x4"
+          },
+          {
+            "caption": "8 bytes",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Reserved or endpoint has not been configured",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "USBFIFO0": [
+      {
+        "name": "DATA",
+        "mask": "0xFFFFFFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBFIFO1": [
+      {
+        "name": "DATA",
+        "mask": "0xFFFFFFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBFIFO2": [
+      {
+        "name": "DATA",
+        "mask": "0xFFFFFFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBFIFO3": [
+      {
+        "name": "DATA",
+        "mask": "0xFFFFFFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBFIFO4": [
+      {
+        "name": "DATA",
+        "mask": "0xFFFFFFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBOTG": [
+      {
+        "name": "SESSION",
+        "mask": "0x00000001",
+        "caption": "Active Session Control/Status bit",
+        "values": [
+          {
+            "caption": "(A device): Start a session / (B device): Session has started or is in progress",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "(A device): End a session / (B device): When USB module is in Suspend mode",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "HOSTREQ",
+        "mask": "0x00000002",
+        "caption": "Host Request Control bit",
+        "values": [
+          {
+            "caption": "USB module initiates the Host Negotiation when Suspend mode is entered. This bit is cleared when Host Negotiation is completed.",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Host Negotiation is not taking place",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "HOSTMODE",
+        "mask": "0x00000004",
+        "caption": "Host Mode bit",
+        "values": [
+          {
+            "caption": "USB module is acting as a Host",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "USB module is not acting as a Host",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "VBUS",
+        "mask": "0x00000018",
+        "caption": "Vbus Level Detection bits",
+        "values": [
+          {
+            "caption": "Above Vbus Valid",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Above AValid",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Above Session End",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Below Session End",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "LSDEV",
+        "mask": "0x00000020",
+        "caption": "Low-Speed Device Detection bit",
+        "values": [
+          {
+            "caption": "A Low-Speed device has been detected being connected to the port",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No Low-Speed device detected",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "FSDEV",
+        "mask": "0x00000040",
+        "caption": "Full-Speed/Hi-Speed device detection bit (",
+        "values": [
+          {
+            "caption": "A Full-Speed or Hi-Speed device has been detected being connected to the port",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No Full-Speed or Hi-Speed device detected",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "BDEV",
+        "mask": "0x00000080",
+        "caption": "USB Device Type bit",
+        "values": [
+          {
+            "caption": "USB is operating as a B device",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "USB is operating as an A device",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RXEDMA",
+        "mask": "0x00000100",
+        "caption": "RX Endpoint DMA Assertion Control bit",
+        "values": [
+          {
+            "caption": "DMA_REQ signal for all OUT endpoints will be deasserted when MAXP-8 bytes have been written to an endpoint. This is Early mode.",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "DMA_REQ signal for all OUT endpoints will be deasserted when MAXP bytes have been written to an endpoint. This is Late mode.",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "TXEDMA",
+        "mask": "0x00000200",
+        "caption": "TX Endpoint DMA Assertion Control bit",
+        "values": [
+          {
+            "caption": "DMA_REQ signal for all IN endpoints will be deasserted when MAXP-8 bytes have been written to an endpoint. This is Early mode.",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "DMA_REQ signal for all IN endpoints will be deasserted when MAXP bytes have been written to an endpoint. This is Late mode.",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "TXFIFOSZ",
+        "mask": "0x000F0000",
+        "caption": "TX Endpoint FIFO packet size bits",
+        "values": [
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0xf"
+          },
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0xa"
+          },
+          {
+            "caption": "4096 bytes",
+            "name": "",
+            "value": "0x9"
+          },
+          {
+            "caption": "2048 bytes",
+            "name": "",
+            "value": "0x8"
+          },
+          {
+            "caption": "1024 bytes",
+            "name": "",
+            "value": "0x7"
+          },
+          {
+            "caption": "512 bytes",
+            "name": "",
+            "value": "0x6"
+          },
+          {
+            "caption": "256 bytes",
+            "name": "",
+            "value": "0x5"
+          },
+          {
+            "caption": "128 bytes",
+            "name": "",
+            "value": "0x4"
+          },
+          {
+            "caption": "64 bytes",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "32 bytes",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "16 bytes",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "8 bytes",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "TXDPB",
+        "mask": "0x00100000",
+        "caption": "TX Endpoint Double-packet Buffering Control bit",
+        "values": [
+          {
+            "caption": "Double-packet buffer is supported. This doubles the size set in TXFIFOSZ.",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Double-packet buffer is not supported",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RXFIFOSZ",
+        "mask": "0x0F000000",
+        "caption": "RX Endpoint FIFO Packet Size bits",
+        "values": [
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0xf"
+          },
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0xe"
+          },
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0xd"
+          },
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0xc"
+          },
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0xb"
+          },
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0xa"
+          },
+          {
+            "caption": "4096 bytes",
+            "name": "",
+            "value": "0x9"
+          },
+          {
+            "caption": "2048 bytes",
+            "name": "",
+            "value": "0x8"
+          },
+          {
+            "caption": "1024 bytes",
+            "name": "",
+            "value": "0x7"
+          },
+          {
+            "caption": "512 bytes",
+            "name": "",
+            "value": "0x6"
+          },
+          {
+            "caption": "256 bytes",
+            "name": "",
+            "value": "0x5"
+          },
+          {
+            "caption": "128 bytes",
+            "name": "",
+            "value": "0x4"
+          },
+          {
+            "caption": "64 bytes",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "32 bytes",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "16 bytes",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "8 bytes",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RXDPB",
+        "mask": "0x10000000",
+        "caption": "RX Endpoint Double-packet Buffering Control bit",
+        "values": [
+          {
+            "caption": "Double-packet buffer is supported. This doubles the size set in RXFIFOSZ.",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Double-packet buffer is not supported",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "USBHWVER": [
+      {
+        "name": "VERMINOR",
+        "mask": "0x000003FF",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "VERMAJOR",
+        "mask": "0x00007C00",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RC",
+        "mask": "0x00008000",
+        "caption": "Release Candidate bit",
+        "values": [
+          {
+            "caption": "USB module was created using a release candidate",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "USB module was created using a full release",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "USBINFO": [
+      {
+        "name": "TXENDPTS",
+        "mask": "0x0000000F",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RXENDPTS",
+        "mask": "0x000000F0",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RAMBITS",
+        "mask": "0x00000F00",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DMACHANS",
+        "mask": "0x0000F000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "WTID",
+        "mask": "0x000F0000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "WTCON",
+        "mask": "0x00F00000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "VPLEN",
+        "mask": "0xFF000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBEOFRST": [
+      {
+        "name": "HSEOF",
+        "mask": "0x000000FF",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "FSEOF",
+        "mask": "0x0000FF00",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "LSEOF",
+        "mask": "0x00FF0000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "SOFRST",
+        "mask": "0xFF000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBE0TXA": [
+      {
+        "name": "TXFADDR",
+        "mask": "0x0000007F",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "TXHUBADD",
+        "mask": "0x007F0000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MULTTRAN",
+        "mask": "0x00800000",
+        "caption": "TX Hub Multiple Translators bit",
+        "values": [
+          {
+            "caption": "The USB 2.0 hub has multiple transaction translators",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "The USB 2.0 hub has a single transaction translator",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "TXHUBPRT",
+        "mask": "0x7F000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBE0RXA": [
+      {
+        "name": "RXHUBADD",
+        "mask": "0x007F0000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MULTTRAN",
+        "mask": "0x00800000",
+        "caption": "RX Hub Multiple Translators bit",
+        "values": [
+          {
+            "caption": "The USB 2.0 hub has multiple transaction translators",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "The USB 2.0 hub has a single transaction translator",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RXHUBPRT",
+        "mask": "0x7F000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBE1TXA": [
+      {
+        "name": "TXFADDR",
+        "mask": "0x0000007F",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "TXHUBADD",
+        "mask": "0x007F0000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MULTTRAN",
+        "mask": "0x00800000",
+        "caption": "TX Hub Multiple Translators bit",
+        "values": [
+          {
+            "caption": "The USB 2.0 hub has multiple transaction translators",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "The USB 2.0 hub has a single transaction translator",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "TXHUBPRT",
+        "mask": "0x7F000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBE1RXA": [
+      {
+        "name": "RXFADDR",
+        "mask": "0x0000007F",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RXHUBADD",
+        "mask": "0x007F0000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MULTTRAN",
+        "mask": "0x00800000",
+        "caption": "RX Hub Multiple Translators bit",
+        "values": [
+          {
+            "caption": "The USB 2.0 hub has multiple transaction translators",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "The USB 2.0 hub has a single transaction translator",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RXHUBPRT",
+        "mask": "0x7F000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBE2TXA": [
+      {
+        "name": "TXFADDR",
+        "mask": "0x0000007F",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "TXHUBADD",
+        "mask": "0x007F0000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MULTTRAN",
+        "mask": "0x00800000",
+        "caption": "TX Hub Multiple Translators bit",
+        "values": [
+          {
+            "caption": "The USB 2.0 hub has multiple transaction translators",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "The USB 2.0 hub has a single transaction translator",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "TXHUBPRT",
+        "mask": "0x7F000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBE2RXA": [
+      {
+        "name": "RXFADDR",
+        "mask": "0x0000007F",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RXHUBADD",
+        "mask": "0x007F0000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MULTTRAN",
+        "mask": "0x00800000",
+        "caption": "RX Hub Multiple Translators bit",
+        "values": [
+          {
+            "caption": "The USB 2.0 hub has multiple transaction translators",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "The USB 2.0 hub has a single transaction translator",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RXHUBPRT",
+        "mask": "0x7F000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBE3TXA": [
+      {
+        "name": "TXFADDR",
+        "mask": "0x0000007F",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "TXHUBADD",
+        "mask": "0x007F0000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MULTTRAN",
+        "mask": "0x00800000",
+        "caption": "TX Hub Multiple Translators bit",
+        "values": [
+          {
+            "caption": "The USB 2.0 hub has multiple transaction translators",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "The USB 2.0 hub has a single transaction translator",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "TXHUBPRT",
+        "mask": "0x7F000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBE3RXA": [
+      {
+        "name": "RXFADDR",
+        "mask": "0x0000007F",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RXHUBADD",
+        "mask": "0x007F0000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MULTTRAN",
+        "mask": "0x00800000",
+        "caption": "RX Hub Multiple Translators bit",
+        "values": [
+          {
+            "caption": "The USB 2.0 hub has multiple transaction translators",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "The USB 2.0 hub has a single transaction translator",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RXHUBPRT",
+        "mask": "0x7F000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBE4TXA": [
+      {
+        "name": "TXFADDR",
+        "mask": "0x0000007F",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "TXHUBADD",
+        "mask": "0x007F0000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MULTTRAN",
+        "mask": "0x00800000",
+        "caption": "TX Hub Multiple Translators bit",
+        "values": [
+          {
+            "caption": "The USB 2.0 hub has multiple transaction translators",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "The USB 2.0 hub has a single transaction translator",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "TXHUBPRT",
+        "mask": "0x7F000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBE4RXA": [
+      {
+        "name": "RXFADDR",
+        "mask": "0x0000007F",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RXHUBADD",
+        "mask": "0x007F0000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MULTTRAN",
+        "mask": "0x00800000",
+        "caption": "RX Hub Multiple Translators bit",
+        "values": [
+          {
+            "caption": "The USB 2.0 hub has multiple transaction translators",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "The USB 2.0 hub has a single transaction translator",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RXHUBPRT",
+        "mask": "0x7F000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBE5TXA": [
+      {
+        "name": "TXFADDR",
+        "mask": "0x0000007F",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "TXHUBADD",
+        "mask": "0x007F0000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MULTTRAN",
+        "mask": "0x00800000",
+        "caption": "TX Hub Multiple Translators bit",
+        "values": [
+          {
+            "caption": "The USB 2.0 hub has multiple transaction translators",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "The USB 2.0 hub has a single transaction translator",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "TXHUBPRT",
+        "mask": "0x7F000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBE5RXA": [
+      {
+        "name": "RXFADDR",
+        "mask": "0x0000007F",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RXHUBADD",
+        "mask": "0x007F0000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MULTTRAN",
+        "mask": "0x00800000",
+        "caption": "RX Hub Multiple Translators bit",
+        "values": [
+          {
+            "caption": "The USB 2.0 hub has multiple transaction translators",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "The USB 2.0 hub has a single transaction translator",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RXHUBPRT",
+        "mask": "0x7F000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBE6TXA": [
+      {
+        "name": "TXFADDR",
+        "mask": "0x0000007F",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "TXHUBADD",
+        "mask": "0x007F0000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MULTTRAN",
+        "mask": "0x00800000",
+        "caption": "TX Hub Multiple Translators bit",
+        "values": [
+          {
+            "caption": "The USB 2.0 hub has multiple transaction translators",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "The USB 2.0 hub has a single transaction translator",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "TXHUBPRT",
+        "mask": "0x7F000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBE0CSR0": [
+      {
+        "name": "TXMAXP",
+        "mask": "0x000007FF",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RXRDY",
+        "mask": "0x00010000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "TXRDY",
+        "mask": "0x00020000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "STALLED",
+        "mask": "0x00040000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "SETUP",
+        "mask": "0x00080000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "ERROR",
+        "mask": "0x00100000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "REQPKT",
+        "mask": "0x00200000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "STATUS",
+        "mask": "0x00400000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "NAKTO",
+        "mask": "0x00800000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "FLUSH",
+        "mask": "0x01000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DT",
+        "mask": "0x02000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DTWE",
+        "mask": "0x04000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBE0CSR2": [
+      {
+        "name": "RXCNT",
+        "mask": "0x0000007F",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "SPEED",
+        "mask": "0x00C00000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "NAKLIM",
+        "mask": "0x0F000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBE0CSR3": [
+      {
+        "name": "UTMIDWID",
+        "mask": "0x01000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "SOFTCONE",
+        "mask": "0x02000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DYNFIFOS",
+        "mask": "0x04000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "HBTXEN",
+        "mask": "0x08000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "HBRXEN",
+        "mask": "0x10000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "BIGEND",
+        "mask": "0x20000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MPTXEN",
+        "mask": "0x40000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MPRXEN",
+        "mask": "0x80000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBE1CSR0": [
+      {
+        "name": "TXMAXP",
+        "mask": "0x000007FF",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MULT",
+        "mask": "0x0000F800",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "TXPKTRDY",
+        "mask": "0x00010000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "FIFONE",
+        "mask": "0x00020000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "ERROR",
+        "mask": "0x00040000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "FLUSH",
+        "mask": "0x00080000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "SETUPPKT",
+        "mask": "0x00100000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RXSTALL",
+        "mask": "0x00200000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "CLRDT",
+        "mask": "0x00400000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "NAKTMOUT",
+        "mask": "0x00800000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DATATGGL",
+        "mask": "0x01000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DTWREN",
+        "mask": "0x02000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DMAREQMD",
+        "mask": "0x04000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "FRCDATTG",
+        "mask": "0x08000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DMAREQEN",
+        "mask": "0x10000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MODE",
+        "mask": "0x20000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "AUTOSET",
+        "mask": "0x80000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBE1CSR1": [
+      {
+        "name": "RXMAXP",
+        "mask": "0x000007FF",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MULT",
+        "mask": "0x0000F800",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RXPKTRDY",
+        "mask": "0x00010000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "FIFOFULL",
+        "mask": "0x00020000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "ERROR",
+        "mask": "0x00040000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DERRNAKT",
+        "mask": "0x00080000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "FLUSH",
+        "mask": "0x00100000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "REQPKT",
+        "mask": "0x00200000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RXSTALL",
+        "mask": "0x00400000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "CLRDT",
+        "mask": "0x00800000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "INCOMPRX",
+        "mask": "0x01000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DATATGGL",
+        "mask": "0x02000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DATATWEN",
+        "mask": "0x04000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DMAREQMD",
+        "mask": "0x08000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "PIDERR",
+        "mask": "0x10000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DMAREQEN",
+        "mask": "0x20000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "AUTORQ",
+        "mask": "0x40000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "AUTOCLR",
+        "mask": "0x80000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBE1CSR2": [
+      {
+        "name": "RXCNT",
+        "mask": "0x00003FFF",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "TEP",
+        "mask": "0x000F0000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "PROTOCOL",
+        "mask": "0x00300000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "SPEED",
+        "mask": "0x00C00000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "TXINTERV",
+        "mask": "0xFF000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBE1CSR3": [
+      {
+        "name": "TEP",
+        "mask": "0x0000000F",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "PROTOCOL",
+        "mask": "0x00000030",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "SPEED",
+        "mask": "0x000000C0",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RXINTERV",
+        "mask": "0x0000FF00",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "TXFIFOSZ",
+        "mask": "0x0F000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RXFIFOSZ",
+        "mask": "0xF0000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBE2CSR0": [
+      {
+        "name": "TXMAXP",
+        "mask": "0x000007FF",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MULT",
+        "mask": "0x0000F800",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "TXPKTRDY",
+        "mask": "0x00010000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "FIFONE",
+        "mask": "0x00020000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "ERROR",
+        "mask": "0x00040000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "FLUSH",
+        "mask": "0x00080000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "SETUPPKT",
+        "mask": "0x00100000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RXSTALL",
+        "mask": "0x00200000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "CLRDT",
+        "mask": "0x00400000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "NAKTMOUT",
+        "mask": "0x00800000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DATATGGL",
+        "mask": "0x01000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DTWREN",
+        "mask": "0x02000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DMAREQMD",
+        "mask": "0x04000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "FRCDATTG",
+        "mask": "0x08000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DMAREQEN",
+        "mask": "0x10000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MODE",
+        "mask": "0x20000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "AUTOSET",
+        "mask": "0x80000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBE2CSR1": [
+      {
+        "name": "RXMAXP",
+        "mask": "0x000007FF",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MULT",
+        "mask": "0x0000F800",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RXPKTRDY",
+        "mask": "0x00010000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "FIFOFULL",
+        "mask": "0x00020000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "ERROR",
+        "mask": "0x00040000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DERRNAKT",
+        "mask": "0x00080000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "FLUSH",
+        "mask": "0x00100000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "REQPKT",
+        "mask": "0x00200000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RXSTALL",
+        "mask": "0x00400000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "CLRDT",
+        "mask": "0x00800000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "INCOMPRX",
+        "mask": "0x01000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DATATGGL",
+        "mask": "0x02000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DATATWEN",
+        "mask": "0x04000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DMAREQMD",
+        "mask": "0x08000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "PIDERR",
+        "mask": "0x10000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DMAREQEN",
+        "mask": "0x20000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "AUTORQ",
+        "mask": "0x40000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "AUTOCLR",
+        "mask": "0x80000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBE2CSR2": [
+      {
+        "name": "RXCNT",
+        "mask": "0x00003FFF",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "TEP",
+        "mask": "0x000F0000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "PROTOCOL",
+        "mask": "0x00300000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "SPEED",
+        "mask": "0x00C00000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "TXINTERV",
+        "mask": "0xFF000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBE2CSR3": [
+      {
+        "name": "TEP",
+        "mask": "0x0000000F",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "PROTOCOL",
+        "mask": "0x00000030",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "SPEED",
+        "mask": "0x000000C0",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RXINTERV",
+        "mask": "0x0000FF00",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "TXFIFOSZ",
+        "mask": "0x0F000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RXFIFOSZ",
+        "mask": "0xF0000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBE3CSR0": [
+      {
+        "name": "TXMAXP",
+        "mask": "0x000007FF",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MULT",
+        "mask": "0x0000F800",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "TXPKTRDY",
+        "mask": "0x00010000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "FIFONE",
+        "mask": "0x00020000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "ERROR",
+        "mask": "0x00040000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "FLUSH",
+        "mask": "0x00080000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "SETUPPKT",
+        "mask": "0x00100000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RXSTALL",
+        "mask": "0x00200000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "CLRDT",
+        "mask": "0x00400000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "NAKTMOUT",
+        "mask": "0x00800000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DATATGGL",
+        "mask": "0x01000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DTWREN",
+        "mask": "0x02000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DMAREQMD",
+        "mask": "0x04000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "FRCDATTG",
+        "mask": "0x08000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DMAREQEN",
+        "mask": "0x10000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MODE",
+        "mask": "0x20000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "AUTOSET",
+        "mask": "0x80000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBE3CSR1": [
+      {
+        "name": "RXMAXP",
+        "mask": "0x000007FF",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MULT",
+        "mask": "0x0000F800",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RXPKTRDY",
+        "mask": "0x00010000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "FIFOFULL",
+        "mask": "0x00020000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "ERROR",
+        "mask": "0x00040000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DERRNAKT",
+        "mask": "0x00080000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "FLUSH",
+        "mask": "0x00100000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "REQPKT",
+        "mask": "0x00200000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RXSTALL",
+        "mask": "0x00400000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "CLRDT",
+        "mask": "0x00800000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "INCOMPRX",
+        "mask": "0x01000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DATATGGL",
+        "mask": "0x02000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DATATWEN",
+        "mask": "0x04000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DMAREQMD",
+        "mask": "0x08000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "PIDERR",
+        "mask": "0x10000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DMAREQEN",
+        "mask": "0x20000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "AUTORQ",
+        "mask": "0x40000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "AUTOCLR",
+        "mask": "0x80000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBE3CSR2": [
+      {
+        "name": "RXCNT",
+        "mask": "0x00003FFF",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "TEP",
+        "mask": "0x000F0000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "PROTOCOL",
+        "mask": "0x00300000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "SPEED",
+        "mask": "0x00C00000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "TXINTERV",
+        "mask": "0xFF000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBE3CSR3": [
+      {
+        "name": "TEP",
+        "mask": "0x0000000F",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "PROTOCOL",
+        "mask": "0x00000030",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "SPEED",
+        "mask": "0x000000C0",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RXINTERV",
+        "mask": "0x0000FF00",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "TXFIFOSZ",
+        "mask": "0x0F000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RXFIFOSZ",
+        "mask": "0xF0000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBE4CSR0": [
+      {
+        "name": "TXMAXP",
+        "mask": "0x000007FF",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MULT",
+        "mask": "0x0000F800",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "TXPKTRDY",
+        "mask": "0x00010000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "FIFONE",
+        "mask": "0x00020000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "ERROR",
+        "mask": "0x00040000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "FLUSH",
+        "mask": "0x00080000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "SETUPPKT",
+        "mask": "0x00100000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RXSTALL",
+        "mask": "0x00200000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "CLRDT",
+        "mask": "0x00400000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "NAKTMOUT",
+        "mask": "0x00800000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DATATGGL",
+        "mask": "0x01000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DTWREN",
+        "mask": "0x02000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DMAREQMD",
+        "mask": "0x04000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "FRCDATTG",
+        "mask": "0x08000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DMAREQEN",
+        "mask": "0x10000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MODE",
+        "mask": "0x20000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "AUTOSET",
+        "mask": "0x80000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBE4CSR1": [
+      {
+        "name": "RXMAXP",
+        "mask": "0x000007FF",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MULT",
+        "mask": "0x0000F800",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RXPKTRDY",
+        "mask": "0x00010000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "FIFOFULL",
+        "mask": "0x00020000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "ERROR",
+        "mask": "0x00040000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DERRNAKT",
+        "mask": "0x00080000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "FLUSH",
+        "mask": "0x00100000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "REQPKT",
+        "mask": "0x00200000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RXSTALL",
+        "mask": "0x00400000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "CLRDT",
+        "mask": "0x00800000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "INCOMPRX",
+        "mask": "0x01000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DATATGGL",
+        "mask": "0x02000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DATATWEN",
+        "mask": "0x04000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DMAREQMD",
+        "mask": "0x08000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "PIDERR",
+        "mask": "0x10000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DMAREQEN",
+        "mask": "0x20000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "AUTORQ",
+        "mask": "0x40000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "AUTOCLR",
+        "mask": "0x80000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBE4CSR2": [
+      {
+        "name": "RXCNT",
+        "mask": "0x00003FFF",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "TEP",
+        "mask": "0x000F0000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "PROTOCOL",
+        "mask": "0x00300000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "SPEED",
+        "mask": "0x00C00000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "TXINTERV",
+        "mask": "0xFF000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBE4CSR3": [
+      {
+        "name": "TEP",
+        "mask": "0x0000000F",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "PROTOCOL",
+        "mask": "0x00000030",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "SPEED",
+        "mask": "0x000000C0",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RXINTERV",
+        "mask": "0x0000FF00",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "TXFIFOSZ",
+        "mask": "0x0F000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RXFIFOSZ",
+        "mask": "0xF0000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBE5CSR0": [
+      {
+        "name": "TXMAXP",
+        "mask": "0x000007FF",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MULT",
+        "mask": "0x0000F800",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "TXPKTRDY",
+        "mask": "0x00010000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "FIFONE",
+        "mask": "0x00020000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "ERROR",
+        "mask": "0x00040000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "FLUSH",
+        "mask": "0x00080000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "SETUPPKT",
+        "mask": "0x00100000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RXSTALL",
+        "mask": "0x00200000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "CLRDT",
+        "mask": "0x00400000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "NAKTMOUT",
+        "mask": "0x00800000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DATATGGL",
+        "mask": "0x01000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DTWREN",
+        "mask": "0x02000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DMAREQMD",
+        "mask": "0x04000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "FRCDATTG",
+        "mask": "0x08000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DMAREQEN",
+        "mask": "0x10000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MODE",
+        "mask": "0x20000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "AUTOSET",
+        "mask": "0x80000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBE5CSR1": [
+      {
+        "name": "RXMAXP",
+        "mask": "0x000007FF",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MULT",
+        "mask": "0x0000F800",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RXPKTRDY",
+        "mask": "0x00010000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "FIFOFULL",
+        "mask": "0x00020000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "ERROR",
+        "mask": "0x00040000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DERRNAKT",
+        "mask": "0x00080000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "FLUSH",
+        "mask": "0x00100000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "REQPKT",
+        "mask": "0x00200000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RXSTALL",
+        "mask": "0x00400000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "CLRDT",
+        "mask": "0x00800000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "INCOMPRX",
+        "mask": "0x01000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DATATGGL",
+        "mask": "0x02000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DATATWEN",
+        "mask": "0x04000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DMAREQMD",
+        "mask": "0x08000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "PIDERR",
+        "mask": "0x10000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DMAREQEN",
+        "mask": "0x20000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "AUTORQ",
+        "mask": "0x40000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "AUTOCLR",
+        "mask": "0x80000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBE5CSR2": [
+      {
+        "name": "RXCNT",
+        "mask": "0x00003FFF",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "TEP",
+        "mask": "0x000F0000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "PROTOCOL",
+        "mask": "0x00300000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "SPEED",
+        "mask": "0x00C00000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "TXINTERV",
+        "mask": "0xFF000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBE5CSR3": [
+      {
+        "name": "TEP",
+        "mask": "0x0000000F",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "PROTOCOL",
+        "mask": "0x00000030",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "SPEED",
+        "mask": "0x000000C0",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RXINTERV",
+        "mask": "0x0000FF00",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "TXFIFOSZ",
+        "mask": "0x0F000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RXFIFOSZ",
+        "mask": "0xF0000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBE6CSR0": [
+      {
+        "name": "TXMAXP",
+        "mask": "0x000007FF",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MULT",
+        "mask": "0x0000F800",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "TXPKTRDY",
+        "mask": "0x00010000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "FIFONE",
+        "mask": "0x00020000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "ERROR",
+        "mask": "0x00040000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "FLUSH",
+        "mask": "0x00080000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "SETUPPKT",
+        "mask": "0x00100000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RXSTALL",
+        "mask": "0x00200000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "CLRDT",
+        "mask": "0x00400000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "NAKTMOUT",
+        "mask": "0x00800000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DATATGGL",
+        "mask": "0x01000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DTWREN",
+        "mask": "0x02000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DMAREQMD",
+        "mask": "0x04000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "FRCDATTG",
+        "mask": "0x08000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DMAREQEN",
+        "mask": "0x10000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MODE",
+        "mask": "0x20000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "AUTOSET",
+        "mask": "0x80000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBE6CSR1": [
+      {
+        "name": "RXMAXP",
+        "mask": "0x000007FF",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MULT",
+        "mask": "0x0000F800",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RXPKTRDY",
+        "mask": "0x00010000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "FIFOFULL",
+        "mask": "0x00020000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "ERROR",
+        "mask": "0x00040000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DERRNAKT",
+        "mask": "0x00080000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "FLUSH",
+        "mask": "0x00100000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "REQPKT",
+        "mask": "0x00200000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RXSTALL",
+        "mask": "0x00400000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "CLRDT",
+        "mask": "0x00800000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "INCOMPRX",
+        "mask": "0x01000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DATATGGL",
+        "mask": "0x02000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DATATWEN",
+        "mask": "0x04000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DMAREQMD",
+        "mask": "0x08000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "PIDERR",
+        "mask": "0x10000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DMAREQEN",
+        "mask": "0x20000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "AUTORQ",
+        "mask": "0x40000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "AUTOCLR",
+        "mask": "0x80000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBE6CSR2": [
+      {
+        "name": "RXCNT",
+        "mask": "0x00003FFF",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "TEP",
+        "mask": "0x000F0000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "PROTOCOL",
+        "mask": "0x00300000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "SPEED",
+        "mask": "0x00C00000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "TXINTERV",
+        "mask": "0xFF000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBE6CSR3": [
+      {
+        "name": "TEP",
+        "mask": "0x0000000F",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "PROTOCOL",
+        "mask": "0x00000030",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "SPEED",
+        "mask": "0x000000C0",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RXINTERV",
+        "mask": "0x0000FF00",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "TXFIFOSZ",
+        "mask": "0x0F000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RXFIFOSZ",
+        "mask": "0xF0000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBE7CSR0": [
+      {
+        "name": "TXMAXP",
+        "mask": "0x000007FF",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MULT",
+        "mask": "0x0000F800",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "TXPKTRDY",
+        "mask": "0x00010000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "FIFONE",
+        "mask": "0x00020000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "ERROR",
+        "mask": "0x00040000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "FLUSH",
+        "mask": "0x00080000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "SETUPPKT",
+        "mask": "0x00100000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RXSTALL",
+        "mask": "0x00200000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "CLRDT",
+        "mask": "0x00400000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "NAKTMOUT",
+        "mask": "0x00800000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DATATGGL",
+        "mask": "0x01000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DTWREN",
+        "mask": "0x02000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DMAREQMD",
+        "mask": "0x04000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "FRCDATTG",
+        "mask": "0x08000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DMAREQEN",
+        "mask": "0x10000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MODE",
+        "mask": "0x20000000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "AUTOSET",
+        "mask": "0x80000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBDMAINT": [
+      {
+        "name": "DMA1IF",
+        "mask": "0x00000001",
+        "caption": "DMA Channel 1 Interrupt bit",
+        "values": [
+          {
+            "caption": "The DMA channel has an interrupt event",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No interrupt event",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "DMA2IF",
+        "mask": "0x00000002",
+        "caption": "DMA Channel 2 Interrupt bit",
+        "values": [
+          {
+            "caption": "The DMA channel has an interrupt event",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No interrupt event",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "DMA3IF",
+        "mask": "0x00000004",
+        "caption": "DMA Channel 3 Interrupt bit",
+        "values": [
+          {
+            "caption": "The DMA channel has an interrupt event",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No interrupt event",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "DMA4IF",
+        "mask": "0x00000008",
+        "caption": "DMA Channel 4 Interrupt bit",
+        "values": [
+          {
+            "caption": "The DMA channel has an interrupt event",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No interrupt event",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "DMA5IF",
+        "mask": "0x00000010",
+        "caption": "DMA Channel 5 Interrupt bit",
+        "values": [
+          {
+            "caption": "The DMA channel has an interrupt event",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No interrupt event",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "DMA6IF",
+        "mask": "0x00000020",
+        "caption": "DMA Channel 6 Interrupt bit",
+        "values": [
+          {
+            "caption": "The DMA channel has an interrupt event",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No interrupt event",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "DMA7IF",
+        "mask": "0x00000040",
+        "caption": "DMA Channel 7 Interrupt bit",
+        "values": [
+          {
+            "caption": "The DMA channel has an interrupt event",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No interrupt event",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "DMA8IF",
+        "mask": "0x00000080",
+        "caption": "DMA Channel 8 Interrupt bit",
+        "values": [
+          {
+            "caption": "The DMA channel has an interrupt event",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No interrupt event",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "USBDMA1A": [
+      {
+        "name": "DMAADDR",
+        "mask": "0xFFFFFFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBDMA1N": [
+      {
+        "name": "DMACOUNT",
+        "mask": "0xFFFFFFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBDMA2A": [
+      {
+        "name": "DMAADDR",
+        "mask": "0xFFFFFFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBDMA2N": [
+      {
+        "name": "DMACOUNT",
+        "mask": "0xFFFFFFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBDMA3A": [
+      {
+        "name": "DMAADDR",
+        "mask": "0xFFFFFFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBDMA3N": [
+      {
+        "name": "DMACOUNT",
+        "mask": "0xFFFFFFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBDMA4A": [
+      {
+        "name": "DMAADDR",
+        "mask": "0xFFFFFFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBDMA4N": [
+      {
+        "name": "DMACOUNT",
+        "mask": "0xFFFFFFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBDMA5A": [
+      {
+        "name": "DMAADDR",
+        "mask": "0xFFFFFFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBDMA5N": [
+      {
+        "name": "DMACOUNT",
+        "mask": "0xFFFFFFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBDMA6A": [
+      {
+        "name": "DMAADDR",
+        "mask": "0xFFFFFFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBDMA6N": [
+      {
+        "name": "DMACOUNT",
+        "mask": "0xFFFFFFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBDMA7A": [
+      {
+        "name": "DMAADDR",
+        "mask": "0xFFFFFFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBDMA7N": [
+      {
+        "name": "DMACOUNT",
+        "mask": "0xFFFFFFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBE1RPC": [
+      {
+        "name": "RQPKTCNT",
+        "mask": "0x0000FFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBE2RPC": [
+      {
+        "name": "RQPKTCNT",
+        "mask": "0x0000FFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBE3RPC": [
+      {
+        "name": "RQPKTCNT",
+        "mask": "0x0000FFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "USBE4RPC": [
+      {
+        "name": "RQPKTCNT",
+        "mask": "0x0000FFFF",
+        "caption": null,
+        "values": []
+      }
+    ]
+  }
+}

@@ -1,0 +1,774 @@
+{
+  "PMP": {
+    "PMCON": [
+      {
+        "name": "RDSP",
+        "mask": "0x00000001",
+        "caption": "Read Strobe Polarity bit",
+        "values": [
+          {
+            "caption": "(Slave and Master mode 2) Read Strobe active-high / (master mode 1) Read/write strobe active-high",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "(Slave and Master mode 2) Read Strobe active-low / (Master mode 1) Read/write strobe active-low",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "WRSP",
+        "mask": "0x00000002",
+        "caption": "Write Strobe Polarity bit",
+        "values": [
+          {
+            "caption": "(Slave and Master mode 2) Write strobe active-high / (Master mode 1) Enable strobe active-high",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "(Slave and Master mode 2) Write strobe active-low / (Master mode 1) Enable strobe active-low",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "CS1P",
+        "mask": "0x00000008",
+        "caption": "Chip Select 1 Polarity bit",
+        "values": [
+          {
+            "caption": "Active-high (PMCS1)",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Active-low (PMCS1)",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "CS2P",
+        "mask": "0x00000010",
+        "caption": "Chip Select 2 Polarity bit",
+        "values": [
+          {
+            "caption": "Active-high (PMCS2)",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Active-low (PMCS2)",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "ALP",
+        "mask": "0x00000020",
+        "caption": "Address Latch Polarity bit",
+        "values": [
+          {
+            "caption": "Active-high (PMALL and PMALH)",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Active-low (PMALL and PMALH)",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "CSF",
+        "mask": "0x000000C0",
+        "caption": "Chip Select Function bits",
+        "values": [
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "PMCS1 and PMCS2 function as Chip Select",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "PMCS2 functions as Chip Select and PMCS1 functions as address bit 14",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "PMCS1 and PMCS2 function as address bit 14 and address bit 15",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "PTRDEN",
+        "mask": "0x00000100",
+        "caption": "Read/Write Strobe Port Enable bit",
+        "values": [
+          {
+            "caption": "PMRD/PMWR port is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "PMRD/PMWR port is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "PTWREN",
+        "mask": "0x00000200",
+        "caption": "Write Enable Strobe Port Enable bit",
+        "values": [
+          {
+            "caption": "PMWR/PMENB port is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "PMWR/PMENB port is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "PMPTTL",
+        "mask": "0x00000400",
+        "caption": "PMP Module TTL Input Buffer Select bit",
+        "values": [
+          {
+            "caption": "PMP module uses TTL input buffers",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "PMP module uses Schmitt Trigger input buffer",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "ADRMUX",
+        "mask": "0x00001800",
+        "caption": "Address/Data Multiplexing Selection bits",
+        "values": [
+          {
+            "caption": "Lower 8 bits of address are multiplexed on PMD pins; upper 8 bits are not used",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "All 16 bits of address are multiplexed on PMD pins",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Lower 8 bits of address are multiplexed on PMD pins",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Address and data appear on separate pins",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "SIDL",
+        "mask": "0x00002000",
+        "caption": "Stop in Idle Mode bit",
+        "values": [
+          {
+            "caption": "Discontinue module operation when device enters Idle mode",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Continue module operation in Idle mode",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "ON",
+        "mask": "0x00008000",
+        "caption": "Parallel Master Port Enable bit",
+        "values": [
+          {
+            "caption": "PMP is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "PMP is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "DUALBUF",
+        "mask": "0x00020000",
+        "caption": "Dual Read/Write Buffers enable bit",
+        "values": [
+          {
+            "caption": "PMP uses separate registers for reads and writes (PMRADDR",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "PMP uses legacy registers (PMADDR",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RDSTART",
+        "mask": "0x00800000",
+        "caption": "Start Read on PMP Bus bit",
+        "values": [
+          {
+            "caption": "Start a read cycle on the PMP bus",
+            "name": "",
+            "value": "0x20"
+          },
+          {
+            "caption": "No effect",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "PMMODE": [
+      {
+        "name": "WAITE",
+        "mask": "0x00000003",
+        "caption": "Data Hold After Read/Write Strobe Wait States bits",
+        "values": [
+          {
+            "caption": "(for writes) Wait of 4 Tpbclk2 / (for reads) Wait of 3 Tpbclk2",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "(for writes) Wait of 3 Tpbclk2 / (for reads) Wait of 2 Tpbclk2",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "(for writes) Wait of 2 Tpbclk2 / (for reads) Wait of 1 Tpbclk2",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "(for writes) Wait of 1 Tpbclk2 (default) / (for reads) Wait of 0 Tpbclk2 (default)",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "WAITM",
+        "mask": "0x0000003C",
+        "caption": "Data Read/Write Strobe Wait States bits",
+        "values": [
+          {
+            "caption": "Wait of 16 Tpbclk2",
+            "name": "",
+            "value": "0xf"
+          },
+          {
+            "caption": "Wait of 2 Tpbclk2",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Wait of 1 Tpbclk2 (default)",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "WAITB",
+        "mask": "0x000000C0",
+        "caption": "Data Setup to Read/Write Strobe Wait States bits",
+        "values": [
+          {
+            "caption": "Data wait of 4 Tpbclk2",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Data wait of 3 Tpbclk2",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Data wait of 2 Tpbclk2",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Data wait of 1 Tpbclk2",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "MODE",
+        "mask": "0x00000300",
+        "caption": "Parallel Port Mode Select bits",
+        "values": [
+          {
+            "caption": "Master mode 1",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Master mode 2",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Enhanced Slave mode, control signals",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Legacy Parallel Slave Port, control signals",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "MODE16",
+        "mask": "0x00000400",
+        "caption": "8/16-bit Mode bit",
+        "values": [
+          {
+            "caption": "16-bit mode: a read or write to the data register invokes a single 16-bit transfer",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "8-bit mode: a read or write to the data register invokes a single 8-bit transfer",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "INCM",
+        "mask": "0x00001800",
+        "caption": "Increment Mode bits",
+        "values": [
+          {
+            "caption": "Slave mode read and write buffers auto-increment (MODE = 00 only)",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Decrement ADDR and ADDR\u003C14\u003E by 1 every read/write cycle",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Increment ADDR and ADDR\u003C14\u003E by 1 every read/write cycle",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No increment or decrement of address",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "IRQM",
+        "mask": "0x00006000",
+        "caption": "Interrupt Request Mode bits",
+        "values": [
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Interrupt is generated when Read Buffer 3 is read or Write Buffer 3 is written (Buffered PSP mode)or on a read or write operation when PMA = 11 (Addressable Slave mode only)",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Interrupt is generated at the end of the read/write cycle",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No Interrupt is generated",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "BUSY",
+        "mask": "0x00008000",
+        "caption": "Busy bit",
+        "values": [
+          {
+            "caption": "Port is busy",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Port is not busy",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "PMADDR": [
+      {
+        "name": "ADDR",
+        "mask": "0x00003FFF",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "ADDR14",
+        "mask": "0x00004000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "ADDR15",
+        "mask": "0x00008000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "PMDOUT": [
+      {
+        "name": "DATAOUT",
+        "mask": "0xFFFFFFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "PMDIN": [
+      {
+        "name": "DATAIN",
+        "mask": "0xFFFFFFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "PMAEN": [
+      {
+        "name": "PTEN",
+        "mask": "0x00FFFFFF",
+        "caption": "PMALH/PMALL Strobe Enable bits",
+        "values": [
+          {
+            "caption": "PMA15 and PMA14 function as either PMA or PMCS1 and PMCS2",
+            "name": "",
+            "value": "0x4000"
+          },
+          {
+            "caption": "PMA15 and PMA14 function as port I/O",
+            "name": "",
+            "value": "0x0"
+          },
+          {
+            "caption": "PMA function as PMP address lines",
+            "name": "",
+            "value": "0x4"
+          },
+          {
+            "caption": "PMA function as port I/O",
+            "name": "",
+            "value": "0x0"
+          },
+          {
+            "caption": "PMA1 and PMA0 function as either PMA or PMALH and PMALL",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "PMA1 and PMA0 pads function as port I/O",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "PMSTAT": [
+      {
+        "name": "OB0E",
+        "mask": "0x00000001",
+        "caption": "Output Buffer 0 Status Empty bit",
+        "values": [
+          {
+            "caption": "Output buffer is empty (writing data to the buffer will clear this bit)",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Output buffer contains data that has not been transmitted",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "OB1E",
+        "mask": "0x00000002",
+        "caption": "Output Buffer 1 Status Empty bit",
+        "values": [
+          {
+            "caption": "Output buffer is empty (writing data to the buffer will clear this bit)",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Output buffer contains data that has not been transmitted",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "OB2E",
+        "mask": "0x00000004",
+        "caption": "Output Buffer 2 Status Empty bit",
+        "values": [
+          {
+            "caption": "Output buffer is empty (writing data to the buffer will clear this bit)",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Output buffer contains data that has not been transmitted",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "OB3E",
+        "mask": "0x00000008",
+        "caption": "Output Buffer 3 Status Empty bit",
+        "values": [
+          {
+            "caption": "Output buffer is empty (writing data to the buffer will clear this bit)",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Output buffer contains data that has not been transmitted",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "OBUF",
+        "mask": "0x00000040",
+        "caption": "Output Buffer Underflow Status bit",
+        "values": [
+          {
+            "caption": "A read occurred from an empty output byte buffer (must be cleared in software)",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No underflow is occurred",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "OBE",
+        "mask": "0x00000080",
+        "caption": "Output Buffer Empty Status bit",
+        "values": [
+          {
+            "caption": "All readable output buffer registers are empty",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Some or all of the readable output buffer registers are full",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "IB0F",
+        "mask": "0x00000100",
+        "caption": "Input Buffer 0 Status Full bit",
+        "values": [
+          {
+            "caption": "Input Buffer contains data that has not been read (reading buffer will clear this bit)",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Input Buffer does not contain any unread data",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "IB1F",
+        "mask": "0x00000200",
+        "caption": "Input Buffer 1 Status Full bit",
+        "values": [
+          {
+            "caption": "Input Buffer contains data that has not been read (reading buffer will clear this bit)",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Input Buffer does not contain any unread data",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "IB2F",
+        "mask": "0x00000400",
+        "caption": "Input Buffer 2 Status Full bit",
+        "values": [
+          {
+            "caption": "Input Buffer contains data that has not been read (reading buffer will clear this bit)",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Input Buffer does not contain any unread data",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "IB3F",
+        "mask": "0x00000800",
+        "caption": "Input Buffer 3 Status Full bit",
+        "values": [
+          {
+            "caption": "Input Buffer contains data that has not been read (reading buffer will clear this bit)",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Input Buffer does not contain any unread data",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "IBOV",
+        "mask": "0x00004000",
+        "caption": "Input Buffer Overflow Status bit",
+        "values": [
+          {
+            "caption": "A write attempt to a full input byte buffer is occurred (must be cleared in software)",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No overflow is occurred",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "IBF",
+        "mask": "0x00008000",
+        "caption": "Input Buffer Full Status bit",
+        "values": [
+          {
+            "caption": "All writable input buffer registers are full",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Some or all of the writable input buffer registers are empty",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "PMWADDR": [
+      {
+        "name": "WADDR",
+        "mask": "0x00FFFFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "PMRADDR": [
+      {
+        "name": "RADDR",
+        "mask": "0x00003FFF",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RADDR14",
+        "mask": "0x00004000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RADDR15",
+        "mask": "0x00008000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "PMRDIN": [
+      {
+        "name": "RDATAIN",
+        "mask": "0xFFFFFFFF",
+        "caption": null,
+        "values": []
+      }
+    ]
+  }
+}

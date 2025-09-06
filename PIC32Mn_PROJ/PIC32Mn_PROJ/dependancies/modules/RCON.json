@@ -1,0 +1,387 @@
+{
+  "RCON": {
+    "RCON": [
+      {
+        "name": "POR",
+        "mask": "0x00000001",
+        "caption": "Power-on Reset Flag bit",
+        "values": [
+          {
+            "caption": "Power-on Reset has occurred",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Power-on Reset has not occurred",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "BOR",
+        "mask": "0x00000002",
+        "caption": "Brown-out Reset Flag bit",
+        "values": [
+          {
+            "caption": "Brown-out Reset has occurred",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Brown-out Reset has not occurred",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "IDLE",
+        "mask": "0x00000004",
+        "caption": "Wake From Idle Flag bit",
+        "values": [
+          {
+            "caption": "Device was in Idle mode",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Device was not in Idle mode",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "SLEEP",
+        "mask": "0x00000008",
+        "caption": "Wake From Sleep Flag bit",
+        "values": [
+          {
+            "caption": "Device was in Sleep mode",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Device was not in Sleep mode",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "WDTO",
+        "mask": "0x00000010",
+        "caption": "Watchdog Timer Time-out Flag bit",
+        "values": [
+          {
+            "caption": "WDT Time-out has occurred",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "WDT Time-out has not occurred",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "DMTO",
+        "mask": "0x00000020",
+        "caption": "Deadman Timer Time-out Flag bit",
+        "values": [
+          {
+            "caption": "A DMT time-out has occurred",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "A DMT time-out has not occurred",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "SWR",
+        "mask": "0x00000040",
+        "caption": "Software Reset Flag bit",
+        "values": [
+          {
+            "caption": "Software Reset was executed",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Software Reset was not executed",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "EXTR",
+        "mask": "0x00000080",
+        "caption": "External Reset (MCLR) Pin Flag bit",
+        "values": [
+          {
+            "caption": "Master Clear (pin) Reset has occurred",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Master Clear (pin) Reset has not occurred",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "CMR",
+        "mask": "0x00000200",
+        "caption": "Configuration Mismatch Reset Flag bit",
+        "values": [
+          {
+            "caption": "A Configuration Mismatch Reset has occurred",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "A Configuration Mismatch Reset has not occurred",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "BCFGFAIL",
+        "mask": "0x04000000",
+        "caption": "Primary/Secondary Configuration Registers Error Flag bit",
+        "values": [
+          {
+            "caption": "An error occurred during a read of the primary and alternate configuration registers",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No error occurred during a read of the primary and alternate configuration registers",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "BCFGERR",
+        "mask": "0x08000000",
+        "caption": "Primary Configuration Registers Error Flag bit",
+        "values": [
+          {
+            "caption": "An error occurred during a read of the primary configuration registers",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No error occurred during a read of the primary configuration registers",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "RSWRST": [
+      {
+        "name": "SWRST",
+        "mask": "0x00000001",
+        "caption": "Software Reset Trigger bit",
+        "values": [
+          {
+            "caption": "Enable software Reset event",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No effect",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "RNMICON": [
+      {
+        "name": "NMICNT",
+        "mask": "0x0000FFFF",
+        "caption": "NMI Reset Counter Value bits",
+        "values": [
+          {
+            "caption": "65535 SYSCLK cycles before a device Reset occurs",
+            "name": "",
+            "value": "0xffff"
+          },
+          {
+            "caption": "1 SYSCLK cycle before a device Reset occurs",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No delay between NMI assertion and device Reset event",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "WDTS",
+        "mask": "0x00010000",
+        "caption": "Watchdog Timer Time-out in Sleep Mode Flag bit",
+        "values": [
+          {
+            "caption": "WDT time-out has occurred during Sleep mode and caused a wake-up from sleep",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "WDT time-out has not occurred during Sleep mode",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "CF",
+        "mask": "0x00020000",
+        "caption": "Clock Fail Detect bit",
+        "values": [
+          {
+            "caption": "FSCM has detected clock failure and caused an NMI",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "FSCM has not detected clock failure",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "LVD",
+        "mask": "0x00040000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "GNMI",
+        "mask": "0x00080000",
+        "caption": "General NMI bit",
+        "values": [
+          {
+            "caption": "A general NMI event has been detected or a user-initiated NMI event has occurred",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "A general NMI event has not been detected",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "SWNMI",
+        "mask": "0x00800000",
+        "caption": "Software NMI Trigger",
+        "values": [
+          {
+            "caption": "An NMI will be generated",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "An NMI will not be generated",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "WDTO",
+        "mask": "0x01000000",
+        "caption": "Watchdog Timer Time-Out Flag bit",
+        "values": [
+          {
+            "caption": "WDT time-out has occurred and caused a NMI",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "WDT time-out has not occurred",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "DMTO",
+        "mask": "0x02000000",
+        "caption": "Deadman Timer Time-out Flag bit",
+        "values": [
+          {
+            "caption": "DMT time-out has occurred and caused a NMI",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "DMT time-out has not occurred",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "PWRCON": [
+      {
+        "name": "VREGS",
+        "mask": "0x00000001",
+        "caption": "Voltage Regulator Stand-by Enable bit",
+        "values": [
+          {
+            "caption": "Voltage regulator will remain active during Sleep",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Voltage regulator will go to Stand-by mode during Sleep",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RETEN",
+        "mask": "0x00000002",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "SBOREN",
+        "mask": "0x00000004",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "VRGSLP",
+        "mask": "0x00000030",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "VRGRUN",
+        "mask": "0x000000C0",
+        "caption": null,
+        "values": []
+      }
+    ]
+  }
+}

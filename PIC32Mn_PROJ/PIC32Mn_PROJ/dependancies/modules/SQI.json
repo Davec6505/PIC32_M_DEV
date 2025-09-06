@@ -1,0 +1,2284 @@
+{
+  "SQI": {
+    "SQI1XCON1": [
+      {
+        "name": "TYPECMD",
+        "mask": "0x00000003",
+        "caption": "The boot controller will send the command in Single Lane, Dual Lane, or Quad Lane.",
+        "values": [
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Quad Lane mode command is enabled",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Dual Lane mode command is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Single Lane mode command is enabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "TYPEADDR",
+        "mask": "0x0000000C",
+        "caption": "The boot controller will send the address in Single Lane, Dual Lane, or Quad Lane.",
+        "values": [
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Quad Lane mode address is enabled",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Dual Lane mode address is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Single Lane mode address is enabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "TYPEMODE",
+        "mask": "0x00000030",
+        "caption": "The boot controller will send the mode in Single Lane, Dual Lane, or Quad Lane.",
+        "values": [
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Quad Lane mode is enabled",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Dual Lane mode is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Single Lane mode is enabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "TYPEDUMMY",
+        "mask": "0x000000C0",
+        "caption": "The boot controller will send the dummy in Single Lange, Dual Lane, or Quad Lane",
+        "values": [
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Quad Lane mode dummy is enabled",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Dual Lane mode dummy is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Single Lange mode dummy is enabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "TYPEDATA",
+        "mask": "0x00000300",
+        "caption": "The boot controller will receive the data in Single Lane, Dual Lane, or Quad Lane.",
+        "values": [
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Quad Lane mode data is enabled",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Dual Lane mode data is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Single Lane mode data is enabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "READOPCODE",
+        "mask": "0x0003FC00",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "ADDRBYTES",
+        "mask": "0x001C0000",
+        "caption": "",
+        "values": [
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x7"
+          },
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x6"
+          },
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x5"
+          },
+          {
+            "caption": "Four address bytes",
+            "name": "",
+            "value": "0x4"
+          },
+          {
+            "caption": "Three address bytes",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Two address bytes",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "One address bytes",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Zero address bytes",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "DUMMYBYTES",
+        "mask": "0x00E00000",
+        "caption": "Transmit Dummy Bytes bits",
+        "values": [
+          {
+            "caption": "Transmit seven dummy bytes after the address bytes",
+            "name": "",
+            "value": "0x7"
+          },
+          {
+            "caption": "Transmit six dummy bytes after the address bytes",
+            "name": "",
+            "value": "0x6"
+          },
+          {
+            "caption": "Transmit five dummy bytes after the address bytes",
+            "name": "",
+            "value": "0x5"
+          },
+          {
+            "caption": "Transmit four dummy bytes after the address bytes",
+            "name": "",
+            "value": "0x4"
+          },
+          {
+            "caption": "Transmit three dummy bytes after the address bytes",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Transmit two dummy bytes after the address bytes",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Transmit one dummy bytes after the address bytes",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Transmit zero dummy bytes after the address bytes",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "DDRCMD",
+        "mask": "0x01000000",
+        "caption": "SQI DDR Command Mode bit",
+        "values": [
+          {
+            "caption": "SQI command bytes are transferred in DDR mode",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "SQI command bytes are transferred in SDR mode",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "DDRADDR",
+        "mask": "0x02000000",
+        "caption": "SQI Address Mode bit",
+        "values": [
+          {
+            "caption": "SQI address bytes are transferred in DDR mode",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "SQI address bytes are transferred in SDR mode",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "DDRMODE",
+        "mask": "0x04000000",
+        "caption": "SQI DDR Mode bit",
+        "values": [
+          {
+            "caption": "SQI mode bytes are transferred in DDR mode",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "SQI mode bytes are transferred in SDR mode",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "DDRDUMMY",
+        "mask": "0x08000000",
+        "caption": "SQI Dummy DDR Mode bit",
+        "values": [
+          {
+            "caption": "SQI dummy bytes are transferred in DDR mode",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "SQI dummy bytes are transferred in SDR mode",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "DDRDATA",
+        "mask": "0x10000000",
+        "caption": "SQI Data DDR Mode bit",
+        "values": [
+          {
+            "caption": "SQI data bytes are transferred in DDR mode",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "SQI data bytes are transferred in SDR mode",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "SDRCMD",
+        "mask": "0x20000000",
+        "caption": "SQI Command in SDR Mode bit",
+        "values": [
+          {
+            "caption": "SQI command is in SDR mode and SQI data is in DDR mode",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "SQI command is in DDR mode and SQI data is in DDR mode",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "SQI1XCON2": [
+      {
+        "name": "MODECODE",
+        "mask": "0x000000FF",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "MODEBYTES",
+        "mask": "0x00000300",
+        "caption": "Mode Byte Cycle Enable bits",
+        "values": [
+          {
+            "caption": "Three cycles",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Two cycles",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "One cycle",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Zero cycles",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "DEVSEL",
+        "mask": "0x00000C00",
+        "caption": "Device Select bits",
+        "values": [
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Device 1 is selected",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Device 0 is selected",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "SQI1CFG": [
+      {
+        "name": "MODE",
+        "mask": "0x00000007",
+        "caption": "Mode Select bits",
+        "values": [
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x7"
+          },
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x6"
+          },
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x5"
+          },
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x4"
+          },
+          {
+            "caption": "XIP mode is selected (when this mode is entered, the module behaves as if executing in place (XIP),but uses the register data to control timing)",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "DMA mode is selected",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "CPU mode is selected (the module is controlled by the CPU in PIO mode. This mode is entered whenleaving Boot or XIP mode)",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "CPHA",
+        "mask": "0x00000008",
+        "caption": "Clock Phase Select bit",
+        "values": [
+          {
+            "caption": "SQICLK starts toggling at the start of the first data bit",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "SQICLK starts toggling at the middle of the first data bit",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "CPOL",
+        "mask": "0x00000010",
+        "caption": "Clock Polarity Select bit",
+        "values": [
+          {
+            "caption": "Active-low SQICLK (SQICLK high is the Idle state)",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Active-high SQICLK (SQICLK low is the Idle state)",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "LSBF",
+        "mask": "0x00000020",
+        "caption": "Data Format Select bit",
+        "values": [
+          {
+            "caption": "LSB is send or received first",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "MSB is sent or received first",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "WP",
+        "mask": "0x00000200",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "HOLD",
+        "mask": "0x00000400",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "BURSTEN",
+        "mask": "0x00001000",
+        "caption": "Burst Configuration bit",
+        "values": [
+          {
+            "caption": "Burst is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Burst is not enabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RESET",
+        "mask": "0x00010000",
+        "caption": "Software Reset Select bit",
+        "values": [
+          {
+            "caption": "A reset pulse is generated",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "A reset pulse is not generated",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "TXBUFRST",
+        "mask": "0x00020000",
+        "caption": "Transmit Buffer Reset bit",
+        "values": [
+          {
+            "caption": "A reset pulse is generated clearing the transmit buffer",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "A reset pulse is not generated",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RXBUFRST",
+        "mask": "0x00040000",
+        "caption": "Receive Buffer Reset bit",
+        "values": [
+          {
+            "caption": "A reset pulse is generated clearing the receive buffer",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "A reset pulse is not generated",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "CONBUFRST",
+        "mask": "0x00080000",
+        "caption": "Control Buffer Reset bit",
+        "values": [
+          {
+            "caption": "A reset pulse is generated, clearing the control buffer",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "A reset pulse is not generated",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "DATAEN",
+        "mask": "0x00300000",
+        "caption": "Data Output Enable bits",
+        "values": [
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "SQID3-SQID0 outputs are enabled",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "SQID1 and SQID0 data outputs are enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "SQID0 data output is enabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "SQIEN",
+        "mask": "0x00800000",
+        "caption": "SQI Enable bit",
+        "values": [
+          {
+            "caption": "SQI module is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "SQI module is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "CSEN",
+        "mask": "0x03000000",
+        "caption": "Chip Select Output Enable bits",
+        "values": [
+          {
+            "caption": "Chip Select 0 and Chip Select 1 are used",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Chip Select 1 is used (Chip Select 0 is not used)",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Chip Select 0 is used (Chip Select 1 is not used)",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Chip Select 0 and Chip Select 1 are not used",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "SQI1CON": [
+      {
+        "name": "TXRXCOUNT",
+        "mask": "0x0000FFFF",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "CMDINIT",
+        "mask": "0x00030000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "LANEMODE",
+        "mask": "0x000C0000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DEVSEL",
+        "mask": "0x00300000",
+        "caption": "SQI Device Select bits",
+        "values": [
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Select Device 1",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Select Device 0",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "DASSERT",
+        "mask": "0x00400000",
+        "caption": "Chip Select Assert bit",
+        "values": [
+          {
+            "caption": "Chip Select is deasserted after transmission or reception of the specified number of bytes",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Chip Select is not deasserted after transmission or reception of the specified number of bytes",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "DDRMODE",
+        "mask": "0x00800000",
+        "caption": "Double Data Rate Mode bit",
+        "values": [
+          {
+            "caption": "Set the SQI transfers to DDR mode",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Set the SQI transfers to SDR mode",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "SCHECK",
+        "mask": "0x01000000",
+        "caption": "Flash Status Check bit",
+        "values": [
+          {
+            "caption": "Check the status of the Flash",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Do not check the status of the Flash",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "SQI1CLKCON": [
+      {
+        "name": "EN",
+        "mask": "0x00000001",
+        "caption": "Tsqi Clock Enable Select bit",
+        "values": [
+          {
+            "caption": "Enable the SQI clock (Tsqi)",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Disable the SQI clock (Tsqi)",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "STABLE",
+        "mask": "0x00000002",
+        "caption": "Tsqi Clock Stable Select bit",
+        "values": [
+          {
+            "caption": "Tsqi clock is stable",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Tsqi clock is not stable",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "CLKDIV",
+        "mask": "0x0007FF00",
+        "caption": "SQI Clock Tsqi Frequency Select bits",
+        "values": [
+          {
+            "caption": "Base Clock Tbc is divided by 2048",
+            "name": "",
+            "value": "0x200"
+          },
+          {
+            "caption": "Base Clock Tbc is divided by 1024",
+            "name": "",
+            "value": "0x100"
+          },
+          {
+            "caption": "Base Clock Tbc is divided by 512",
+            "name": "",
+            "value": "0x80"
+          },
+          {
+            "caption": "Base Clock Tbc is divided by 256",
+            "name": "",
+            "value": "0x40"
+          },
+          {
+            "caption": "Base Clock Tbc is divided by 128",
+            "name": "",
+            "value": "0x20"
+          },
+          {
+            "caption": "Base Clock Tbc is divided by 64",
+            "name": "",
+            "value": "0x10"
+          },
+          {
+            "caption": "Base Clock Tbc is divided by 32",
+            "name": "",
+            "value": "0x8"
+          },
+          {
+            "caption": "Base Clock Tbc is divided by 16",
+            "name": "",
+            "value": "0x4"
+          },
+          {
+            "caption": "Base Clock Tbc is divided by 8",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Base clock Tbc is divided by 4",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Base clock Tbc is divided by 2",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "SQI1CMDTHR": [
+      {
+        "name": "RXCMDTHR",
+        "mask": "0x0000003F",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "TXCMDTHR",
+        "mask": "0x00003F00",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "SQI1INTTHR": [
+      {
+        "name": "RXINTTHR",
+        "mask": "0x0000003F",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "TXINTTHR",
+        "mask": "0x00003F00",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "SQI1INTEN": [
+      {
+        "name": "TXEMPTYIE",
+        "mask": "0x00000001",
+        "caption": "Transmit Buffer Empty Interrupt Enable bit",
+        "values": [
+          {
+            "caption": "Interrupt is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Interrupt is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "TXFULLIE",
+        "mask": "0x00000002",
+        "caption": "Transmit Buffer Full Interrupt Enable bit",
+        "values": [
+          {
+            "caption": "Interrupt is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Interrupt is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "TXTHRIE",
+        "mask": "0x00000004",
+        "caption": "Transmit Buffer Threshold Interrupt Enable bit",
+        "values": [
+          {
+            "caption": "Interrupt is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Interrupt is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RXEMPTYIE",
+        "mask": "0x00000008",
+        "caption": "Receive Buffer Empty Interrupt Enabled bit",
+        "values": [
+          {
+            "caption": "Interrupt is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Interrupt is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RXFULLIE",
+        "mask": "0x00000010",
+        "caption": "Receive Buffer Full Interrupt Enable bit",
+        "values": [
+          {
+            "caption": "Interrupt is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Interrupt is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RXTHRIE",
+        "mask": "0x00000020",
+        "caption": "Receive Buffer Threshold Interrupt Enable bit",
+        "values": [
+          {
+            "caption": "Interrupt is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Interrupt is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "CONFULLIE",
+        "mask": "0x00000040",
+        "caption": "Control Buffer Full Interrupt Enable bit",
+        "values": [
+          {
+            "caption": "Interrupt is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Interrupt is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "CONEMPTYIE",
+        "mask": "0x00000080",
+        "caption": "Control Buffer Empty Interrupt Enabled bit",
+        "values": [
+          {
+            "caption": "Interrupt is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Interrupt is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "CONTHRIE",
+        "mask": "0x00000100",
+        "caption": "Control Buffer Threshold Interrupt Enable bit",
+        "values": [
+          {
+            "caption": "Interrupt is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Interrupt is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "BDDONEIE",
+        "mask": "0x00000200",
+        "caption": "DMA Buffer Descriptor Done Interrupt Enable bit",
+        "values": [
+          {
+            "caption": "Interrupt is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Interrupt is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "PKTCOMPIE",
+        "mask": "0x00000400",
+        "caption": "DMA Buffer Descriptor Packet Complete Interrupt Enable bit",
+        "values": [
+          {
+            "caption": "Interrupt is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Interrupt is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "DMAEIE",
+        "mask": "0x00000800",
+        "caption": "DMA Bus Error Interrupt Enable bit",
+        "values": [
+          {
+            "caption": "Interrupt is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Interrupt is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "SQI1INTSTAT": [
+      {
+        "name": "TXEMPTYIF",
+        "mask": "0x00000001",
+        "caption": "Transmit Buffer Empty Interrupt Status bit",
+        "values": [
+          {
+            "caption": "The transmit buffer is empty",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "The transmit buffer has content",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "TXFULLIF",
+        "mask": "0x00000002",
+        "caption": "Transmit Buffer Full Interrupt Status bit",
+        "values": [
+          {
+            "caption": "The transmit buffer is full",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "The transmit buffer is not full",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "TXTHRIF",
+        "mask": "0x00000004",
+        "caption": "Transmit Buffer Threshold Interrupt Status bit",
+        "values": [
+          {
+            "caption": "Transmit buffer has more than TXINTTHR words of space available",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Transmit buffer has less than TXINTTHR words of space available",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RXEMPTYIF",
+        "mask": "0x00000008",
+        "caption": "Receive Buffer Empty Interrupt Status bit",
+        "values": [
+          {
+            "caption": "Receive buffer is empty",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Receive buffer is not empty",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RXFULLIF",
+        "mask": "0x00000010",
+        "caption": "Receive Buffer Full Interrupt Status bit",
+        "values": [
+          {
+            "caption": "Receive buffer is full",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Receive buffer is not full",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RXTHRIF",
+        "mask": "0x00000020",
+        "caption": "Receive Buffer Threshold Interrupt Status bit",
+        "values": [
+          {
+            "caption": "Receive buffer has RXINTTHR or more words of space available",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Receive buffer has less than RXINTTHR words of space available",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "CONFULLIF",
+        "mask": "0x00000040",
+        "caption": "Control Buffer Full Interrupt Status bit",
+        "values": [
+          {
+            "caption": "Control buffer is full",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Control buffer is not full",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "CONEMPTYIF",
+        "mask": "0x00000080",
+        "caption": "Control Buffer Empty Interrupt Status bit",
+        "values": [
+          {
+            "caption": "Control buffer is empty",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Control buffer is not empty",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "CONTHRIF",
+        "mask": "0x00000100",
+        "caption": "Control Buffer Threshold Interrupt Status bit",
+        "values": [
+          {
+            "caption": "The control buffer has THRES or more words of space available",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "The control buffer has less than THRES words of space available",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "BDDONEIF",
+        "mask": "0x00000200",
+        "caption": "DMA Buffer Descriptor Done Interrupt Status bit",
+        "values": [
+          {
+            "caption": "DMA BD process is done",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "DMA BD process is in progress",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "PKTCOMPIF",
+        "mask": "0x00000400",
+        "caption": "DMA Buffer Descriptor Processor Packet Complete Interrupt Status bit",
+        "values": [
+          {
+            "caption": "DMA BD packet is complete",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "DMA BD packet is in progress",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "DMAEIF",
+        "mask": "0x00000800",
+        "caption": "DMA Bus Error Interrupt Flag bit",
+        "values": [
+          {
+            "caption": "DMA bus error has occurred",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "DMA bus error has not occurred",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "SQI1TXDATA": [
+      {
+        "name": "TXDATA",
+        "mask": "0xFFFFFFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "SQI1RXDATA": [
+      {
+        "name": "RXDATA",
+        "mask": "0xFFFFFFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "SQI1STAT1": [
+      {
+        "name": "RXBUFCNT",
+        "mask": "0x0000003F",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "TXBUFFREE",
+        "mask": "0x003F0000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "SQI1STAT2": [
+      {
+        "name": "TXOV",
+        "mask": "0x00000001",
+        "caption": "Transmit Buffer Overflow Status bit",
+        "values": [
+          {
+            "caption": "Transmit Buffer overflow has occurred",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Transmit Buffer overflow has not occurred",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RXUN",
+        "mask": "0x00000002",
+        "caption": "Receive Buffer Underflow Status bit",
+        "values": [
+          {
+            "caption": "Receive Buffer Underflow has occurred",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Receive Buffer Underflow has not occurred",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "SQID0",
+        "mask": "0x00000008",
+        "caption": "SQID0 Status bit",
+        "values": [
+          {
+            "caption": "Data is present on SQID0",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Data is not present on SQID0",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "SQID1",
+        "mask": "0x00000010",
+        "caption": "SQID1 Status bit",
+        "values": [
+          {
+            "caption": "Data is present on SQID1",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Data is not present on SQID1",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "SQID2",
+        "mask": "0x00000020",
+        "caption": "SQID2 Status bit",
+        "values": [
+          {
+            "caption": "Data is present on SQID2",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Data is not present on SQID2",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "SQID3",
+        "mask": "0x00000040",
+        "caption": "SQID3 Status bit",
+        "values": [
+          {
+            "caption": "Data is present on SQID3",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Data is not present on SQID3",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "CONAVAIL",
+        "mask": "0x00000780",
+        "caption": "Control IFO Space Available bits",
+        "values": [
+          {
+            "caption": "32 bytes are available",
+            "name": "",
+            "value": "0x1f"
+          },
+          {
+            "caption": "31 bytes are available",
+            "name": "",
+            "value": "0x1e"
+          },
+          {
+            "caption": "1 byte is available",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No bytes are available",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "CMDSTAT",
+        "mask": "0x00030000",
+        "caption": "Current Command Status bits",
+        "values": [
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Receive",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Transmit",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Idle",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "SQI1BDCON": [
+      {
+        "name": "DMAEN",
+        "mask": "0x00000001",
+        "caption": "DMA Enable bit",
+        "values": [
+          {
+            "caption": "DMA is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "DMA is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "POLLEN",
+        "mask": "0x00000002",
+        "caption": "Buffer Descriptor Poll Enable bit",
+        "values": [
+          {
+            "caption": "BDP poll enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "BDP poll is not enabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "START",
+        "mask": "0x00000004",
+        "caption": "Buffer Descriptor Processor Start bit",
+        "values": [
+          {
+            "caption": "Start the buffer descriptor processor",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Disable the buffer descriptor processor",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "SQI1BDCURADD": [
+      {
+        "name": "BDCURRADDR",
+        "mask": "0xFFFFFFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "SQI1BDBASEADD": [
+      {
+        "name": "BDADDR",
+        "mask": "0xFFFFFFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "SQI1BDSTAT": [
+      {
+        "name": "BDCON",
+        "mask": "0x0000FFFF",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DMAACTV",
+        "mask": "0x00010000",
+        "caption": "DMA Buffer Descriptor Processor Active Status bit",
+        "values": [
+          {
+            "caption": "Buffer Descriptor Processor is active",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Buffer Descriptor Processor is idle",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "DMASTART",
+        "mask": "0x00020000",
+        "caption": "DMA Buffer Descriptor Processor Start Status bit",
+        "values": [
+          {
+            "caption": "DMA has started",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "DMA has not started",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "BDSTATE",
+        "mask": "0x003C0000",
+        "caption": "DMA Buffer Descriptor Processor State Status bits",
+        "values": [
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x8"
+          },
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x7"
+          },
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x6"
+          },
+          {
+            "caption": "Fetched buffer descriptor is disabled",
+            "name": "",
+            "value": "0x5"
+          },
+          {
+            "caption": "Descriptor is done",
+            "name": "",
+            "value": "0x4"
+          },
+          {
+            "caption": "Data phase",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Buffer descriptor is loading",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Descriptor fetch request is pending",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Idle",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "SQI1BDPOLLCON": [
+      {
+        "name": "POLLCON",
+        "mask": "0x0000FFFF",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "SQI1BDTXDSTAT": [
+      {
+        "name": "TXCURBUFLEN",
+        "mask": "0x000001FF",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "TXBUFCNT",
+        "mask": "0x001F0000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "TXSTATE",
+        "mask": "0x1E000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "SQI1BDRXDSTAT": [
+      {
+        "name": "RXCURBUFLEN",
+        "mask": "0x000001FF",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RXBUFCNT",
+        "mask": "0x001F0000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "RXSTATE",
+        "mask": "0x1E000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "SQI1THR": [
+      {
+        "name": "THRES",
+        "mask": "0x0000000F",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "SQI1INTSIGEN": [
+      {
+        "name": "TXEMPTYISE",
+        "mask": "0x00000001",
+        "caption": "Transmit Buffer Empty Interrupt Signal Enable bit",
+        "values": [
+          {
+            "caption": "Interrupt is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Interrupt is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "TXFULLISE",
+        "mask": "0x00000002",
+        "caption": "Transmit Buffer Full Interrupt Signal Enable bit",
+        "values": [
+          {
+            "caption": "Interrupt is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Interrupt is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "TXTHRISE",
+        "mask": "0x00000004",
+        "caption": "Transmit Buffer Threshold Interrupt Signal Enable bit",
+        "values": [
+          {
+            "caption": "Interrupt is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Interrupt is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RXEMPTYISE",
+        "mask": "0x00000008",
+        "caption": "Receive Buffer Empty Interrupt Signal Enable bit",
+        "values": [
+          {
+            "caption": "Interrupt is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Interrupt is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RXFULLISE",
+        "mask": "0x00000010",
+        "caption": "Receive Buffer Full Interrupt Signal Enable bit",
+        "values": [
+          {
+            "caption": "Interrupt is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Interrupt is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "RXTHRISE",
+        "mask": "0x00000020",
+        "caption": "Receive Buffer Threshold Interrupt Signal Enable bit",
+        "values": [
+          {
+            "caption": "Interrupt is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Interrupt is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "CONFULLISE",
+        "mask": "0x00000040",
+        "caption": "Control Buffer Full Interrupt Signal Enable bit",
+        "values": [
+          {
+            "caption": "Interrupt is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Interrupt is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "CONEMPTYISE",
+        "mask": "0x00000080",
+        "caption": "Control Buffer Empty Interrupt Signal Enable bit",
+        "values": [
+          {
+            "caption": "Interrupt is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Interrupt is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "CONTHRISE",
+        "mask": "0x00000100",
+        "caption": "Control Buffer Threshold Interrupt Signal Enable bit",
+        "values": [
+          {
+            "caption": "Interrupt is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Interrupt is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "BDDONEISE",
+        "mask": "0x00000200",
+        "caption": "DMA Buffer Descriptor Done Interrupt Signal Enable bit",
+        "values": [
+          {
+            "caption": "Interrupt is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Interrupt is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "PKTCOMPISE",
+        "mask": "0x00000400",
+        "caption": "DMA Buffer Descriptor Packet Complete Interrupt Signal Enable bit",
+        "values": [
+          {
+            "caption": "Interrupt is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Interrupt is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "DMAEISE",
+        "mask": "0x00000800",
+        "caption": "DMA Bus Error Interrupt Signal Enable bit",
+        "values": [
+          {
+            "caption": "Interrupt signal is enabled",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Interrupt signal is disabled",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "SQI1TAPCON": [
+      {
+        "name": "CLKOUTDLY",
+        "mask": "0x0000000F",
+        "caption": "SQI Clock Output Delay bits",
+        "values": [
+          {
+            "caption": "16 taps added on clock output",
+            "name": "",
+            "value": "0xf"
+          },
+          {
+            "caption": "15 taps added on clock output",
+            "name": "",
+            "value": "0xe"
+          },
+          {
+            "caption": "2 taps added on clock output",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "1 tap added on clock output",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "DATAOUTDLY",
+        "mask": "0x000000F0",
+        "caption": "SQI Data Output Delay bits",
+        "values": [
+          {
+            "caption": "16 taps added on clock output",
+            "name": "",
+            "value": "0xf"
+          },
+          {
+            "caption": "15 taps added on clock output",
+            "name": "",
+            "value": "0xe"
+          },
+          {
+            "caption": "2 taps added on clock output",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "1 tap added on clock output",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "SDRCLKINDLY",
+        "mask": "0x00003F00",
+        "caption": "SQI Clock Input Delay bits",
+        "values": [
+          {
+            "caption": "64 taps added on clock input",
+            "name": "",
+            "value": "0x3f"
+          },
+          {
+            "caption": "63 taps added on clock input",
+            "name": "",
+            "value": "0x3e"
+          },
+          {
+            "caption": "2 taps added on clock input",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "1 tap added on clock input",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "DDRDATINDLY",
+        "mask": "0x000F0000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "SDRDATINDLY",
+        "mask": "0x00F00000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "DDRCLKINDLY",
+        "mask": "0x3F000000",
+        "caption": null,
+        "values": []
+      }
+    ],
+    "SQI1MEMSTAT": [
+      {
+        "name": "STATCMD",
+        "mask": "0x0000FFFF",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "STATBYTES",
+        "mask": "0x00030000",
+        "caption": "Number of Status Bytes bits",
+        "values": [
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Status command/read is 2 bytes long",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Status command/read is 1 byte long",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "STATTYPE",
+        "mask": "0x000C0000",
+        "caption": "Status Command/Read Lane Mode bits",
+        "values": [
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "Status command and read are executed in Quad Lane mode",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "Status command and read are executed in Dual Lane mode",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Status command and read are executed in Single Lane mode",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "STATPOS",
+        "mask": "0x00100000",
+        "caption": "Statis Bit Position in Flash bit",
+        "values": [
+          {
+            "caption": "BUSY bit position is bit 7 in status register",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "BUSY bit position is bit 0 in status register",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "SQI1XCON3": [
+      {
+        "name": "INIT1CMD1",
+        "mask": "0x000000FF",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "INIT1CMD2",
+        "mask": "0x0000FF00",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "INIT1CMD3",
+        "mask": "0x00FF0000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "INIT1TYPE",
+        "mask": "0x03000000",
+        "caption": "Flash Initialization 1 Command Type bits",
+        "values": [
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "INIT1 commands are sent in Quad Lane mode",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "INIT1 commands are sent in Dual Lane mode",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "INIT1 commadns are sent in Single Lane mode",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "INIT1COUNT",
+        "mask": "0x0C000000",
+        "caption": "Flash Initialization 1 Command Count bits",
+        "values": [
+          {
+            "caption": "INIT1CMD3, INIT1CMD2, and INIT1CMD3 are sent.",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "INIT1CMD1 and INIT1CMD2 are sent, but INIT1CMD3 is still pending.",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "INIT1CMD1 is sent, but INIT1CMD2 and INIT1CMD3 are still pending.",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No commands are sent",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "INIT1SCHECK",
+        "mask": "0x10000000",
+        "caption": "Flash Initialization 1 Command Status Check bit",
+        "values": [
+          {
+            "caption": "Check the status after executing the INIT1 command",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Do not check the status",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ],
+    "SQI1XCON4": [
+      {
+        "name": "INIT2CMD1",
+        "mask": "0x000000FF",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "INIT2CMD2",
+        "mask": "0x0000FF00",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "INIT2CMD3",
+        "mask": "0x00FF0000",
+        "caption": null,
+        "values": []
+      },
+      {
+        "name": "INIT2TYPE",
+        "mask": "0x03000000",
+        "caption": "Flash Initialization 2 Command Type bits",
+        "values": [
+          {
+            "caption": "Reserved",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "INIT2 commands are sent in Quad Lane mode",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "INIT2 commands are sent in Dual Lane mode",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "INIT2 commands are sent in Single Lane mode",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "INIT2COUNT",
+        "mask": "0x0C000000",
+        "caption": "Flash Initialization 2 Command Count bits",
+        "values": [
+          {
+            "caption": "INIT2CMD1, INIT2CMD2, and INIT2CMD3 are sent",
+            "name": "",
+            "value": "0x3"
+          },
+          {
+            "caption": "INIT2CMD1 and INIT2CMD2 are sent, but INIT2CMD3 is still pending",
+            "name": "",
+            "value": "0x2"
+          },
+          {
+            "caption": "INIT2CMD1 is sent, but INIT2CMD2 and INIT2CMD3 are still pending",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "No commands are sent",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      },
+      {
+        "name": "INIT2SCHECK",
+        "mask": "0x10000000",
+        "caption": "Flash Initialization 2 Command Status Check bit",
+        "values": [
+          {
+            "caption": "Check the status after executing the INIT2 command",
+            "name": "",
+            "value": "0x1"
+          },
+          {
+            "caption": "Do not check the status",
+            "name": "",
+            "value": "0x0"
+          }
+        ]
+      }
+    ]
+  }
+}

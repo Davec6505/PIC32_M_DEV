@@ -1,0 +1,385 @@
+{
+  "FUSECONFIG": {
+    "DEVCFG3": {
+      "USERID": [],
+      "FMIIEN": [
+        "OFF",
+        "ON"
+      ],
+      "FETHIO": [
+        "OFF",
+        "ON"
+      ],
+      "PGL1WAY": [
+        "ON",
+        "OFF"
+      ],
+      "PMDL1WAY": [
+        "ON",
+        "OFF"
+      ],
+      "IOL1WAY": [
+        "ON",
+        "OFF"
+      ],
+      "FUSBIDIO": [
+        "OFF",
+        "ON"
+      ]
+    },
+    "DEVCFG2": {
+      "FPLLIDIV": [
+        "DIV_1",
+        "DIV_2",
+        "DIV_3",
+        "DIV_4",
+        "DIV_5",
+        "DIV_6",
+        "DIV_7",
+        "DIV_8"
+      ],
+      "FPLLRNG": [
+        "RANGE_BYPASS",
+        "RANGE_5_10_MHZ",
+        "RANGE_8_16_MHZ",
+        "RANGE_13_26_MHZ",
+        "RANGE_21_42_MHZ",
+        "RANGE_34_68_MHZ"
+      ],
+      "FPLLICLK": [
+        "PLL_FRC",
+        "PLL_POSC"
+      ],
+      "FPLLMULT": [
+        "MUL_1",
+        "MUL_2",
+        "MUL_3",
+        "MUL_4",
+        "MUL_5",
+        "MUL_6",
+        "MUL_7",
+        "MUL_8",
+        "MUL_9",
+        "MUL_10",
+        "MUL_11",
+        "MUL_12",
+        "MUL_13",
+        "MUL_14",
+        "MUL_15",
+        "MUL_16",
+        "MUL_17",
+        "MUL_18",
+        "MUL_19",
+        "MUL_20",
+        "MUL_21",
+        "MUL_22",
+        "MUL_23",
+        "MUL_24",
+        "MUL_25",
+        "MUL_26",
+        "MUL_27",
+        "MUL_28",
+        "MUL_29",
+        "MUL_30",
+        "MUL_31",
+        "MUL_32",
+        "MUL_33",
+        "MUL_34",
+        "MUL_35",
+        "MUL_36",
+        "MUL_37",
+        "MUL_38",
+        "MUL_39",
+        "MUL_40",
+        "MUL_41",
+        "MUL_42",
+        "MUL_43",
+        "MUL_44",
+        "MUL_45",
+        "MUL_46",
+        "MUL_47",
+        "MUL_48",
+        "MUL_49",
+        "MUL_50",
+        "MUL_51",
+        "MUL_52",
+        "MUL_53",
+        "MUL_54",
+        "MUL_55",
+        "MUL_56",
+        "MUL_57",
+        "MUL_58",
+        "MUL_59",
+        "MUL_60",
+        "MUL_61",
+        "MUL_62",
+        "MUL_63",
+        "MUL_64",
+        "MUL_65",
+        "MUL_66",
+        "MUL_67",
+        "MUL_68",
+        "MUL_69",
+        "MUL_70",
+        "MUL_71",
+        "MUL_72",
+        "MUL_73",
+        "MUL_74",
+        "MUL_75",
+        "MUL_76",
+        "MUL_77",
+        "MUL_78",
+        "MUL_79",
+        "MUL_80",
+        "MUL_81",
+        "MUL_82",
+        "MUL_83",
+        "MUL_84",
+        "MUL_85",
+        "MUL_86",
+        "MUL_87",
+        "MUL_88",
+        "MUL_89",
+        "MUL_90",
+        "MUL_91",
+        "MUL_92",
+        "MUL_93",
+        "MUL_94",
+        "MUL_95",
+        "MUL_96",
+        "MUL_97",
+        "MUL_98",
+        "MUL_99",
+        "MUL_100",
+        "MUL_101",
+        "MUL_102",
+        "MUL_103",
+        "MUL_104",
+        "MUL_105",
+        "MUL_106",
+        "MUL_107",
+        "MUL_108",
+        "MUL_109",
+        "MUL_110",
+        "MUL_111",
+        "MUL_112",
+        "MUL_113",
+        "MUL_114",
+        "MUL_115",
+        "MUL_116",
+        "MUL_117",
+        "MUL_118",
+        "MUL_119",
+        "MUL_120",
+        "MUL_121",
+        "MUL_122",
+        "MUL_123",
+        "MUL_124",
+        "MUL_125",
+        "MUL_126",
+        "MUL_127",
+        "MUL_128"
+      ],
+      "FPLLODIV": [
+        "DIV_2",
+        "DIV_4",
+        "DIV_8",
+        "DIV_16",
+        "DIV_32"
+      ],
+      "UPLLFSEL": [
+        "FREQ_24MHZ",
+        "FREQ_12MHZ"
+      ]
+    },
+    "DEVCFG1": {
+      "FNOSC": [
+        "FRCDIV",
+        "SPLL",
+        "POSC",
+        "SOSC",
+        "LPRC"
+      ],
+      "DMTINTV": [
+        "WIN_0",
+        "WIN_1_2",
+        "WIN_3_4",
+        "WIN_7_8",
+        "WIN_15_16",
+        "WIN_31_32",
+        "WIN_63_64",
+        "WIN_127_128"
+      ],
+      "FSOSCEN": [
+        "OFF",
+        "ON"
+      ],
+      "IESO": [
+        "OFF",
+        "ON"
+      ],
+      "POSCMOD": [
+        "EC",
+        "HS",
+        "OFF"
+      ],
+      "OSCIOFNC": [
+        "OFF",
+        "ON"
+      ],
+      "FCKSM": [
+        "CSDCMD",
+        "CSECMD",
+        "CSDCME",
+        "CSECME"
+      ],
+      "WDTPS": [
+        "PS1",
+        "PS2",
+        "PS4",
+        "PS8",
+        "PS16",
+        "PS32",
+        "PS64",
+        "PS128",
+        "PS256",
+        "PS512",
+        "PS1024",
+        "PS2048",
+        "PS4096",
+        "PS8192",
+        "PS16384",
+        "PS32768",
+        "PS65536",
+        "PS131072",
+        "PS262144",
+        "PS524288",
+        "PS1048576"
+      ],
+      "WDTSPGM": [
+        "RUN",
+        "STOP"
+      ],
+      "WINDIS": [
+        "NORMAL",
+        "WINDOW"
+      ],
+      "FWDTEN": [
+        "OFF",
+        "ON"
+      ],
+      "FWDTWINSZ": [
+        "WINSZ_25",
+        "WINSZ_37",
+        "WINSZ_50",
+        "WINSZ_75"
+      ],
+      "DMTCNT": [
+        "DMT8",
+        "DMT9",
+        "DMT10",
+        "DMT11",
+        "DMT12",
+        "DMT13",
+        "DMT14",
+        "DMT15",
+        "DMT16",
+        "DMT17",
+        "DMT18",
+        "DMT19",
+        "DMT20",
+        "DMT21",
+        "DMT22",
+        "DMT23",
+        "DMT24",
+        "DMT25",
+        "DMT26",
+        "DMT27",
+        "DMT28",
+        "DMT29",
+        "DMT30",
+        "DMT31"
+      ],
+      "FDMTEN": [
+        "ON",
+        "OFF"
+      ]
+    },
+    "DEVCFG0": {
+      "DEBUG": [
+        "ON",
+        "OFF"
+      ],
+      "JTAGEN": [
+        "ON",
+        "OFF"
+      ],
+      "ICESEL": [
+        "ICS_PGx1",
+        "ICS_PGx2"
+      ],
+      "TRCEN": [
+        "ON",
+        "OFF"
+      ],
+      "BOOTISA": [
+        "MIPS32",
+        "MICROMIPS"
+      ],
+      "FECCCON": [
+        "ON",
+        "DYNAMIC",
+        "OFF_LOCKED",
+        "OFF_UNLOCKED"
+      ],
+      "FSLEEP": [
+        "OFF",
+        "VREGS"
+      ],
+      "DBGPER": [
+        "ALLOW_PG2",
+        "ALLOW_PG1",
+        "ALLOW_PG0",
+        "PG_1_0",
+        "PG_2_0",
+        "PG_2_1",
+        "PG_ALL",
+        "PG_NONE"
+      ],
+      "SMCLR": [
+        "MCLR_NORM",
+        "MCLR_POR"
+      ],
+      "SOSCGAIN": [
+        "GAIN_LEVEL_3",
+        "GAIN_LEVEL_2",
+        "GAIN_LEVEL_0",
+        "GAIN_LEVEL_1"
+      ],
+      "SOSCBOOST": [
+        "ON",
+        "OFF"
+      ],
+      "POSCGAIN": [
+        "GAIN_LEVEL_3",
+        "GAIN_LEVEL_2",
+        "GAIN_LEVEL_1",
+        "GAIN_LEVEL_0"
+      ],
+      "POSCBOOST": [
+        "ON",
+        "OFF"
+      ],
+      "EJTAGBEN": [
+        "NORMAL",
+        "REDUCED"
+      ]
+    },
+    "DEVCP0": {
+      "CP": [
+        "ON",
+        "OFF"
+      ]
+    }
+  }
+}
