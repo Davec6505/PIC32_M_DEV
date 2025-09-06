@@ -17,6 +17,7 @@ namespace PIC32Mn_PROJ.classes
         }
         public pins(string xml, string? output):this()
         {
+
             fromToPath = new Dictionary<string, string>
             {
                 {"xml", xml},
@@ -32,12 +33,12 @@ namespace PIC32Mn_PROJ.classes
                 return "Empty output path.";
             }
 
-            if (fromToPath["out"].EndsWith("*.txt"))
+            if (fromToPath["out"].EndsWith(".txt",StringComparison.OrdinalIgnoreCase))
             {
                 LoadPinsfromXML_SavetoTxt(fromToPath["xml"], fromToPath["out"]);
                 len = fromToPath["out"].Length - 4; //show .txt
             }
-            else if (fromToPath["out"].EndsWith("*.json"))
+            else if (fromToPath["out"].EndsWith(".json",StringComparison.OrdinalIgnoreCase))
             {
                 LoadPinsfromXML_SavetoJson(fromToPath["xml"], fromToPath["out"]);
                 len = fromToPath["out"].Length - 5; // show .json
@@ -286,6 +287,7 @@ namespace PIC32Mn_PROJ.classes
 
             Console.WriteLine($"✅ Pin mapping written to {jsonPath}");
         }
+
 
 
     }

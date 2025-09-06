@@ -11,13 +11,8 @@
   <ItemGroup>
     <Folder Include="dependancies\modules\" />
     <Folder Include="dependancies\gpio\" />
+    <Folder Include="dependancies\templates\" />
     <Folder Include="interfaces\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="dependancies\pic32mz_device.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>

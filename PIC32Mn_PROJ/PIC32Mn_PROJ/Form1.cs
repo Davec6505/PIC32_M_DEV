@@ -15,6 +15,9 @@ namespace PIC32Mn_PROJ
         ConfigLoader configLoader = new();
         Modules mods;
         pins pins;
+
+        string rootPath = string.Empty;
+        string packsPath = string.Empty;
         string picPath = string.Empty;
 
         string adtfPath = string.Empty;   //path to .atdf
@@ -22,57 +25,41 @@ namespace PIC32Mn_PROJ
         string adchsOutput = string.Empty; //path to adchs .json                                          
         string gpioPath = string.Empty; //path to pin .data
         string outputPath = string.Empty;   //path to pin .json
+        string opath = string.Empty;
+
+        public string device { get; set; }
 
         public Form1()
         {
             InitializeComponent();
 
+            // path of Form1 C:\Users\davec\GIT\PIC32_M_DEV\PIC32Mn_PROJ\PIC32Mn_PROJ\XML\
+            rootPath = "C:\\Users\\davec\\GIT\\PIC32_M_DEV\\PIC32Mn_PROJ\\PIC32Mn_PROJ\\";
+            //packsPath = "C:\\Program Files\\Microchip\\MPLABX\\v6.25\\packs\\Microchip\\PIC32MZ-EF_DFP\\1.4.168\\";
+            packsPath = $"{rootPath}XML\\";
+            
+            //paths specific to this application, will have to sort this out
+            picPath         = $"{packsPath}edc\\PIC32MZ2048EFH064.PIC"; // Replace with your actual XML file path
+            adtfPath        = $"{packsPath}atdf\\PIC32MZ2048EFH064.atdf";
+
+            configOutput    = $"{rootPath}dependancies\\CONFIGValues.json";
+            adchsOutput     = $"{rootPath}dependancies\\ADCHSValues.json";
+
+            gpioPath        = $"{rootPath}dependancies\\gpio\\pic32mz_device.json";
+            outputPath      = $"{rootPath}dependancies\\gpio\\PinMappings.txt"; // Output file
+            opath           = $"{rootPath}dependancies\\modules\\";
+
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            picPath = "C:\\Program Files\\Microchip\\MPLABX\\v6.25\\packs\\Microchip\\PIC32MZ-EF_DFP\\1.4.168\\edc\\PIC32MZ2048EFH064.PIC"; // Replace with your actual XML file path
-            adtfPath = "C:\\Program Files\\Microchip\\MPLABX\\v6.25\\packs\\Microchip\\PIC32MZ-EF_DFP\\1.4.168\\atdf\\PIC32MZ2048EFH064.atdf";
-
-            configOutput = "C:\\Users\\davec\\GIT\\PIC32_M_DEV\\PIC32Mn_PROJ\\PIC32Mn_PROJ\\dependancies\\CONFIGValues.json";
-            adchsOutput = "C:\\Users\\davec\\GIT\\PIC32_M_DEV\\PIC32Mn_PROJ\\PIC32Mn_PROJ\\dependancies\\ADCHSValues.json";
-
-            gpioPath = "C:\\Users\\davec\\GIT\\PIC32_M_DEV\\PIC32Mn_PROJ\\PIC32Mn_PROJ\\dependancies\\pic32mz_device.json";
-            outputPath = "C:\\Users\\davec\\GIT\\PIC32_M_DEV\\PIC32Mn_PROJ\\PIC32Mn_PROJ\\dependancies\\PinMappings.txt"; // Output file
-            string opath = "C:\\Users\\davec\\GIT\\PIC32_M_DEV\\PIC32Mn_PROJ\\PIC32Mn_PROJ\\dependancies\\modules\\";
-            mods = new Modules(adtfPath,opath);
+            mods = new Modules(adtfPath, opath);
             pins = new pins(picPath, gpioPath);
 
-            if (!File.Exists(picPath))
-            {
-                MessageBox.Show("Can't find XML for device.");
-            }
-            else
-            {
-                if (!File.Exists(outputPath))
-                {
-                    File.Create(outputPath).Close();
-                }
-                pins.LoadPinsfromXML_SavetoTxt(picPath, outputPath);
-                //  MessageBox.Show("XML Converted sucessfully!");
+            // extract pins from xml and save to json file.
+            pins.LoadPins();
 
-                pins.LoadPinsfromXML_SavetoJson(picPath, gpioPath);
-
-                load_pinForm(gpioPath);
-
-                if (!File.Exists(configOutput))
-                {
-                    File.Create(configOutput).Close();
-                }
-            }
-            //EXAMPLE OF MODULES
-            //"FUSECONFIG"  | "ADCHS" | "CAN" | "CFG" | "CMP" | "CORE" | "CRU" | "RCON" | "DMA" | "DMT" | "ETH" | "GPIO" | "I2C" | "ICAP" |
-            //"INT" | "JTAG" | "NVM" | "OCMP" | "PCACHE" | "PMP" | "RNG" | "RPIN" | "RPOUT" | "RTCC" | "SB" |  "SPI" | "SQI" | "TMR1" | "TMR" |
-            //"UART" | "USB" | "USBCLKRST" | "WDT"
-
-            // If 'mods' is a Dictionary<string, ModuleType>, entry is KeyValuePair<string, ModuleType>
-            // If 'mods' is a collection of ModuleType, you need to adjust accordingly.
-            // Try to cast entry to KeyValuePair<string, ModuleType>:
+            // Now you can use the 'mods' object to access module data
             foreach (var entry in mods)
             {
                 if (entry is KeyValuePair<string, (string Path1, string Path2)> kvp)
@@ -85,71 +72,32 @@ namespace PIC32Mn_PROJ
                 }
             }
 
+            //condition GPIO tab with json file
+            load_pinForm(gpioPath);
+
         }
 
-        #region  menu
+        #region  menu items
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
         }
-
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Application.Exit();
         }
 
+
+        private void deviceToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
         #endregion menu
 
 
-
-
-        #region config form load
-        private void LoadConfig(string config, string output)
-        {
-            var doc = XDocument.Load(config);
-
-            var modules = doc.Descendants("module");
-
-            var registers = modules
-                .SelectMany(m => m.Descendants("register"))
-                .Where(reg => reg.Attribute("name") != null)
-                .ToDictionary(
-                    reg => reg.Attribute("name")!.Value,
-                    reg => reg.Elements("bitfield")
-                        .Where(bf => bf.Attribute("name") != null && bf.Attribute("values") != null)
-                        .ToDictionary(
-                            bf => bf.Attribute("name")!.Value,
-                            bf => {
-                                var valueGroupName = bf.Attribute("values")!.Value;
-                                var valueGroup = modules
-                                    .SelectMany(m => m.Elements("value-group"))
-                                    .FirstOrDefault(vg => vg.Attribute("name")?.Value == valueGroupName);
-
-                                if (valueGroup == null)
-                                    return new Dictionary<string, string>();
-
-                                return valueGroup.Elements("value")
-                                    .Where(v => v.Attribute("name") != null && v.Attribute("value") != null)
-                                    .GroupBy(v => v.Attribute("name")!.Value)
-                                    .Where(g => !string.IsNullOrWhiteSpace(g.Key))
-                                    .ToDictionary(
-                                        g => g.Key!,
-                                        g => g.First().Attribute("value")?.Value ?? "0x0"
-                                    );
-                            }
-                        )
-                );
-
-            var json = JsonSerializer.Serialize(registers, new JsonSerializerOptions { WriteIndented = true });
-            File.WriteAllText(output, json);
-
-            Console.WriteLine($"Saved to {output}");
-        }
-
-        #endregion config form load
-
-        #region  pins form load
+        #region  gpio tab controls
 
         private void load_pinForm(string jsonPath)
         {
@@ -179,7 +127,7 @@ namespace PIC32Mn_PROJ
                     }
                 }
 
-                BuildPinRow(pinName,pinData);// directionFunctions);
+                BuildPinRow(pinName, pinData);// directionFunctions);
             }
 
         }
@@ -195,10 +143,10 @@ namespace PIC32Mn_PROJ
                 Tag = pinKey // for later reference
             };
 
-            var enableCheck = new CheckBox {Text = "En", Width = 50, Checked = false , Anchor = AnchorStyles.Left };
+            var enableCheck = new CheckBox { Text = "En", Width = 50, Checked = false, Anchor = AnchorStyles.Left };
             var pinNameBox = new TextBox { Width = 100, Text = pinData.GetProperty("PIN").GetString() };
-            var directionToggle = new CheckBox { Text = "Out", Width = 60, Checked = false , Anchor = AnchorStyles.Left };
-            var functionCombo = new ComboBox { Width = 200, DropDownStyle = ComboBoxStyle.DropDownList , Anchor = AnchorStyles.Left | AnchorStyles.Right };
+            var directionToggle = new CheckBox { Text = "Out", Width = 60, Checked = false, Anchor = AnchorStyles.Left };
+            var functionCombo = new ComboBox { Width = 200, DropDownStyle = ComboBoxStyle.DropDownList, Anchor = AnchorStyles.Left | AnchorStyles.Right };
 
             var directionFunctions = new Dictionary<string, List<string>>();
             if (pinData.TryGetProperty("PinFunctions", out var pinFunctions) &&
@@ -235,7 +183,15 @@ namespace PIC32Mn_PROJ
 
             flowPanelPins.Controls.Add(rowPanel);
         }
-        #endregion pins form load
+
+        #endregion gpio tab controls
+
+        #region config tab controls
+
+
+
+        #endregion config tab controls
+
 
     }
 }

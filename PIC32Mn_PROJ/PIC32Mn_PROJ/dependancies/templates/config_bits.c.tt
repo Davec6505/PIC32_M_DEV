@@ -1,0 +1,157 @@
+<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ output extension=".c" #>
+<#
+    // Example: define your config values here or pass them in via a host
+    var config = new Dictionary<string, string>
+    {
+        ["INCLUDE_HEADER"] = "initialization.h",
+        ["DEBUG"] = "OFF",
+        ["JTAGEN"] = "OFF",
+        ["ICESEL"] = "ICS_PGx1",
+        ["TRCEN"] = "OFF",
+        ["BOOTISA"] = "MIPS32",
+        ["FECCCON"] = "OFF_UNLOCKED",
+        ["FSLEEP"] = "OFF",
+        ["DBGPER"] = "PG_ALL",
+        ["SMCLR"] = "MCLR_NORM",
+        ["SOSCGAIN"] = "GAIN_LEVEL_3",
+        ["SOSCBOOST"] = "ON",
+        ["POSCGAIN"] = "GAIN_LEVEL_3",
+        ["POSCBOOST"] = "ON",
+        ["EJTAGBEN"] = "NORMAL",
+        ["CP"] = "OFF",
+        ["FNOSC"] = "SPLL",
+        ["DMTINTV"] = "WIN_127_128",
+        ["FSOSCEN"] = "OFF",
+        ["IESO"] = "OFF",
+        ["POSCMOD"] = "EC",
+        ["OSCIOFNC"] = "OFF",
+        ["FCKSM"] = "CSECME",
+        ["WDTPS"] = "PS1048576",
+        ["WDTSPGM"] = "STOP",
+        ["FWDTEN"] = "OFF",
+        ["WINDIS"] = "NORMAL",
+        ["FWDTWINSZ"] = "WINSZ_25",
+        ["DMTCNT"] = "DMT31",
+        ["FDMTEN"] = "OFF",
+        ["FPLLIDIV"] = "DIV_3",
+        ["FPLLRNG"] = "RANGE_5_10_MHZ",
+        ["FPLLICLK"] = "PLL_POSC",
+        ["FPLLMULT"] = "MUL_50",
+        ["FPLLODIV"] = "DIV_2",
+        ["UPLLFSEL"] = "FREQ_24MHZ",
+        ["USERID"] = "0xffff",
+        ["FMIIEN"] = "ON",
+        ["FETHIO"] = "ON",
+        ["PGL1WAY"] = "ON",
+        ["PMDL1WAY"] = "ON",
+        ["IOL1WAY"] = "ON",
+        ["FUSBIDIO"] = "ON",
+        ["TSEQ"] = "0xffff",
+        ["CSEQ"] = "0x0",
+        ["PREFEN"] = "3",
+        ["PFMWS"] = "3",
+        ["ECCCON"] = "3"
+    };
+#>
+// *****************************************************************************
+// *****************************************************************************
+// Section: Included Files
+// *****************************************************************************
+// *****************************************************************************
+#include "<#= config["INCLUDE_HEADER"] #>"
+
+
+
+// ****************************************************************************
+// ****************************************************************************
+// Section: Configuration Bits
+// ****************************************************************************
+// ****************************************************************************
+
+/*** DEVCFG0 ***/
+#pragma config DEBUG =      <#= config["DEBUG"] #>
+#pragma config JTAGEN =     <#= config["JTAGEN"] #>
+#pragma config ICESEL =     <#= config["ICESEL"] #>
+#pragma config TRCEN =      <#= config["TRCEN"] #>
+#pragma config BOOTISA =    <#= config["BOOTISA"] #>
+#pragma config FECCCON =    <#= config["FECCCON"] #>
+#pragma config FSLEEP =     <#= config["FSLEEP"] #>
+#pragma config DBGPER =     <#= config["DBGPER"] #>
+#pragma config SMCLR =      <#= config["SMCLR"] #>
+#pragma config SOSCGAIN =   <#= config["SOSCGAIN"] #>
+#pragma config SOSCBOOST =  <#= config["SOSCBOOST"] #>
+#pragma config POSCGAIN =   <#= config["POSCGAIN"] #>
+#pragma config POSCBOOST =  <#= config["POSCBOOST"] #>
+#pragma config EJTAGBEN =   <#= config["EJTAGBEN"] #>
+#pragma config CP =         <#= config["CP"] #>
+
+/*** DEVCFG1 ***/
+#pragma config FNOSC =      <#= config["FNOSC"] #>
+#pragma config DMTINTV =    <#= config["DMTINTV"] #>
+#pragma config FSOSCEN =    <#= config["FSOSCEN"] #>
+#pragma config IESO =       <#= config["IESO"] #>
+#pragma config POSCMOD =    <#= config["POSCMOD"] #>
+#pragma config OSCIOFNC =   <#= config["OSCIOFNC"] #>
+#pragma config FCKSM =      <#= config["FCKSM"] #>
+#pragma config WDTPS =      <#= config["WDTPS"] #>
+#pragma config WDTSPGM =    <#= config["WDTSPGM"] #>
+#pragma config FWDTEN =     <#= config["FWDTEN"] #>
+#pragma config WINDIS =     <#= config["WINDIS"] #>
+#pragma config FWDTWINSZ =  <#= config["FWDTWINSZ"] #>
+#pragma config DMTCNT =     <#= config["DMTCNT"] #>
+#pragma config FDMTEN =     <#= config["FDMTEN"] #>
+
+/*** DEVCFG2 ***/
+#pragma config FPLLIDIV =   <#= config["FPLLIDIV"] #>
+#pragma config FPLLRNG =    <#= config["FPLLRNG"] #>
+#pragma config FPLLICLK =   <#= config["FPLLICLK"] #>
+#pragma config FPLLMULT =   <#= config["FPLLMULT"] #>
+#pragma config FPLLODIV =   <#= config["FPLLODIV"] #>
+#pragma config UPLLFSEL =   <#= config["UPLLFSEL"] #>
+
+/*** DEVCFG3 ***/
+#pragma config USERID =     <#= config["USERID"] #>
+#pragma config FMIIEN =     <#= config["FMIIEN"] #>
+#pragma config FETHIO =     <#= config["FETHIO"] #>
+#pragma config PGL1WAY =    <#= config["PGL1WAY"] #>
+#pragma config PMDL1WAY =   <#= config["PMDL1WAY"] #>
+#pragma config IOL1WAY =    <#= config["IOL1WAY"] #>
+#pragma config FUSBIDIO =   <#= config["FUSBIDIO"] #>
+
+/*** BF1SEQ0 ***/
+#pragma config TSEQ =       <#= config["TSEQ"] #>
+#pragma config CSEQ =       <#= config["CSEQ"] #>
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: System Initialization
+// *****************************************************************************
+// *****************************************************************************
+/*******************************************************************************
+  Function:
+    void SYS_Initialize ( void *data )
+
+  Summary:
+    Initializes the board, services, drivers, application and other modules.
+
+  Remarks:
+ */
+void SYS_Initialize ( void* data )
+{
+    (void)__builtin_disable_interrupts();
+
+    CLK_Initialize();
+    PRECONbits.PREFEN = <#= config["PREFEN"] #>;
+    PRECONbits.PFMWS = <#= config["PFMWS"] #>;
+    CFGCONbits.ECCCON = <#= config["ECCCON"] #>;
+
+    // Add your initialization calls here
+    // GPIO_Initialize();
+    // CORETIMER_Initialize();
+    // TMR2_Initialize();
+    // OCMP4_Initialize();
+    // EVIC_Initialize();
+
+    (void)__builtin_enable_interrupts();
+}
