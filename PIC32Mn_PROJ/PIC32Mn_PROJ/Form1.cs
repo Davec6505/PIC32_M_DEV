@@ -16,6 +16,8 @@ namespace PIC32Mn_PROJ
         Modules mods;
         pins pins;
 
+        // Application specific paths
+        #region App specific paths    
         string rootPath = string.Empty;
         string packsPath = string.Empty;
         string picPath = string.Empty;
@@ -26,8 +28,22 @@ namespace PIC32Mn_PROJ
         string gpioPath = string.Empty; //path to pin .data
         string outputPath = string.Empty;   //path to pin .json
         string opath = string.Empty;
+        #endregion App specific paths
+
+        // Project properties
+        #region Project properties
+
+        public string projectDirPath { get; set; }
+
+        public string projectName { get; set; }
+        public string projectVersion { get; set; }
+        public string projectDir { get; set; }
+        public string projectType { get; set; }
 
         public string device { get; set; }
+        public bool saveNeeded { get; set; } = false;
+
+        #endregion Project properties
 
         public Form1()
         {
@@ -37,17 +53,17 @@ namespace PIC32Mn_PROJ
             rootPath = "C:\\Users\\davec\\GIT\\PIC32_M_DEV\\PIC32Mn_PROJ\\PIC32Mn_PROJ\\";
             //packsPath = "C:\\Program Files\\Microchip\\MPLABX\\v6.25\\packs\\Microchip\\PIC32MZ-EF_DFP\\1.4.168\\";
             packsPath = $"{rootPath}XML\\";
-            
+
             //paths specific to this application, will have to sort this out
-            picPath         = $"{packsPath}edc\\PIC32MZ2048EFH064.PIC"; // Replace with your actual XML file path
-            adtfPath        = $"{packsPath}atdf\\PIC32MZ2048EFH064.atdf";
+            picPath = $"{packsPath}edc\\PIC32MZ2048EFH064.PIC"; // Replace with your actual XML file path
+            adtfPath = $"{packsPath}atdf\\PIC32MZ2048EFH064.atdf";
 
-            configOutput    = $"{rootPath}dependancies\\CONFIGValues.json";
-            adchsOutput     = $"{rootPath}dependancies\\ADCHSValues.json";
+            configOutput = $"{rootPath}dependancies\\CONFIGValues.json";
+            adchsOutput = $"{rootPath}dependancies\\ADCHSValues.json";
 
-            gpioPath        = $"{rootPath}dependancies\\gpio\\pic32mz_device.json";
-            outputPath      = $"{rootPath}dependancies\\gpio\\PinMappings.txt"; // Output file
-            opath           = $"{rootPath}dependancies\\modules\\";
+            gpioPath = $"{rootPath}dependancies\\gpio\\pic32mz_device.json";
+            outputPath = $"{rootPath}dependancies\\gpio\\PinMappings.txt"; // Output file
+            opath = $"{rootPath}dependancies\\modules\\";
 
         }
 
@@ -55,6 +71,17 @@ namespace PIC32Mn_PROJ
         {
             mods = new Modules(adtfPath, opath);
             pins = new pins(picPath, gpioPath);
+            // Check if the Application AppSettings has a value for projectPath
+            var savedPath = AppSettings.Default["projectPath"].ToString();
+            if (!string.IsNullOrEmpty(savedPath))
+            {
+
+                projectDirPath = savedPath;
+                PopulateTreeViewWithFoldersAndFiles(projectDirPath);
+
+                CreateProjectSettings();
+
+            }
 
             // extract pins from xml and save to json file.
             pins.LoadPins();
@@ -77,10 +104,70 @@ namespace PIC32Mn_PROJ
 
         }
 
+        private bool CreateProjectSettings()
+        {
+            bool exists = Directory.Exists(projectDirPath);
+            if (exists)
+            {
+                string settingsPath = Path.Combine(projectDirPath, "ProjectSettings.json");
+
+                // Replace this block in Form1_Load:
+                if (File.Exists(settingsPath))
+                {
+                    var settings = ProjectSettingsManager.Load(settingsPath);
+                    if (settings != null)
+                    {
+                        // Fix for CS0266 and CS8601:
+                        device = settings["Device"] as string ?? string.Empty;
+                    }
+                }
+                else
+                {
+                    // This will create ProjectSettings.json in the project directory if it doesn't exist
+                    var settings = new ProjectSettings();
+                    settings["Device"] = "";
+                    ProjectSettingsManager.Save(projectDirPath, settings);
+                }
+
+
+                this.Text = $"{projectDirPath} - {device}";
+                
+            }
+            else
+            {
+                MessageBox.Show("Project path does not exist. Please select a valid project folder.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            
+            return exists;
+        }
+
+        public bool CheckProjectSettingsExists()
+        {
+            string settingsPath = Path.Combine(projectDirPath, "ProjectSettings.json");
+            return File.Exists(settingsPath);
+        }
+
         #region  menu items
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            using (var fbd = new FolderBrowserDialog())
+            {
+                if (fbd.ShowDialog() == DialogResult.OK && !string.IsNullOrEmpty(fbd.SelectedPath))
+                {
+                    projectDirPath = fbd.SelectedPath;
+                    PopulateTreeViewWithFoldersAndFiles(projectDirPath);
+                    // Save the selected path to AppSettings
+                    AppSettings.Default["projectPath"] = projectDirPath;
+                    AppSettings.Default.Save();
 
+                    // Create ProjectSettings.json in the project directory if it doesn't exist
+                    var settings = new ProjectSettings();
+                    settings["Device"] = "";
+                    ProjectSettingsManager.Save(projectDirPath, settings);
+
+                    this.Text = $"{projectDirPath} - {ProjectSettingsManager.LoadKey(projectDirPath, "Device")}";
+                }
+            }
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -92,10 +179,56 @@ namespace PIC32Mn_PROJ
         private void deviceToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
+            Device devForm = new Device(device);
+            devForm.ShowDialog();
+            string _device = devForm._Device;
+
+            if(CheckProjectSettingsExists() && !string.IsNullOrEmpty(_device))
+            {
+                ProjectSettingsManager.SaveKey(projectDirPath, "Device", _device);
+                device = _device;
+                string dblchk = ProjectSettingsManager.LoadKey(projectDirPath, "Device") as string ?? string.Empty;
+                this.Text = $"{projectDirPath} - {dblchk}";
+            }
+            else
+            {
+                MessageBox.Show("Project settings file not found or device not selected.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
         }
 
         #endregion menu
 
+        #region  project tree view
+
+        private void PopulateTreeViewWithFoldersAndFiles(string rootFolderPath)
+        {
+            treeView_Project.Nodes.Clear();
+            var rootDirectoryInfo = new DirectoryInfo(rootFolderPath);
+            var rootNode = new TreeNode(rootDirectoryInfo.Name) { Tag = rootDirectoryInfo };
+            treeView_Project.Nodes.Add(rootNode);
+            AddDirectoriesAndFiles(rootDirectoryInfo, rootNode);
+            rootNode.Expand();
+        }
+
+        private void AddDirectoriesAndFiles(DirectoryInfo directoryInfo, TreeNode parentNode)
+        {
+            // Add directories
+            foreach (var directory in directoryInfo.GetDirectories())
+            {
+                var dirNode = new TreeNode(directory.Name) { Tag = directory };
+                parentNode.Nodes.Add(dirNode);
+                AddDirectoriesAndFiles(directory, dirNode);
+            }
+
+            // Add files
+            foreach (var file in directoryInfo.GetFiles())
+            {
+                var fileNode = new TreeNode(file.Name) { Tag = file };
+                parentNode.Nodes.Add(fileNode);
+            }
+        }
+        #endregion project tree view
 
         #region  gpio tab controls
 
@@ -192,6 +325,6 @@ namespace PIC32Mn_PROJ
 
         #endregion config tab controls
 
-
     }
+ 
 }

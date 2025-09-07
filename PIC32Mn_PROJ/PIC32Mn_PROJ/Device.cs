@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PIC32Mn_PROJ.classes;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -14,11 +15,8 @@ namespace PIC32Mn_PROJ
     public partial class Device : Form
     {
         public string? _Device { get; set; }
-        public Device()
-        {
-            InitializeComponent();
-        }
-        public Device(string? device = null)
+        public Device(){InitializeComponent();}
+        public Device(string? device = null):this()
         {
             this._Device = device;
         }
@@ -31,24 +29,31 @@ namespace PIC32Mn_PROJ
             }
         }
 
-        private void buttonDeviceSave_Click(object sender, EventArgs e)
-        {
-
-        }
 
         private void comboBox_Device_SelectedIndexChanged(object sender, EventArgs e)
         {
             _Device = comboBox_Device.SelectedItem.ToString();
         }
 
-        public void SaveDevice()
+        private void buttonDeviceSave_Click(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(_Device))
+                SaveDevice(comboBox_Device.SelectedItem.ToString());
+        }
+
+        public void SaveDevice(string? device = null)
+        {
+            if (!string.IsNullOrEmpty(device))
             {
-                // Save the selected device to application settings
-                Properties.Settings.Default.SelectedDevice = _Device;
-                Properties.Settings.Default.Save();
+                this._Device = device;
+                MessageBox.Show($"Device '{_Device}' saved successfully.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                this.Close();
+            }
+            else
+            {
+                MessageBox.Show("Please select a device.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
+
+
     }
 }
