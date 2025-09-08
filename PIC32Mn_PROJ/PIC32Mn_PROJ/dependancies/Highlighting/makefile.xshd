@@ -1,0 +1,39 @@
+﻿<?xml version="1.0"?>
+<SyntaxDefinition name="Makefile" extensions=".make;.mk;.makefile"
+  xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+
+  <!-- Define colors directly under SyntaxDefinition -->
+  <Color name="Comment" foreground="Green" />
+  <Color name="Target" foreground="Blue" fontWeight="bold" />
+  <Color name="Variable" foreground="Purple" />
+  <Color name="Command" foreground="DarkOrange" />
+  <Color name="Keyword" foreground="DarkRed" fontWeight="bold" />
+
+  <RuleSet>
+
+      <!-- Comments -->
+      <Span color="Comment" begin="#" end="\n" />
+
+      <!-- Targets -->
+      <Span color="Target" begin="^[^\s]+:" end=":" />
+
+      <!-- Variables -->
+      <Span color="Variable" begin="\$\(" end="\)" />
+      <Span color="Variable" begin="\$\{" end="\}" />
+
+      <!-- Commands -->
+      <Rule color="Command">^\t.*</Rule>
+
+      <!-- Keywords -->
+      <Keywords color="Keyword">
+        <Word>if</Word>
+        <Word>else</Word>
+        <Word>endif</Word>
+        <Word>include</Word>
+        <Word>define</Word>
+        <Word>export</Word>
+        <Word>override</Word>
+        <Word>unexport</Word>
+      </Keywords>
+    </RuleSet>
+</SyntaxDefinition>

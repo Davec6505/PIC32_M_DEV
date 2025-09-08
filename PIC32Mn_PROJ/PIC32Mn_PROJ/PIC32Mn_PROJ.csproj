@@ -9,10 +9,97 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="dependancies\project_files\main.c" />
+    <None Remove="dependancies\project_files\startup.S" />
+    <None Remove="PIC_H\p32mz2048efh064.h" />
+    <None Remove="PIC_H\p32mz2048efh100.h" />
+    <None Remove="PIC_H\p32mz2048efh124.h" />
+    <None Remove="PIC_H\p32mz2048efh144.h" />
+    <None Remove="XML\atdf\PIC32MZ2048EFH064.atdf" />
+    <None Remove="XML\atdf\PIC32MZ2048EFH100.atdf" />
+    <None Remove="XML\atdf\PIC32MZ2048EFH124.atdf" />
+    <None Remove="XML\atdf\PIC32MZ2048EFH144.atdf" />
+    <None Remove="XML\edc\PIC32MZ2048EFH064.PIC" />
+    <None Remove="XML\edc\PIC32MZ2048EFH100.PIC" />
+    <None Remove="XML\edc\PIC32MZ2048EFH124.PIC" />
+    <None Remove="XML\edc\PIC32MZ2048EFH144.PIC" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="dependancies\**\*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="dependancies\Highlighting\asm.xshd" />
+    <Content Remove="dependancies\Highlighting\makefile.xshd" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="dependancies\Highlighting\makefile.xshd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="dependancies\Highlighting\asm.xshd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <!--ItemGroup>
+    <Content Include="dependancies\project_files\main.c">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="dependancies\project_files\startup.S">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="PIC_H\p32mz2048efh064.h">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="PIC_H\p32mz2048efh100.h">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="PIC_H\p32mz2048efh124.h">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="PIC_H\p32mz2048efh144.h">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XML\atdf\PIC32MZ2048EFH064.atdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XML\atdf\PIC32MZ2048EFH100.atdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XML\atdf\PIC32MZ2048EFH124.atdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XML\atdf\PIC32MZ2048EFH144.atdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XML\edc\PIC32MZ2048EFH064.PIC">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XML\edc\PIC32MZ2048EFH100.PIC">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XML\edc\PIC32MZ2048EFH124.PIC">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XML\edc\PIC32MZ2048EFH144.PIC">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup-->
+
+  <ItemGroup>
     <Folder Include="dependancies\modules\" />
     <Folder Include="dependancies\gpio\" />
     <Folder Include="dependancies\templates\" />
     <Folder Include="interfaces\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AvalonEdit" Version="6.3.1.120" />
+    <PackageReference Include="Microsoft-WindowsAPICodePack-Core" Version="1.1.5" />
+    <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.5" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,6 +114,12 @@
     <None Update="AppSettings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>AppSettings.Designer.cs</LastGenOutput>
+    </None>
+    <None Update="dependancies\makefiles\Makefile_Root">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="dependancies\makefiles\Makefile_Srcs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 

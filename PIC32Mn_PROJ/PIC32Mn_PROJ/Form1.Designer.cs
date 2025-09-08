@@ -36,12 +36,14 @@
             exitToolStripMenuItem = new ToolStripMenuItem();
             editToolStripMenuItem = new ToolStripMenuItem();
             deviceToolStripMenuItem = new ToolStripMenuItem();
+            createProjectToolStripMenuItem = new ToolStripMenuItem();
             tabControl1 = new TabControl();
             tabPage_System = new TabPage();
             tabPage_Gpio = new TabPage();
             flowPanelPins = new FlowLayoutPanel();
             treeView_Project = new TreeView();
             splitContainer1 = new SplitContainer();
+            tabPage_View = new TabPage();
             menuStrip1.SuspendLayout();
             tabControl1.SuspendLayout();
             tabPage_Gpio.SuspendLayout();
@@ -71,31 +73,31 @@
             // openToolStripMenuItem
             // 
             openToolStripMenuItem.Name = "openToolStripMenuItem";
-            openToolStripMenuItem.Size = new Size(224, 26);
+            openToolStripMenuItem.Size = new Size(143, 26);
             openToolStripMenuItem.Text = "Open";
             openToolStripMenuItem.Click += openToolStripMenuItem_Click;
             // 
             // saveToolStripMenuItem
             // 
             saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            saveToolStripMenuItem.Size = new Size(224, 26);
+            saveToolStripMenuItem.Size = new Size(143, 26);
             saveToolStripMenuItem.Text = "Save";
             // 
             // saveAsToolStripMenuItem
             // 
             saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            saveAsToolStripMenuItem.Size = new Size(224, 26);
+            saveAsToolStripMenuItem.Size = new Size(143, 26);
             saveAsToolStripMenuItem.Text = "Save As";
             // 
             // exitToolStripMenuItem
             // 
             exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            exitToolStripMenuItem.Size = new Size(224, 26);
+            exitToolStripMenuItem.Size = new Size(143, 26);
             exitToolStripMenuItem.Text = "Exit";
             // 
             // editToolStripMenuItem
             // 
-            editToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { deviceToolStripMenuItem });
+            editToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { deviceToolStripMenuItem, createProjectToolStripMenuItem });
             editToolStripMenuItem.Name = "editToolStripMenuItem";
             editToolStripMenuItem.Size = new Size(49, 24);
             editToolStripMenuItem.Text = "Edit";
@@ -103,12 +105,20 @@
             // deviceToolStripMenuItem
             // 
             deviceToolStripMenuItem.Name = "deviceToolStripMenuItem";
-            deviceToolStripMenuItem.Size = new Size(224, 26);
+            deviceToolStripMenuItem.Size = new Size(185, 26);
             deviceToolStripMenuItem.Text = "Device";
             deviceToolStripMenuItem.Click += deviceToolStripMenuItem_Click;
             // 
+            // createProjectToolStripMenuItem
+            // 
+            createProjectToolStripMenuItem.Name = "createProjectToolStripMenuItem";
+            createProjectToolStripMenuItem.Size = new Size(185, 26);
+            createProjectToolStripMenuItem.Text = "Create Project";
+            createProjectToolStripMenuItem.Click += createProjectToolStripMenuItem_Click;
+            // 
             // tabControl1
             // 
+            tabControl1.Controls.Add(tabPage_View);
             tabControl1.Controls.Add(tabPage_System);
             tabControl1.Controls.Add(tabPage_Gpio);
             tabControl1.Dock = DockStyle.Fill;
@@ -141,12 +151,12 @@
             // 
             // flowPanelPins
             // 
-            flowPanelPins.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             flowPanelPins.AutoScroll = true;
+            flowPanelPins.Dock = DockStyle.Fill;
             flowPanelPins.FlowDirection = FlowDirection.TopDown;
             flowPanelPins.Location = new Point(3, 3);
             flowPanelPins.Name = "flowPanelPins";
-            flowPanelPins.Size = new Size(1195, 772);
+            flowPanelPins.Size = new Size(987, 800);
             flowPanelPins.TabIndex = 0;
             flowPanelPins.WrapContents = false;
             // 
@@ -176,6 +186,16 @@
             splitContainer1.SplitterDistance = 200;
             splitContainer1.SplitterWidth = 8;
             splitContainer1.TabIndex = 3;
+            // 
+            // tabPage_View
+            // 
+            tabPage_View.Location = new Point(4, 29);
+            tabPage_View.Name = "tabPage_View";
+            tabPage_View.Padding = new Padding(3);
+            tabPage_View.Size = new Size(993, 806);
+            tabPage_View.TabIndex = 2;
+            tabPage_View.Text = "VIEW";
+            tabPage_View.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
@@ -215,5 +235,7 @@
         private ToolStripMenuItem deviceToolStripMenuItem;
         private TreeView treeView_Project;
         private SplitContainer splitContainer1;
+        private ToolStripMenuItem createProjectToolStripMenuItem;
+        private TabPage tabPage_View;
     }
 }
