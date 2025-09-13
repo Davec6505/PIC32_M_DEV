@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Collections.Generic;
 
 namespace PIC32Mn_PROJ.classes
 {
@@ -7,6 +8,37 @@ namespace PIC32Mn_PROJ.classes
     {
         [JsonExtensionData]
         public Dictionary<string, JsonElement>? ExtensionData { get; set; }
+
+        [JsonIgnore]
+        public string? Device
+        {
+            get => this["Device"] as string;
+            set => this["Device"] = value;
+        }
+
+        [JsonIgnore]
+        public Dictionary<string, object>? General
+        {
+            get
+            {
+                if (this["General"] is JsonElement je && je.ValueKind == JsonValueKind.Object)
+                    return je.Deserialize<Dictionary<string, object>>();
+                return this["General"] as Dictionary<string, object>;
+            }
+            set => this["General"] = value;
+        }
+
+        [JsonIgnore]
+        public Dictionary<string, Dictionary<string, object>>? Features
+        {
+            get
+            {
+                if (this["Features"] is JsonElement je && je.ValueKind == JsonValueKind.Object)
+                    return je.Deserialize<Dictionary<string, Dictionary<string, object>>>();
+                return this["Features"] as Dictionary<string, Dictionary<string, object>>;
+            }
+            set => this["Features"] = value;
+        }
 
         public object? this[string key]
         {
@@ -20,6 +52,8 @@ namespace PIC32Mn_PROJ.classes
                         return intValue;
                     if (value.ValueKind == JsonValueKind.True || value.ValueKind == JsonValueKind.False)
                         return value.GetBoolean();
+                    if (value.ValueKind == JsonValueKind.Object)
+                        return value;
                     return value.ToString();
                 }
                 return null;
@@ -43,3 +77,4 @@ namespace PIC32Mn_PROJ.classes
         }
     }
 }
+

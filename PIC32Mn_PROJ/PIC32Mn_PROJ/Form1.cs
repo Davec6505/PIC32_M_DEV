@@ -19,6 +19,7 @@ namespace PIC32Mn_PROJ
 {
     public partial class Form1 : Form
     {
+
         ConfigLoader configLoader = new();
         Modules mods;
         pins pins;
@@ -51,9 +52,11 @@ namespace PIC32Mn_PROJ
         public bool saveNeeded { get; set; } = false;
 
         private TextEditor avalonEditor; // AvalonEdit instance for code viewing
-
+        private string currentViewFilePath;
+        // In Form1_Load, after initializing avalonEditor#
         #endregion Project properties
 
+        #region Form Initialization
         public Form1()
         {
             InitializeComponent();
@@ -74,52 +77,60 @@ namespace PIC32Mn_PROJ
             outputPath = $"{rootPath}dependancies\\gpio\\PinMappings.txt"; // Output file
             opath = $"{rootPath}dependancies\\modules\\";
 
+
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            mods = new Modules(adtfPath, opath);
-            pins = new pins(picPath, gpioPath);
-            // Check if the Application AppSettings has a value for projectPath
-            var savedPath = AppSettings.Default["projectPath"].ToString();
+            // Project Initialization
+            var savedPath = AppSettings.Default["projectPath"]?.ToString();
+
+
             if (!string.IsNullOrEmpty(savedPath))
             {
                 ProjectSettingsManager.SettingsFileName_ = "ProjectSettings.json";
                 projectDirPath = savedPath;
                 PopulateTreeViewWithFoldersAndFiles(projectDirPath);
-
+                PopulateFRCDIVComboBox();
                 if (CheckProjectSettingsExists())
                 {
-                    // if ProjectSettings.json exists load it
-                    var settings = ProjectSettingsManager.Load(projectDirPath);
-                    device = Convert.ToString(settings["Device"]);// ?? string.Empty;
+                    device = ProjectSettingsManager.GetDevice(projectDirPath);
                     this.Text = $"{projectDirPath} - {device}";
+
+
                 }
                 else
                 {
-                    // Create ProjectSettings.json in the project directory if it doesn't exist
                     var settings = new ProjectSettings();
                     settings["Device"] = "";
                     ProjectSettingsManager.Save(projectDirPath, settings);
-                    // Prompt user to select device for newly created projectsettings.json
                     GetDevice();
-                    this.Text = $"{projectDirPath} - {ProjectSettingsManager.LoadKey(projectDirPath, "Device")}";
-                }
-                var settings_ = ProjectSettingsManager.Load(projectDirPath);
-                if (settings_ != null)
-                {
-                    device = Convert.ToString(settings_["Device"]);// ?? string.Empty;
-                                                                   // CreateProjectSettings();
+                    device = ProjectSettingsManager.GetDevice(projectDirPath);
                     this.Text = $"{projectDirPath} - {device}";
                 }
-
-
             }
 
-            // extract pins from xml and save to json file.
+
+            BuildConfigGroupBoxesFromJson("dependancies\\modules\\FUSECONFIG.json");
+            Init_ClockDiagram_Combos();
+
+            if (!string.IsNullOrEmpty(device))
+            {
+                //load the json file to controls.
+                string ttFilePath = Path.Combine(rootPath, "dependancies", "templates", "config_bits.c.tt");
+                var config = ProjectConfigProvider.LoadConfig(projectDirPath, ttFilePath, device);
+                ApplyConfigDefaultsToControls(config);
+            }
+
+
+
+            // --- All other initialization code should always run ---
+            mods = new Modules(adtfPath, opath);
+            pins = new pins(picPath, gpioPath);
+
+
             pins.LoadPins();
 
-            // Now you can use the 'mods' object to access module data
             foreach (var entry in mods)
             {
                 if (entry is KeyValuePair<string, (string Path1, string Path2)> kvp)
@@ -132,29 +143,39 @@ namespace PIC32Mn_PROJ
                 }
             }
 
-            //condition GPIO tab with json file
             load_pinForm(gpioPath);
-
+            // AvalonEdit setup
             TextEditor avalonEditor = new TextEditor();
+            avalonEditor.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.White);
+            avalonEditor.FontFamily = new System.Windows.Media.FontFamily("Consolas");
             avalonEditor.ShowLineNumbers = true;
-            avalonEditor.SyntaxHighlighting = null; // Set later based on file type
-            avalonEditor.IsReadOnly = true;
+            avalonEditor.SyntaxHighlighting = null;
+            avalonEditor.IsReadOnly = false;
 
-            // Assuming you have a TabPage named tabPage_View and want to fill it:
             ElementHost elementHost = new ElementHost();
+            elementHost.BackColor = System.Drawing.Color.White;
+            elementHost.Margin = new Padding(0);
+            elementHost.Padding = new Padding(0);
             elementHost.Dock = DockStyle.Fill;
             elementHost.Child = avalonEditor;
+
+            tabPage_View.Padding = new Padding(0);
             tabPage_View.Controls.Add(elementHost);
 
-            // Store reference for later use
             this.avalonEditor = avalonEditor;
-
+            avalonEditor.TextChanged += (s, e2) => { saveNeeded = true; };
+            LoadDefaults();
             treeView_Project.AfterSelect += treeView_Project_AfterSelect;
+            panel_ClockDiagram.Resize += Panel_ClockDiagram_Resize;
 
+            assign_events_clockdiagram();
 
 
         }
 
+
+
+        #endregion Form Initialization
 
         // Project menustrip items
         #region  menu items
@@ -176,10 +197,15 @@ namespace PIC32Mn_PROJ
 
                     if (CheckProjectSettingsExists())
                     {
-                        // if ProjectSettings.json exists load it
-                        var settings_ = ProjectSettingsManager.Load(projectDirPath);
-                        device = Convert.ToString(settings_["Device"]);
+                        // Load device and config from ProjectSettings.json
+                        var deviceName = ProjectSettingsManager.GetDevice(projectDirPath);
+                        device = deviceName;
                         this.Text = $"{projectDirPath} - {device}";
+
+                        // Load config for the device
+                        string ttFilePath = Path.Combine(rootPath, "dependancies", "templates", "config_bits.c.tt");
+                        var config = ProjectConfigProvider.LoadConfig(projectDirPath, ttFilePath, device);
+                        ApplyConfigDefaultsToControls(config);
                         return;
                     }
                     else
@@ -196,6 +222,35 @@ namespace PIC32Mn_PROJ
             }
         }
 
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Save the file in the editor if needed
+            if (!string.IsNullOrEmpty(currentViewFilePath) && avalonEditor != null)
+            {
+                File.WriteAllText(currentViewFilePath, avalonEditor.Text);
+            }
+
+            // Save project-level config from UI controls
+            if (!string.IsNullOrEmpty(projectDirPath) && !string.IsNullOrEmpty(device))
+            {
+                var config = CollectCurrentConfigValues();
+                ProjectConfigProvider.SaveDeviceConfig(projectDirPath, device, config);
+
+                // --- Reload config and re-apply to controls ---
+                string ttFilePath = Path.Combine(rootPath, "dependancies", "templates", "config_bits.c.tt");
+                var newConfig = ProjectConfigProvider.LoadConfig(projectDirPath, ttFilePath, device);
+                ApplyConfigDefaultsToControls(newConfig);
+                SyncGraphicComboBoxItems();
+
+                MessageBox.Show("Project settings saved.", "Save", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                RefreshAvalonEditor();
+            }
+            else
+            {
+                MessageBox.Show("No project or device selected.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -259,7 +314,7 @@ namespace PIC32Mn_PROJ
                         Directory.CreateDirectory(Path.Combine(newProjectPath, "srcs\\startup"));
                         if (Directory.Exists(Path.Combine(newProjectPath, "srcs", "startup")))
                         {
-                            File.Copy($"{rootPath}dependancies\\project_files\\startup.S" , Path.Combine(newProjectPath, "srcs\\startup", "startup.S"));
+                            File.Copy($"{rootPath}dependancies\\project_files\\startup.S", Path.Combine(newProjectPath, "srcs\\startup", "startup.S"));
                         }
                     }
 
@@ -267,9 +322,9 @@ namespace PIC32Mn_PROJ
                     PopulateTreeViewWithFoldersAndFiles(projectDirPath);
                     AppSettings.Default["projectPath"] = projectDirPath;
                     AppSettings.Default.Save();
-                    
+
                     GetDevice();
-                   // this.Text = $"{projectDirPath} - {settings["Device"]}";
+                    // this.Text = $"{projectDirPath} - {settings["Device"]}";
                 }
             }
         }
@@ -337,31 +392,30 @@ namespace PIC32Mn_PROJ
                     }
                 }
 
-                BuildPinRow(pinName, pinData);// directionFunctions);
+                BuildPinRow(pinEntry.Name, pinName, pinData);// directionFunctions);
             }
 
         }
 
-        private void BuildPinRow(string pinKey, JsonElement pinData)
+        private void BuildPinRow(string pin_num, string pinKey, JsonElement pinData)
         {
             var rowPanel = new Panel
             {
-                Width = 450,//flowPanelPins.Width - 25,
+                Width = 500,//flowPanelPins.Width - 25,
                 Height = 35,
                 Margin = new Padding(5),
                 BorderStyle = BorderStyle.FixedSingle,
                 Tag = pinKey // for later reference
             };
 
-            var pinNumLable = new Label { Text = pinKey };
+            var pinNumLable = new Label { Text = pin_num, Width = 50 };
             var enableCheck = new CheckBox { Text = "En", Width = 50, Checked = false, Anchor = AnchorStyles.Left };
             var pinNameBox = new TextBox { Width = 100, Text = pinData.GetProperty("PIN").GetString() };
             var directionToggle = new CheckBox { Text = "Out", Width = 60, Checked = false, Anchor = AnchorStyles.Left };
             var functionCombo = new ComboBox { Width = 200, DropDownStyle = ComboBoxStyle.DropDownList, Anchor = AnchorStyles.Left | AnchorStyles.Right };
 
             var directionFunctions = new Dictionary<string, List<string>>();
-            if (pinData.TryGetProperty("PinFunctions", out var pinFunctions) &&
-                pinFunctions.TryGetProperty("direction", out var directionElement))
+            if (pinData.TryGetProperty("PinFunctions", out var pinFunctions) && pinFunctions.TryGetProperty("direction", out var directionElement))
             {
                 foreach (JsonProperty dir in directionElement.EnumerateObject())
                 {
@@ -384,14 +438,14 @@ namespace PIC32Mn_PROJ
             // Positioning
             int xposOffset = tabPage_Gpio.Left;
             pinNumLable.Location = new Point(xposOffset, 5);
-            enableCheck.Location = new Point(xposOffset + 5, 5);
-            pinNameBox.Location = new Point(xposOffset + 60, 5);
-            directionToggle.Location = new Point(xposOffset + 170, 5);
-            functionCombo.Location = new Point(xposOffset + 240, 5);
+            enableCheck.Location = new Point(xposOffset + 50, 5);
+            pinNameBox.Location = new Point(xposOffset + 100, 5);
+            directionToggle.Location = new Point(xposOffset + 230, 5);
+            functionCombo.Location = new Point(xposOffset + 290, 5);
 
+            rowPanel.Controls.Add(pinNumLable);
             rowPanel.Controls.Add(pinNameBox);
             rowPanel.Controls.Add(enableCheck);
-            rowPanel.Controls.Add(pinNameBox);
             rowPanel.Controls.Add(directionToggle);
             rowPanel.Controls.Add(functionCombo);
 
@@ -427,10 +481,19 @@ namespace PIC32Mn_PROJ
 
             if (CheckProjectSettingsExists() && !string.IsNullOrEmpty(_device))
             {
-                ProjectSettingsManager.SaveKey(projectDirPath, "Device", _device);
-                device = _device;
-                string dblchk = ProjectSettingsManager.LoadKey(projectDirPath, "Device") as string ?? string.Empty;
-                this.Text = $"{projectDirPath} - {dblchk}";
+                // Get config dictionary (from defaults, UI, or .tt)
+                string ttFilePath = Path.Combine(rootPath, "dependancies", "templates", "config_bits.c.tt");
+                var config = ProjectConfigProvider.LoadConfig(projectDirPath, ttFilePath, _device);
+
+                // Save device and config under device node
+                ProjectConfigProvider.SaveDeviceConfig(projectDirPath, _device, config);
+
+                // Use ProjectSettingsManager to get the device name
+                device = ProjectSettingsManager.GetDevice(projectDirPath);
+                this.Text = $"{projectDirPath} - {device}";
+
+                // Refresh AvalonEdit text
+                RefreshAvalonEditor();
             }
             else
             {
@@ -443,13 +506,17 @@ namespace PIC32Mn_PROJ
 
         #region Avilon Edit View Tab
 
-
+        /// <summary>
+        /// Displays the contents of the specified file in the AvalonEdit control with appropriate syntax highlighting.
+        /// </summary>
+        /// <param name="filePath"></param>
         private void DisplayFileInViewTab(string filePath)
         {
             if (!File.Exists(filePath) || avalonEditor == null)
                 return;
 
             avalonEditor.Text = File.ReadAllText(filePath);
+            currentViewFilePath = filePath; // Track the file being edited
 
             string ext = Path.GetExtension(filePath).ToLowerInvariant();
             string fileName = Path.GetFileName(filePath);
@@ -493,6 +560,25 @@ namespace PIC32Mn_PROJ
             }
         }
 
+
+
+        private IHighlightingDefinition LoadCustomHighlighting(string resourceName)
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            using var stream = assembly.GetManifestResourceStream(resourceName);
+            using var reader = new XmlTextReader(stream);
+            return HighlightingLoader.Load(reader, HighlightingManager.Instance);
+        }
+
+        private void RefreshAvalonEditor()
+        {
+            if (!string.IsNullOrEmpty(currentViewFilePath) && File.Exists(currentViewFilePath) && avalonEditor != null)
+            {
+                avalonEditor.Text = File.ReadAllText(currentViewFilePath);
+            }
+        }
+
+
         #endregion Avilon Edit View Tab
 
         #region treeview event handlers
@@ -505,15 +591,317 @@ namespace PIC32Mn_PROJ
             }
         }
 
-        private IHighlightingDefinition LoadCustomHighlighting(string resourceName)
+        #endregion treeview event handlers
+
+        #region System tab controls
+
+        #region Panel1 Config groupBox
+
+        // Dictionary to map config key to all ComboBoxes representing it (Panel1 and graphic)
+        private readonly Dictionary<string, List<Control>> configKeyToControls = new();
+
+        // Call this in Form1_Load after loading the config JSON
+        private void BuildConfigGroupBoxesFromJson(string fuseConfigPath)
         {
-            var assembly = Assembly.GetExecutingAssembly();
-            using var stream = assembly.GetManifestResourceStream(resourceName);
-            using var reader = new XmlTextReader(stream);
-            return HighlightingLoader.Load(reader, HighlightingManager.Instance);
+            string json = File.ReadAllText(fuseConfigPath);
+            using var doc = JsonDocument.Parse(json);
+
+            var fuseConfig = doc.RootElement.GetProperty("FUSECONFIG");
+
+            int groupBoxTop = 10;
+            foreach (var section in fuseConfig.EnumerateObject())
+            {
+                var groupBox = new GroupBox
+                {
+                    Text = section.Name,
+                    Width = panelConfigSections.Width - 30,
+                    Height = 60 + section.Value.EnumerateObject().Count() * 35,
+                    Top = groupBoxTop,
+                    Left = 10,
+                    Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
+                };
+
+                int controlTop = 25;
+                foreach (var item in section.Value.EnumerateObject())
+                {
+                    var label = new Label
+                    {
+                        Text = item.Name,
+                        Left = 10,
+                        Top = controlTop + 5,
+                        Width = 100
+                    };
+
+                    Control inputControl;
+                    var arr = item.Value.EnumerateArray().ToArray();
+                    if (arr.Length == 0)
+                    {
+
+                        // Use TextBox for user input
+                        var textBox = new TextBox
+                        {
+                            Text = (item.Name == "USERID") ? "0xffff" : "",
+                            Left = 110,
+                            Width = groupBox.Width - 140,
+                            Top = controlTop,
+                            Anchor = AnchorStyles.Left | AnchorStyles.Right,
+                            Tag = item.Name
+                        };
+                        textBox.TextChanged += ConfigTextBox_TextChanged;
+
+                        // Register in the dictionary for synchronization
+                        if (!configKeyToControls.ContainsKey(item.Name))
+                            configKeyToControls[item.Name] = new List<Control>();
+                        configKeyToControls[item.Name].Add(textBox);
+
+                        inputControl = textBox;
+                    }
+                    else
+                    {
+                        // Use ComboBox for selection
+                        var combo = new ComboBox
+                        {
+                            Left = 110,
+                            Width = groupBox.Width - 140,
+                            Top = controlTop,
+                            DropDownStyle = ComboBoxStyle.DropDownList,
+                            Tag = item.Name,
+                            Anchor = AnchorStyles.Left | AnchorStyles.Right
+                        };
+                        foreach (var val in arr)
+                            combo.Items.Add(val.GetString());
+                        combo.SelectedIndexChanged += ConfigComboBox_SelectedIndexChanged;
+
+                        // Register in the dictionary for synchronization
+                        RegisterComboBoxByTag(combo);
+
+                        inputControl = combo;
+                    }
+
+                    groupBox.Controls.Add(label);
+                    groupBox.Controls.Add(inputControl);
+
+                    controlTop += 35;
+                }
+
+                panelConfigSections.Controls.Add(groupBox);
+                groupBoxTop += groupBox.Height + 10;
+
+                string? projectDir = AppSettings.Default["projectPath"]?.ToString();
+                string ttFilePath = Path.Combine(rootPath, "dependancies", "templates", "config_bits.c.tt");
+                string? device = ProjectSettingsManager.LoadKey(projectDir ?? string.Empty, "Device") as string;
+                var config = ProjectConfigProvider.LoadConfig(projectDir, ttFilePath, device);
+
+                ApplyConfigDefaultsToControls(config);
+
+            }
+
+            SyncGraphicComboBoxItems();
         }
 
-        #endregion treeview event handlers
+        private void Init_ClockDiagram_Combos()
+        {
+            foreach (Control ctrl in panel_ClockDiagram.Controls)
+            {
+                if (ctrl is ComboBox combo)
+                    RegisterComboBoxByTag(combo);
+            }
+        }
+
+        private void RegisterComboBoxByTag(ComboBox combo)
+        {
+            if (combo.Tag is string key && !string.IsNullOrEmpty(key))
+            {
+                if (!configKeyToControls.ContainsKey(key))
+                    configKeyToControls[key] = new List<Control>();
+                configKeyToControls[key].Add(combo);
+                combo.SelectedIndexChanged += ConfigComboBox_SelectedIndexChanged;
+            }
+        }
+
+        // Synchronize all controls with the same config key when a ComboBox changes
+        private void ConfigComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var changedCombo = sender as ComboBox;
+            var key = changedCombo.Tag as string;
+            if (key == null) return;
+
+            foreach (var control in configKeyToControls[key])
+            {
+                if (control != changedCombo)
+                {
+                    if (control is ComboBox combo)
+                        combo.SelectedItem = changedCombo.SelectedItem;
+                    else if (control is TextBox textBox)
+                        textBox.Text = changedCombo.SelectedItem?.ToString() ?? "";
+                }
+            }
+        }
+
+        // Synchronize all controls with the same config key when a TextBox changes
+        private void ConfigTextBox_TextChanged(object sender, EventArgs e)
+        {
+            var changedTextBox = sender as TextBox;
+            var key = changedTextBox.Tag as string;
+            if (key == null) return;
+
+            foreach (var control in configKeyToControls[key])
+            {
+                if (control != changedTextBox)
+                {
+                    if (control is ComboBox combo)
+                        combo.SelectedItem = changedTextBox.Text;
+                    else if (control is TextBox textBox)
+                        textBox.Text = changedTextBox.Text;
+                }
+            }
+        }
+
+        private void PopulateFRCDIVComboBox()
+        {
+            string cruJsonPath = Path.Combine(rootPath, "dependancies", "modules", "CRU.json");
+            if (!File.Exists(cruJsonPath)) return;
+
+            string jsonText = File.ReadAllText(cruJsonPath);
+            using var doc = JsonDocument.Parse(jsonText);
+
+            if (!doc.RootElement.TryGetProperty("CRU", out var cruObj)) return;
+            if (!cruObj.TryGetProperty("OSCCON", out var oscconArr)) return;
+
+            foreach (var field in oscconArr.EnumerateArray())
+            {
+                if (field.TryGetProperty("name", out var nameProp) && nameProp.GetString() == "FRCDIV")
+                {
+                    if (field.TryGetProperty("values", out var valuesArr))
+                    {
+                        comboBox_FRCDIV.Items.Clear();
+                        foreach (var val in valuesArr.EnumerateArray())
+                        {
+                            //string caption = val.TryGetProperty("caption", out var cap) ? cap.GetString() : "";
+                            string value = val.TryGetProperty("name", out var v) ? v.GetString() : "";
+                            if (!string.IsNullOrEmpty(value))
+                            {
+                                var divs = value.Split('_');
+                                if (divs.Length >2)
+                                    comboBox_FRCDIV.Items.Add($"{divs[2]}_{divs[3]}");
+                                else
+                                    comboBox_FRCDIV.Items.Clear();
+                            }
+                           
+                        }
+                    }
+                    break;
+                }
+            }
+
+            comboBox_FRCDIV.Tag = "FRCDIV";
+            RegisterComboBoxByTag(comboBox_FRCDIV);
+        }
+
+        #endregion Panel1 Config groupBox
+
+        #region Panel2 Clock Diagram
+
+
+
+        private void SyncGraphicComboBoxItems()
+        {
+            foreach (Control ctrl in panel_ClockDiagram.Controls)
+            {
+                if (ctrl is ComboBox graphicCombo && graphicCombo.Tag is string key && !string.IsNullOrEmpty(key))
+                {
+                    // Find the config ComboBox for this key (skip the graphic one itself)
+                    if (configKeyToControls.TryGetValue(key, out var controls))
+                    {
+                        var configCombo = controls
+                            .OfType<ComboBox>()
+                            .FirstOrDefault(c => c != graphicCombo);
+
+                        if (configCombo != null)
+                        {
+                            graphicCombo.Items.Clear();
+                            foreach (var item in configCombo.Items)
+                                graphicCombo.Items.Add(item);
+
+                            // Optionally, sync the selected item as well
+                            graphicCombo.SelectedItem = configCombo.SelectedItem;
+                        }
+                    }
+                }
+            }
+        }
+
+        #endregion Panel2 Clock Diagram
+
+
+
+
+        #endregion System tab controls
+
+        #region GetDefaults for config from tt file or project settings
+
+        private void LoadDefaults()
+        {
+            // Example usage:
+            string? projectDir = AppSettings.Default["projectPath"]?.ToString();
+            string ttFilePath = Path.Combine(rootPath, "dependancies", "templates", "config_bits.c.tt");
+            string? device = ProjectSettingsManager.LoadKey(projectDir ?? string.Empty, "Device") as string;
+            var config = ProjectConfigProvider.LoadConfig(projectDir, ttFilePath, device);
+            // Use 'config' to populate your UI controls
+        }
+
+        private void ApplyConfigDefaultsToControls(Dictionary<string, string> config)
+        {
+            foreach (var kvp in config)
+            {
+                if (configKeyToControls.TryGetValue(kvp.Key, out var controls))
+                {
+                    foreach (var control in controls)
+                    {
+                        if (control is ComboBox combo)
+                        {
+                            if (combo.Items.Contains(kvp.Value))
+                                combo.SelectedItem = kvp.Value;
+                        }
+                        else if (control is TextBox textBox)
+                        {
+                            textBox.Text = kvp.Value;
+                        }
+                    }
+                }
+            }
+            // Optionally, set FRCDIV directly if not handled by the above
+            if (config.TryGetValue("FRCDIV", out var frcdivValue) && comboBox_FRCDIV.Items.Contains(frcdivValue))
+                comboBox_FRCDIV.SelectedItem = frcdivValue;
+        }
+
+        private Dictionary<string, string> CollectCurrentConfigValues()
+        {
+            var config = new Dictionary<string, string>();
+            foreach (var kvp in configKeyToControls)
+            {
+                // Use the first control as the source of truth (all are synced)
+                var control = kvp.Value.FirstOrDefault();
+                if (control is ComboBox combo)
+                {
+                    if (combo.SelectedItem != null)
+                        config[kvp.Key] = combo.SelectedItem.ToString();
+                }
+                else if (control is TextBox textBox)
+                {
+                    config[kvp.Key] = textBox.Text;
+                }
+            }
+
+            if (!config.ContainsKey("FRCDIV") && comboBox_FRCDIV.SelectedItem != null)
+                config["FRCDIV"] = comboBox_FRCDIV.SelectedItem.ToString();
+            return config;
+        }
+
+        #endregion GetDefaults for config from tt file or project settings
+
+
+
     }
 
 }

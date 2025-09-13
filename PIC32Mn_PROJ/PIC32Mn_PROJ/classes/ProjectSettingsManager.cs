@@ -40,6 +40,20 @@ namespace PIC32Mn_PROJ.classes
             var settings = Load(projectDirectory);
             return settings[key];
         }
+
+        public static string GetDevice(string projectDir)
+        {
+            string settingsPath = Path.Combine(projectDir, "ProjectSettings.json");
+            if (!File.Exists(settingsPath))
+                return string.Empty;
+
+            var json = File.ReadAllText(settingsPath);
+            var rootDict = JsonSerializer.Deserialize<Dictionary<string, System.Text.Json.JsonElement>>(json);
+            if (rootDict != null && rootDict.TryGetValue("Device", out var devElem) && devElem.ValueKind == System.Text.Json.JsonValueKind.String)
+                return devElem.GetString() ?? string.Empty;
+
+            return string.Empty;
+        }
     }
 }
 
