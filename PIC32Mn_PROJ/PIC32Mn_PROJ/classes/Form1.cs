@@ -12,6 +12,16 @@ namespace PIC32Mn_PROJ
 {
     public partial class Form1
     {
+        private ToolTip toolTip1 = new ToolTip();
+
+        // calculation properties for PLL and clock diagram
+        private string pllclk = String.Empty;
+        private Int32 sysclk = 0;
+        private Int32 indiv = 0;
+        private Int32 mult = 0;
+        private Int32 outdiv = 0;
+
+        // positions in percent of the panel size
         private readonly float poscmod_x = 0.385f;
         private readonly float poscmod_y = 0.385f;
         private readonly float pllclk_x = 0.14f;
@@ -51,10 +61,28 @@ namespace PIC32Mn_PROJ
         private readonly float lblPOSCO_x = 0.63f;
         private readonly float lblPOSCO_y = 0.382f;
         private readonly float lblFRC_x = 0.3f;
-        private readonly float lblFRC_y = 0.53f;
+        private readonly float lblFRC_y = 0.532f;
         private readonly float lblFRCDIV_x = 0.63f;
-        private readonly float lblFRCDIV_y = 0.53f;
+        private readonly float lblFRCDIV_y = 0.532f;
+        private readonly float lblBFRC_x = 0.63f;
+        private readonly float lblBFRC_y = 0.618f;
+        private readonly float lblLPRC_x = 0.6235f;
+        private readonly float lblLPRC_y = 0.672f;
+        private readonly float lblSOSC_x = 0.6135f;
+        private readonly float lblSOSC_y = 0.735f;
+        private readonly float lblSPLL_x = 0.621f;
+        private readonly float lblSPLL_y = 0.290f;
 
+        /// <summary>
+        /// Handles the <see cref="Control.Resize"/> event for the <c>panel_ClockDiagram</c> control. Dynamically
+        /// adjusts the positions of various UI elements within the panel based on its current size.
+        /// </summary>
+        /// <remarks>This method recalculates the positions of multiple controls, such as combo boxes,
+        /// labels, and checkboxes, to ensure they remain centered at specific relative positions within the
+        /// <c>panel_ClockDiagram</c>. The positions are determined using predefined relative coordinates and the
+        /// current dimensions of the panel.</remarks>
+        /// <param name="sender">The source of the event, typically the <c>panel_ClockDiagram</c> control.</param>
+        /// <param name="e">An <see cref="EventArgs"/> that contains the event data.</param>
         private void Panel_ClockDiagram_Resize(object? sender, EventArgs e)
         {
             panel_ClockDiagram.BeginInvoke((MethodInvoker)delegate
@@ -122,32 +150,164 @@ namespace PIC32Mn_PROJ
                 x = (int)(panel_ClockDiagram.Width * lblFRCDIV_x) - (label_FRCOSCDIV.Width / 2);
                 y = (int)(panel_ClockDiagram.Height * lblFRCDIV_y) - (label_FRCOSCDIV.Height / 2);
                 label_FRCOSCDIV.Location = new Point(x, y);
-
+                x = (int)(panel_ClockDiagram.Width * lblBFRC_x) - (label_BFRC.Width / 2);
+                y = (int)(panel_ClockDiagram.Height * lblBFRC_y) - (label_BFRC.Height / 2);
+                label_BFRC.Location = new Point(x, y);
+                x = (int)(panel_ClockDiagram.Width * lblLPRC_x) - (label_LPRC.Width / 2);
+                y = (int)(panel_ClockDiagram.Height * lblLPRC_y) - (label_LPRC.Height / 2);
+                label_LPRC.Location = new Point(x, y);
+                x = (int)(panel_ClockDiagram.Width * lblSOSC_x) - (label_SOSC.Width / 2);
+                y = (int)(panel_ClockDiagram.Height * lblSOSC_y) - (label_SOSC.Height / 2);
+                label_SOSC.Location = new Point(x, y);
+                x = (int)(panel_ClockDiagram.Width * lblSPLL_x) - (label_SPLL.Width / 2);
+                y = (int)(panel_ClockDiagram.Height * lblSPLL_y) - (label_SPLL.Height / 2);
+                label_SPLL.Location = new Point(x, y);
 
             });
         }
 
+        /// <summary>
+        /// Sets the tooltips for the clock diagram controls
+        /// </summary>
+        private void tooltips_clockdiagram()
+        {
+            toolTip1.SetToolTip(comboBox_POSCMOD, "Primary Oscillator Configuration\n" +
+                "FRC: Fast RC Oscillator\n" +
+                "FRCPLL: Fast RC Oscillator with PLL\n" +
+                "PRI: Primary Oscillator (POSC)\n" +
+                "PRIPLL: Primary Oscillator with PLL\n" +
+                "SOSC: Secondary Oscillator (SOSC)\n" +
+                "LPRC: Low Power RC Oscillator\n" +
+                "FRCDIV: Fast RC Oscillator divided by 16\n" +
+                "FRCDIVPLL: Fast RC Oscillator divided by 16 with PLL");
+            toolTip1.SetToolTip(comboBox_FPLLICLK, "PLL Input Clock Source\n" +
+                "POSC: Primary Oscillator\n" +
+                "FRC: Fast RC Oscillator");
+            toolTip1.SetToolTip(comboBox_FPLLIDIV, "PLL Input Divider\n" +
+                "Divides the input clock to the PLL by the selected value.");
+            toolTip1.SetToolTip(comboBox_UPLLFSEL, "USB PLL Input Frequency Selection\n" +
+                "Selects the input frequency range for the USB PLL.");
+            toolTip1.SetToolTip(comboBox_FPLLMULT, "PLL Multiplier\n" +
+                "Multiplies the divided input clock to the PLL by the selected value.");
+            toolTip1.SetToolTip(comboBox_FPLLRNG, "PLL Frequency Range Selection\n" +
+                "Selects the frequency range for the PLL output.\n " +
+                "Always match  to the actual frequency entering the PLL after FPLLIDIV.\n" +
+                "This ensures the PLL’s internal control loop is tuned correctly.");
+            toolTip1.SetToolTip(comboBox_FPLLODIV, "PLL Output Divider\n" +
+                "Divides the PLL output clock by the selected value.");
+            toolTip1.SetToolTip(comboBox_FRCDIV, "FRC Divider\n" +
+                "Divides the Fast RC Oscillator frequency by the selected value.");
+            toolTip1.SetToolTip(comboBox_FSOSCEN, "Secondary Oscillator Enable\n" +
+                "Enables or disables the Secondary Oscillator (SOSC).");
+            toolTip1.SetToolTip(comboBox_FNOSC, "Initial Oscillator Selection\n" +
+                "Selects the initial oscillator source after a reset.");
+            toolTip1.SetToolTip(comboBox_FCKSM, "Clock Switching and Monitor Selection\n" +
+                "Enables or disables clock switching and monitor features.");
+            toolTip1.SetToolTip(comboBox_OSCIOFNC, "Oscillator I/O Function\n" +
+                "Configures the function of the OSCIO pin.");
+            toolTip1.SetToolTip(numericUpDown_POSC, "Primary Oscillator Frequency\n" +
+                "Sets the frequency of the Primary Oscillator (POSC) in Hertz.");
+            toolTip1.SetToolTip(numericUpDown_SOSC, "Secondary Oscillator Frequency\n" +
+                "Sets the frequency of the Secondary Oscillator (SOSC) in Hertz.");
+            toolTip1.SetToolTip(label_SySClock, "System Clock Frequency\n" +
+                "Displays the calculated system clock frequency based on the selected settings.");
+            toolTip1.SetToolTip(checkBox_OE, "Clock Output Enable\n" +
+                "Enables or disables the clock output on the OSCIO pin.");
+            toolTip1.SetToolTip(checkBox_OutOscON, "Oscillator Output Enable\n" +
+                "Enables or disables the oscillator output function on the OSCIO pin.");
+            toolTip1.SetToolTip(label_POSCO, "Primary Oscillator Output Frequency\n" +
+                "Displays the frequency of the Primary Oscillator (POSC).");
+            toolTip1.SetToolTip(label_FRCOSC, "Fast RC Oscillator Frequency\n" +
+                "Displays the frequency of the Fast RC Oscillator (FRC).");
+            toolTip1.SetToolTip(label_FRCOSCDIV, "FRC Divided Frequency\n" +
+                "Displays the frequency of the Fast RC Oscillator after division.");
+            toolTip1.SetToolTip(label_BFRC, "Backup Fast RC Oscillator Frequency\n" +
+                "Displays the frequency of the Backup Fast RC Oscillator (BFRC).");
+            toolTip1.SetToolTip(label_LPRC, "Low Power RC Oscillator Frequency\n" +
+                "Displays the frequency of the Low Power RC Oscillator (LPRC).");
+            toolTip1.SetToolTip(label_SOSC, "Secondary Oscillator Frequency\n" +
+                "Displays the frequency of the Secondary Oscillator (SOSC).");
+        }
 
+        /// <summary>
+        /// Assigns event handlers to the clock diagram controls to update labels dynamically based on user input.
+        /// </summary>
         private void assign_events_clockdiagram()
         {
-           numericUpDown_POSC.ValueChanged += (s, e) => { label_POSCO.Text = numericUpDown_POSC.Value.ToString() + " Hz"; };
+           comboBox_POSCMOD.SelectedIndexChanged += (s, e) => { CalculateSysClock(); };
+           numericUpDown_POSC.ValueChanged += (s, e) => { CalculateSysClock(); };
            comboBox_FRCDIV.SelectedIndexChanged += (s, e) => { label_FRCOSCDIV.Text = calculate_frcdiv(label_FRCOSC.Text, comboBox_FRCDIV.SelectedItem as string ?? "ERR"); };
+           comboBox_FSOSCEN.SelectedIndexChanged += (s, e) => { update_label_SOSC(); };
+           numericUpDown_SOSC.ValueChanged += (s, e) => { update_label_SOSC(); };
+           checkBox_OE.CheckedChanged += (s, e) => { /* Future implementation can be added here */ };
+           checkBox_OutOscON.CheckedChanged += (s, e) => { /* Future implementation can be added here */ };
+
+            //PLL related events
+            comboBox_FPLLICLK.SelectedIndexChanged += (s, e) => { pllclk = comboBox_FPLLICLK.SelectedItem as string ?? String.Empty; };
+            comboBox_FPLLIDIV.SelectedIndexChanged += (s, e) => { CalculateSysClock(); };
+            comboBox_FPLLODIV.SelectedIndexChanged += (s, e) => { CalculateSysClock(); };
+            comboBox_FPLLMULT.SelectedIndexChanged += (s, e) => { CalculateSysClock(); };
+            comboBox_FPLLRNG.SelectedIndexChanged += (s, e) => { CalculateSysClock(); };
 
             update_labels_clockdiagram();
         }
 
 
-
+        /// <summary>
+        /// Updates the labels in the clock diagram based on current settings.
+        /// </summary>
         private void update_labels_clockdiagram()
         {
-            label_POSCO.Text = numericUpDown_POSC.Value.ToString() + " Hz";
+
             label_FRCOSCDIV.Text = calculate_frcdiv(label_FRCOSC.Text, comboBox_FRCDIV.SelectedItem as string ?? "ERR");
+            CalculateSysClock();
+            update_label_SOSC();
         }
 
-        private object CalculateSysClock()
+        /// <summary>
+        /// Not yet implemented
+        /// </summary>
+        /// <returns>The selected item from the <see cref="comboBox_POSCMOD"/> as an <see cref="object"/>.  Returns <see
+        /// langword="null"/> if no item is selected.</returns>
+        private void CalculateSysClock()
         {
-            object poscmod = comboBox_POSCMOD.SelectedItem;
-            return poscmod;
+            if (comboBox_POSCMOD.SelectedItem == null)
+            {
+                label_POSCO.Text = numericUpDown_POSC.Value.ToString() + "ERR";
+                return;
+            }
+
+            if (comboBox_POSCMOD.SelectedItem.ToString() == "OFF")
+            {
+                label_POSCO.Text =   "0 Hz";
+                return;
+            }
+            else
+            { 
+                label_POSCO.Text = numericUpDown_POSC.Value.ToString() + " Hz";
+            }
+
+            // Further implementation needed to calculate the system clock based on selected settings
+            sysclk = Convert.ToInt32(numericUpDown_POSC.Value);
+            indiv = Convert.ToInt32(comboBox_FPLLIDIV.SelectedItem.ToString().Split('_')[1]);
+            mult = Convert.ToInt32(comboBox_FPLLMULT.SelectedItem.ToString().Split('_')[1]);
+            outdiv = Convert.ToInt32(comboBox_FPLLODIV.SelectedItem.ToString().Split('_')[1]);
+            sysclk = (sysclk / indiv) * mult / outdiv;
+            label_SPLL.Text = sysclk.ToString("0") + " Hz";
+            if(sysclk > 200000000)
+            {
+                label_SPLL.ForeColor = Color.Red;
+            }
+            else if (sysclk == 200000000)
+            {
+                label_SPLL.ForeColor = Color.Blue;
+            }
+            else
+            {
+                label_SPLL.ForeColor = Color.Black;
+            }
+
+
         }
 
 
@@ -209,6 +369,25 @@ namespace PIC32Mn_PROJ
 
                 return intfrc.ToString("0") + " Hz";
         }
+
+        /// <summary>
+        /// Is called when FSOSCEN combobox is changed to enable/disable the SOSC frequency numericupdown
+        /// </summary>
+        private void update_label_SOSC()
+        {
+            if (comboBox_FSOSCEN.SelectedItem as string == "ON")
+            {
+                numericUpDown_SOSC.Enabled = true;
+                label_SOSC.Text = numericUpDown_SOSC.Value.ToString() + " Hz";
+            }
+            else
+            {
+                numericUpDown_SOSC.Enabled = false;
+                numericUpDown_SOSC.Value = 32768;
+                label_SOSC.Text = "0 Hz";
+            }
+        }
+    
     }
 }
 

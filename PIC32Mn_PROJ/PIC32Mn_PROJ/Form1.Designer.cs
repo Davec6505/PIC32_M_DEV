@@ -6,7 +6,6 @@
         ///  Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
-        private ToolTip toolTip1 = new ToolTip();
         /// <summary>
         ///  Clean up any resources being used.
         /// </summary>
@@ -43,6 +42,10 @@
             splitContainer_System = new SplitContainer();
             panelConfigSections = new Panel();
             panel_ClockDiagram = new Panel();
+            label_SPLL = new Label();
+            label_SOSC = new Label();
+            label_LPRC = new Label();
+            label_BFRC = new Label();
             label_FRCOSC = new Label();
             label_FRCOSCDIV = new Label();
             label_POSCO = new Label();
@@ -226,6 +229,10 @@
             panel_ClockDiagram.AutoScroll = true;
             panel_ClockDiagram.BackgroundImage = Properties.Resources.clock_154;
             panel_ClockDiagram.BackgroundImageLayout = ImageLayout.Stretch;
+            panel_ClockDiagram.Controls.Add(label_SPLL);
+            panel_ClockDiagram.Controls.Add(label_SOSC);
+            panel_ClockDiagram.Controls.Add(label_LPRC);
+            panel_ClockDiagram.Controls.Add(label_BFRC);
             panel_ClockDiagram.Controls.Add(label_FRCOSC);
             panel_ClockDiagram.Controls.Add(label_FRCOSCDIV);
             panel_ClockDiagram.Controls.Add(label_POSCO);
@@ -253,6 +260,47 @@
             panel_ClockDiagram.Size = new Size(1378, 898);
             panel_ClockDiagram.TabIndex = 0;
             // 
+            // label_SPLL
+            // 
+            label_SPLL.AutoSize = true;
+            label_SPLL.Font = new Font("Segoe UI Black", 10.8F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
+            label_SPLL.Location = new Point(826, 244);
+            label_SPLL.Name = "label_SPLL";
+            label_SPLL.Size = new Size(52, 25);
+            label_SPLL.TabIndex = 24;
+            label_SPLL.Tag = "";
+            label_SPLL.Text = "####";
+            // 
+            // label_SOSC
+            // 
+            label_SOSC.AutoSize = true;
+            label_SOSC.Location = new Point(826, 644);
+            label_SOSC.Name = "label_SOSC";
+            label_SOSC.Size = new Size(39, 20);
+            label_SOSC.TabIndex = 23;
+            label_SOSC.Tag = "";
+            label_SOSC.Text = "0 Hz";
+            // 
+            // label_LPRC
+            // 
+            label_LPRC.AutoSize = true;
+            label_LPRC.Location = new Point(825, 601);
+            label_LPRC.Name = "label_LPRC";
+            label_LPRC.Size = new Size(71, 20);
+            label_LPRC.TabIndex = 22;
+            label_LPRC.Tag = "";
+            label_LPRC.Text = "32768 Hz";
+            // 
+            // label_BFRC
+            // 
+            label_BFRC.AutoSize = true;
+            label_BFRC.Location = new Point(826, 551);
+            label_BFRC.Name = "label_BFRC";
+            label_BFRC.Size = new Size(87, 20);
+            label_BFRC.TabIndex = 21;
+            label_BFRC.Tag = "";
+            label_BFRC.Text = "8000000 Hz";
+            // 
             // label_FRCOSC
             // 
             label_FRCOSC.AutoSize = true;
@@ -266,21 +314,21 @@
             // label_FRCOSCDIV
             // 
             label_FRCOSCDIV.AutoSize = true;
-            label_FRCOSCDIV.Location = new Point(818, 475);
+            label_FRCOSCDIV.Location = new Point(826, 475);
             label_FRCOSCDIV.Name = "label_FRCOSCDIV";
             label_FRCOSCDIV.Size = new Size(45, 20);
             label_FRCOSCDIV.TabIndex = 19;
-            label_FRCOSCDIV.Tag = "POSCO_SETTING";
+            label_FRCOSCDIV.Tag = "";
             label_FRCOSCDIV.Text = "####";
             // 
             // label_POSCO
             // 
             label_POSCO.AutoSize = true;
-            label_POSCO.Location = new Point(818, 332);
+            label_POSCO.Location = new Point(824, 332);
             label_POSCO.Name = "label_POSCO";
             label_POSCO.Size = new Size(45, 20);
             label_POSCO.TabIndex = 18;
-            label_POSCO.Tag = "POSCO_SETTING";
+            label_POSCO.Tag = "";
             label_POSCO.Text = "####";
             // 
             // checkBox_OutOscON
@@ -624,5 +672,9 @@
         private Label label_POSCO;
         private Label label_FRCOSC;
         private Label label_FRCOSCDIV;
+        private Label label_SOSC;
+        private Label label_LPRC;
+        private Label label_BFRC;
+        private Label label_SPLL;
     }
 }

@@ -169,7 +169,8 @@ namespace PIC32Mn_PROJ
             panel_ClockDiagram.Resize += Panel_ClockDiagram_Resize;
 
             assign_events_clockdiagram();
-
+            tooltips_clockdiagram();
+            this.Panel_ClockDiagram_Resize(panel_ClockDiagram, null);
 
         }
 
