@@ -1,8 +1,33 @@
 <#@ template debug="false" hostspecific="false" language="C#" #>
 <#@ output extension=".c" #>
+<#@ import namespace="System.Collections.Generic" #>
+
 <#
-    // Example: define your config values here or pass them in via a host
-    var config = new Dictionary<string, string>
+    // Read session model if provided
+    dynamic model = (Session != null && Session.ContainsKey("config")) ? Session["config"] : null;
+
+    // Resolve device name
+    string deviceName = "PIC32MZ1024EFH144";
+    try { if (model != null && model.Device != null) deviceName = (string)model.Device; } catch { }
+
+    // Resolve device dictionary:
+    // 1) Prefer model.Config
+    // 2) Otherwise, look for a property named after the device (legacy shape)
+    IDictionary<string, string>? device = null;
+    try { if (model != null && model.Config != null) device = (IDictionary<string, string>)model.Config; } catch { }
+    if (device == null && model != null)
+    {
+        try
+        {
+            var devProp = ((object)model).GetType().GetProperty(deviceName);
+            var devObj = devProp?.GetValue(model);
+            device = devObj as IDictionary<string, string>;
+        }
+        catch { }
+    }
+
+    // Hardcoded defaults
+    var defaults = new Dictionary<string, string>
     {
         ["INCLUDE_HEADER"] = "initialization.h",
         ["DEBUG"] = "OFF",
@@ -53,15 +78,25 @@
         ["PFMWS"] = "3",
         ["ECCCON"] = "3"
     };
+
+    string Val(string key)
+    {
+        if (device != null && device.TryGetValue(key, out var v) && !string.IsNullOrEmpty(v))
+            return v;
+        return defaults.TryGetValue(key, out var d) ? d : "";
+    }
+
+    var header = Val("INCLUDE_HEADER");
+    var headerLiteral = (!string.IsNullOrEmpty(header) && header.StartsWith("\"")) ? header : "\"" + header + "\"";
 #>
+Device: <#= deviceName #>
+
 // *****************************************************************************
 // *****************************************************************************
 // Section: Included Files
 // *****************************************************************************
 // *****************************************************************************
-#include "<#= config["INCLUDE_HEADER"] #>"
-
-
+#include <#= headerLiteral #>
 
 // ****************************************************************************
 // ****************************************************************************
@@ -70,58 +105,58 @@
 // ****************************************************************************
 
 /*** DEVCFG0 ***/
-#pragma config DEBUG =      <#= config["DEBUG"] #>
-#pragma config JTAGEN =     <#= config["JTAGEN"] #>
-#pragma config ICESEL =     <#= config["ICESEL"] #>
-#pragma config TRCEN =      <#= config["TRCEN"] #>
-#pragma config BOOTISA =    <#= config["BOOTISA"] #>
-#pragma config FECCCON =    <#= config["FECCCON"] #>
-#pragma config FSLEEP =     <#= config["FSLEEP"] #>
-#pragma config DBGPER =     <#= config["DBGPER"] #>
-#pragma config SMCLR =      <#= config["SMCLR"] #>
-#pragma config SOSCGAIN =   <#= config["SOSCGAIN"] #>
-#pragma config SOSCBOOST =  <#= config["SOSCBOOST"] #>
-#pragma config POSCGAIN =   <#= config["POSCGAIN"] #>
-#pragma config POSCBOOST =  <#= config["POSCBOOST"] #>
-#pragma config EJTAGBEN =   <#= config["EJTAGBEN"] #>
-#pragma config CP =         <#= config["CP"] #>
+#pragma config DEBUG =      <#= Val("DEBUG") #>
+#pragma config JTAGEN =     <#= Val("JTAGEN") #>
+#pragma config ICESEL =     <#= Val("ICESEL") #>
+#pragma config TRCEN =      <#= Val("TRCEN") #>
+#pragma config BOOTISA =    <#= Val("BOOTISA") #>
+#pragma config FECCCON =    <#= Val("FECCCON") #>
+#pragma config FSLEEP =     <#= Val("FSLEEP") #>
+#pragma config DBGPER =     <#= Val("DBGPER") #>
+#pragma config SMCLR =      <#= Val("SMCLR") #>
+#pragma config SOSCGAIN =   <#= Val("SOSCGAIN") #>
+#pragma config SOSCBOOST =  <#= Val("SOSCBOOST") #>
+#pragma config POSCGAIN =   <#= Val("POSCGAIN") #>
+#pragma config POSCBOOST =  <#= Val("POSCBOOST") #>
+#pragma config EJTAGBEN =   <#= Val("EJTAGBEN") #>
+#pragma config CP =         <#= Val("CP") #>
 
 /*** DEVCFG1 ***/
-#pragma config FNOSC =      <#= config["FNOSC"] #>
-#pragma config DMTINTV =    <#= config["DMTINTV"] #>
-#pragma config FSOSCEN =    <#= config["FSOSCEN"] #>
-#pragma config IESO =       <#= config["IESO"] #>
-#pragma config POSCMOD =    <#= config["POSCMOD"] #>
-#pragma config OSCIOFNC =   <#= config["OSCIOFNC"] #>
-#pragma config FCKSM =      <#= config["FCKSM"] #>
-#pragma config WDTPS =      <#= config["WDTPS"] #>
-#pragma config WDTSPGM =    <#= config["WDTSPGM"] #>
-#pragma config FWDTEN =     <#= config["FWDTEN"] #>
-#pragma config WINDIS =     <#= config["WINDIS"] #>
-#pragma config FWDTWINSZ =  <#= config["FWDTWINSZ"] #>
-#pragma config DMTCNT =     <#= config["DMTCNT"] #>
-#pragma config FDMTEN =     <#= config["FDMTEN"] #>
+#pragma config FNOSC =      <#= Val("FNOSC") #>
+#pragma config DMTINTV =    <#= Val("DMTINTV") #>
+#pragma config FSOSCEN =    <#= Val("FSOSCEN") #>
+#pragma config IESO =       <#= Val("IESO") #>
+#pragma config POSCMOD =    <#= Val("POSCMOD") #>
+#pragma config OSCIOFNC =   <#= Val("OSCIOFNC") #>
+#pragma config FCKSM =      <#= Val("FCKSM") #>
+#pragma config WDTPS =      <#= Val("WDTPS") #>
+#pragma config WDTSPGM =    <#= Val("WDTSPGM") #>
+#pragma config FWDTEN =     <#= Val("FWDTEN") #>
+#pragma config WINDIS =     <#= Val("WINDIS") #>
+#pragma config FWDTWINSZ =  <#= Val("FWDTWINSZ") #>
+#pragma config DMTCNT =     <#= Val("DMTCNT") #>
+#pragma config FDMTEN =     <#= Val("FDMTEN") #>
 
 /*** DEVCFG2 ***/
-#pragma config FPLLIDIV =   <#= config["FPLLIDIV"] #>
-#pragma config FPLLRNG =    <#= config["FPLLRNG"] #>
-#pragma config FPLLICLK =   <#= config["FPLLICLK"] #>
-#pragma config FPLLMULT =   <#= config["FPLLMULT"] #>
-#pragma config FPLLODIV =   <#= config["FPLLODIV"] #>
-#pragma config UPLLFSEL =   <#= config["UPLLFSEL"] #>
+#pragma config FPLLIDIV =   <#= Val("FPLLIDIV") #>
+#pragma config FPLLRNG =    <#= Val("FPLLRNG") #>
+#pragma config FPLLICLK =   <#= Val("FPLLICLK") #>
+#pragma config FPLLMULT =   <#= Val("FPLLMULT") #>
+#pragma config FPLLODIV =   <#= Val("FPLLODIV") #>
+#pragma config UPLLFSEL =   <#= Val("UPLLFSEL") #>
 
 /*** DEVCFG3 ***/
-#pragma config USERID =     <#= config["USERID"] #>
-#pragma config FMIIEN =     <#= config["FMIIEN"] #>
-#pragma config FETHIO =     <#= config["FETHIO"] #>
-#pragma config PGL1WAY =    <#= config["PGL1WAY"] #>
-#pragma config PMDL1WAY =   <#= config["PMDL1WAY"] #>
-#pragma config IOL1WAY =    <#= config["IOL1WAY"] #>
-#pragma config FUSBIDIO =   <#= config["FUSBIDIO"] #>
+#pragma config USERID =     <#= Val("USERID") #>
+#pragma config FMIIEN =     <#= Val("FMIIEN") #>
+#pragma config FETHIO =     <#= Val("FETHIO") #>
+#pragma config PGL1WAY =    <#= Val("PGL1WAY") #>
+#pragma config PMDL1WAY =   <#= Val("PMDL1WAY") #>
+#pragma config IOL1WAY =    <#= Val("IOL1WAY") #>
+#pragma config FUSBIDIO =   <#= Val("FUSBIDIO") #>
 
 /*** BF1SEQ0 ***/
-#pragma config TSEQ =       <#= config["TSEQ"] #>
-#pragma config CSEQ =       <#= config["CSEQ"] #>
+#pragma config TSEQ =       <#= Val("TSEQ") #>
+#pragma config CSEQ =       <#= Val("CSEQ") #>
 
 // *****************************************************************************
 // *****************************************************************************
@@ -142,9 +177,9 @@ void SYS_Initialize ( void* data )
     (void)__builtin_disable_interrupts();
 
     CLK_Initialize();
-    PRECONbits.PREFEN = <#= config["PREFEN"] #>;
-    PRECONbits.PFMWS = <#= config["PFMWS"] #>;
-    CFGCONbits.ECCCON = <#= config["ECCCON"] #>;
+    PRECONbits.PREFEN = <#= Val("PREFEN") #>;
+    PRECONbits.PFMWS = <#= Val("PFMWS") #>;
+    CFGCONbits.ECCCON = <#= Val("ECCCON") #>;
 
     // Add your initialization calls here
     // GPIO_Initialize();

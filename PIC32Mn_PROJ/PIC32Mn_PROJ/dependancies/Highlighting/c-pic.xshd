@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<SyntaxDefinition name="C-PIC" extensions=".c;.h" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+  <!-- Base colors -->
+  <Color name="Default" foreground="#202020" />
+  <Color name="Keyword" foreground="#005FBF" fontWeight="bold" />
+  <Color name="Type" foreground="#B07000" />
+  <Color name="Comment" foreground="#5A995A" fontStyle="italic" />
+  <Color name="String" foreground="#CE9178" />
+  <Color name="Number" foreground="#5C9D5C" />
+  <!-- Directive token color (for #include / #pragma) -->
+  <Color name="PreprocDirective" foreground="#AA00CC" fontWeight="bold" />
+  <!-- Rest of the preprocessor line -->
+  <Color name="PreprocRest" foreground="#808080" />
+  <Color name="Operator" foreground="#303030" />
+
+  <RuleSet ignoreCase="false">
+    <!-- Comments -->
+    <Span color="Comment" begin="/\*" end="\*/" />
+    <Span color="Comment" begin="//" end="\n" />
+
+    <!-- Strings / chars -->
+    <Span color="String" begin="&quot;" end="&quot;" />
+    <Span color="String" begin="'" end="'" />
+
+    <!-- Any preprocessor line: color the whole line as PreprocRest -->
+    <Span color="PreprocRest" begin="^[ \t]*#" end="\n">
+      <RuleSet>
+        <!-- Inside that line, color directive keyword (#include/#pragma) differently -->
+        <Rule color="PreprocDirective">\b(?:include|pragma)\b</Rule>
+
+        <!-- Also color include targets within the line -->
+        <Span color="String" begin="&lt;" end="&gt;" />
+        <Span color="String" begin="&quot;" end="&quot;" />
+      </RuleSet>
+    </Span>
+
+    <!-- Numbers -->
+    <Rule color="Number">\b0x[0-9a-fA-F]+\b|\b\d+(\.\d+)?([eE][+\-]?\d+)?\b</Rule>
+
+    <!-- Operators (escape XML entities) -->
+    <Rule color="Operator">==|!=|&amp;&amp;|\|\||&lt;=|&gt;=|&lt;&lt;|&gt;&gt;|[+\-*/%&amp;\|^~!=?:&lt;&gt;]</Rule>
+
+    <!-- Keywords -->
+    <Keywords color="Keyword">
+      <Word>if</Word><Word>else</Word><Word>switch</Word><Word>case</Word><Word>default</Word>
+      <Word>for</Word><Word>while</Word><Word>do</Word><Word>return</Word><Word>break</Word>
+      <Word>continue</Word><Word>goto</Word><Word>typedef</Word><Word>struct</Word><Word>union</Word>
+      <Word>enum</Word><Word>sizeof</Word><Word>volatile</Word><Word>const</Word><Word>static</Word>
+      <Word>extern</Word><Word>inline</Word>
+    </Keywords>
+
+    <!-- Types -->
+    <Keywords color="Type">
+      <Word>void</Word><Word>char</Word><Word>short</Word><Word>int</Word><Word>long</Word>
+      <Word>float</Word><Word>double</Word><Word>signed</Word><Word>unsigned</Word>
+      <Word>uint8_t</Word><Word>uint16_t</Word><Word>uint32_t</Word><Word>uint64_t</Word>
+      <Word>int8_t</Word><Word>int16_t</Word><Word>int32_t</Word><Word>int64_t</Word>
+      <Word>bool</Word>
+    </Keywords>
+
+    <!-- Identifiers fallback -->
+    <Rule>\b[_A-Za-z][_A-Za-z0-9]*\b</Rule>
+  </RuleSet>
+</SyntaxDefinition>

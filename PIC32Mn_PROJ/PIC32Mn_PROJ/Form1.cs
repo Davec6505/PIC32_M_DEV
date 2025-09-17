@@ -9,6 +9,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text.Json;
+using System.Drawing;
+using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
 using System.Xml;
@@ -42,7 +44,6 @@ namespace PIC32Mn_PROJ
         #region Project properties
 
         public string projectDirPath { get; set; }
-
         public string projectName { get; set; }
         public string projectVersion { get; set; }
         public string projectDir { get; set; }
@@ -171,7 +172,8 @@ namespace PIC32Mn_PROJ
             assign_events_clockdiagram();
             tooltips_clockdiagram();
             this.Panel_ClockDiagram_Resize(panel_ClockDiagram, null);
-
+        
+            ApplyCHighlightingColors(avalonEditor);
         }
 
 
@@ -244,18 +246,18 @@ namespace PIC32Mn_PROJ
                 ApplyConfigDefaultsToControls(newConfig);
                 SyncGraphicComboBoxItems();
 
-                MessageBox.Show("Project settings saved.", "Save", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                System.Windows.Forms.MessageBox.Show("Project settings saved.", "Save", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Information);
                 RefreshAvalonEditor();
             }
             else
             {
-                MessageBox.Show("No project or device selected.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                System.Windows.Forms.MessageBox.Show("No project or device selected.", "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
             }
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Application.Exit();
+           System.Windows.Forms.Application.Exit();
         }
 
 
@@ -280,14 +282,14 @@ namespace PIC32Mn_PROJ
 
                     if (string.IsNullOrWhiteSpace(projectName))
                     {
-                        MessageBox.Show("Project name cannot be empty.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        System.Windows.Forms.MessageBox.Show("Project name cannot be empty.", "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
                         return;
                     }
 
                     string newProjectPath = Path.Combine(parentPath, projectName);
                     if (Directory.Exists(newProjectPath))
                     {
-                        MessageBox.Show("A project with this name already exists.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        System.Windows.Forms.MessageBox.Show("A project with this name already exists.", "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
                         return;
                     }
 
@@ -325,9 +327,14 @@ namespace PIC32Mn_PROJ
                     AppSettings.Default.Save();
 
                     GetDevice();
-                    // this.Text = $"{projectDirPath} - {settings["Device"]}";
+
                 }
             }
+        }
+
+        private void generateToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            project_generate_fromttfiles();
         }
 
         #endregion menu
@@ -438,11 +445,11 @@ namespace PIC32Mn_PROJ
 
             // Positioning
             int xposOffset = tabPage_Gpio.Left;
-            pinNumLable.Location = new Point(xposOffset, 5);
-            enableCheck.Location = new Point(xposOffset + 50, 5);
-            pinNameBox.Location = new Point(xposOffset + 100, 5);
-            directionToggle.Location = new Point(xposOffset + 230, 5);
-            functionCombo.Location = new Point(xposOffset + 290, 5);
+            pinNumLable.Location = new System.Drawing.Point(xposOffset, 5);
+            enableCheck.Location = new System.Drawing.Point(xposOffset + 50, 5);
+            pinNameBox.Location = new System.Drawing.Point(xposOffset + 100, 5);
+            directionToggle.Location = new System.Drawing.Point(xposOffset + 230, 5);
+            functionCombo.Location = new System.Drawing.Point(xposOffset + 290, 5);
 
             rowPanel.Controls.Add(pinNumLable);
             rowPanel.Controls.Add(pinNameBox);
@@ -498,7 +505,7 @@ namespace PIC32Mn_PROJ
             }
             else
             {
-                MessageBox.Show("Project settings file not found or device not selected.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                System.Windows.Forms.MessageBox.Show("Project settings file not found or device not selected.", "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
             }
         }
 
@@ -511,36 +518,86 @@ namespace PIC32Mn_PROJ
         /// Displays the contents of the specified file in the AvalonEdit control with appropriate syntax highlighting.
         /// </summary>
         /// <param name="filePath"></param>
+        // Replace the existing ApplyCHighlightingColors with this version (targets C/C++ instead of C#)
+        private void ApplyCHighlightingColors(TextEditor editor)
+        {
+            // Use the built‑in "C++" definition (AvalonEdit ships C++ but not pure C)
+            var def = HighlightingManager.Instance.GetDefinition("C++");
+            if (def == null) return;
+
+            void Set(string name, string? fg = null, bool? bold = null, bool? italic = null)
+            {
+                var colorEntry = def.NamedHighlightingColors.FirstOrDefault(x => x.Name == name);
+                if (colorEntry == null) return;
+                if (fg != null)
+                {
+                    var drawingColor = (System.Drawing.Color)System.ComponentModel.TypeDescriptor.GetConverter(typeof(System.Drawing.Color)).ConvertFromString(fg);
+                    var mediaColor = System.Windows.Media.Color.FromArgb(drawingColor.A, drawingColor.R, drawingColor.G, drawingColor.B);
+                    colorEntry.Foreground = new SimpleHighlightingBrush(mediaColor);
+                }
+                if (bold.HasValue) colorEntry.FontWeight = bold.Value ? FontWeights.Bold : FontWeights.Normal;
+                if (italic.HasValue) colorEntry.FontStyle = italic.Value ? FontStyles.Italic : FontStyles.Normal;
+            }
+
+            // Adjust names that exist in the C++ definition
+            Set("Keyword", "#FF0080FF", bold: true);
+            Set("Type", "#FFFFA500");
+            Set("Comment", "#FF5A995A", italic: true);
+            Set("String", "#FFCE9178");
+            Set("Number", "#FFB5CEA8");
+            Set("Preprocessor", "#FF9B9B9B");
+
+            editor.SyntaxHighlighting = def;
+        }
+
+        private IHighlightingDefinition LoadHighlightingFromFile(string path)
+        {
+            using var fs = File.OpenRead(path);
+            using var reader = new XmlTextReader(fs);
+                    return HighlightingLoader.Load(reader, HighlightingManager.Instance);
+        }
+
+        private void EnsureCustomCHighlightingRegistered()
+        {
+            const string name = "C-PIC";
+            if (HighlightingManager.Instance.GetDefinition(name) != null)
+                return;
+
+            var xshdPath = Path.Combine(rootPath, "dependancies", "highlighting", "c-pic.xshd");
+            if (!File.Exists(xshdPath))
+                return;
+
+            var def = LoadHighlightingFromFile(xshdPath);
+            HighlightingManager.Instance.RegisterHighlighting(name, new[] { ".c", ".h" }, def);
+        }
+
         private void DisplayFileInViewTab(string filePath)
         {
             if (!File.Exists(filePath) || avalonEditor == null)
                 return;
 
             avalonEditor.Text = File.ReadAllText(filePath);
-            currentViewFilePath = filePath; // Track the file being edited
-
+            currentViewFilePath = filePath;
             string ext = Path.GetExtension(filePath).ToLowerInvariant();
             string fileName = Path.GetFileName(filePath);
 
-            // Highlight Makefile by name (case-insensitive)
             if (fileName.Equals("Makefile", StringComparison.OrdinalIgnoreCase))
             {
                 avalonEditor.SyntaxHighlighting = LoadCustomHighlighting("PIC32Mn_PROJ.dependancies.Highlighting.makefile.xshd");
                 return;
             }
-
             if (fileName.Equals("startup", StringComparison.OrdinalIgnoreCase))
             {
                 avalonEditor.SyntaxHighlighting = LoadCustomHighlighting("PIC32Mn_PROJ.dependancies.Highlighting.asm.xshd");
                 return;
             }
 
-            // Set syntax highlighting by extension
             switch (ext)
             {
                 case ".c":
                 case ".h":
-                    avalonEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("C++");
+                    EnsureCustomCHighlightingRegistered();
+                    avalonEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("C-PIC");
                     break;
                 case ".json":
                     avalonEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("JavaScript");
@@ -560,8 +617,6 @@ namespace PIC32Mn_PROJ
                     break;
             }
         }
-
-
 
         private IHighlightingDefinition LoadCustomHighlighting(string resourceName)
         {
@@ -783,12 +838,12 @@ namespace PIC32Mn_PROJ
                             if (!string.IsNullOrEmpty(value))
                             {
                                 var divs = value.Split('_');
-                                if (divs.Length >2)
+                                if (divs.Length > 2)
                                     comboBox_FRCDIV.Items.Add($"{divs[2]}_{divs[3]}");
                                 else
                                     comboBox_FRCDIV.Items.Clear();
                             }
-                           
+
                         }
                     }
                     break;
@@ -902,6 +957,7 @@ namespace PIC32Mn_PROJ
         #endregion GetDefaults for config from tt file or project settings
 
 
+     
 
     }
 

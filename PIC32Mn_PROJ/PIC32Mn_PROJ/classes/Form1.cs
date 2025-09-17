@@ -1,25 +1,32 @@
 ﻿using ICSharpCode.AvalonEdit;
+using Microsoft.VisualStudio.TextTemplating;
+using Mono.TextTemplating;
+using PIC32Mn_PROJ.classes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
+
 
 namespace PIC32Mn_PROJ
 {
     public partial class Form1
     {
+        #region Form properties an fields
         private ToolTip toolTip1 = new ToolTip();
 
         // calculation properties for PLL and clock diagram
-        private string pllclk = String.Empty;
+        private string pllclock = String.Empty;
         private Int32 sysclk = 0;
         private Int32 indiv = 0;
         private Int32 mult = 0;
         private Int32 outdiv = 0;
+
 
         // positions in percent of the panel size
         private readonly float poscmod_x = 0.385f;
@@ -72,6 +79,9 @@ namespace PIC32Mn_PROJ
         private readonly float lblSOSC_y = 0.735f;
         private readonly float lblSPLL_x = 0.621f;
         private readonly float lblSPLL_y = 0.290f;
+
+        #endregion
+
 
         /// <summary>
         /// Handles the <see cref="Control.Resize"/> event for the <c>panel_ClockDiagram</c> control. Dynamically
@@ -234,16 +244,16 @@ namespace PIC32Mn_PROJ
         /// </summary>
         private void assign_events_clockdiagram()
         {
-           comboBox_POSCMOD.SelectedIndexChanged += (s, e) => { CalculateSysClock(); };
-           numericUpDown_POSC.ValueChanged += (s, e) => { CalculateSysClock(); };
-           comboBox_FRCDIV.SelectedIndexChanged += (s, e) => { label_FRCOSCDIV.Text = calculate_frcdiv(label_FRCOSC.Text, comboBox_FRCDIV.SelectedItem as string ?? "ERR"); };
-           comboBox_FSOSCEN.SelectedIndexChanged += (s, e) => { update_label_SOSC(); };
-           numericUpDown_SOSC.ValueChanged += (s, e) => { update_label_SOSC(); };
-           checkBox_OE.CheckedChanged += (s, e) => { /* Future implementation can be added here */ };
-           checkBox_OutOscON.CheckedChanged += (s, e) => { /* Future implementation can be added here */ };
+            comboBox_POSCMOD.SelectedIndexChanged += (s, e) => { CalculateSysClock(); };
+            numericUpDown_POSC.ValueChanged += (s, e) => { CalculateSysClock(); };
+            comboBox_FRCDIV.SelectedIndexChanged += (s, e) => { label_FRCOSCDIV.Text = calculate_frcdiv(label_FRCOSC.Text, comboBox_FRCDIV.SelectedItem as string ?? "ERR"); };
+            comboBox_FSOSCEN.SelectedIndexChanged += (s, e) => { update_label_SOSC(); };
+            numericUpDown_SOSC.ValueChanged += (s, e) => { update_label_SOSC(); };
+            checkBox_OE.CheckedChanged += (s, e) => { /* Future implementation can be added here */ };
+            checkBox_OutOscON.CheckedChanged += (s, e) => { /* Future implementation can be added here */ };
 
             //PLL related events
-            comboBox_FPLLICLK.SelectedIndexChanged += (s, e) => { pllclk = comboBox_FPLLICLK.SelectedItem as string ?? String.Empty; };
+            comboBox_FPLLICLK.SelectedIndexChanged += (s, e) => { pllclock = comboBox_FPLLICLK.SelectedItem as string ?? String.Empty; };
             comboBox_FPLLIDIV.SelectedIndexChanged += (s, e) => { CalculateSysClock(); };
             comboBox_FPLLODIV.SelectedIndexChanged += (s, e) => { CalculateSysClock(); };
             comboBox_FPLLMULT.SelectedIndexChanged += (s, e) => { CalculateSysClock(); };
@@ -277,39 +287,45 @@ namespace PIC32Mn_PROJ
                 return;
             }
 
-            if (comboBox_POSCMOD.SelectedItem.ToString() == "OFF")
+            if (comboBox_POSCMOD.SelectedItem?.ToString() == "OFF")
             {
-                label_POSCO.Text =   "0 Hz";
+                label_POSCO.Text = "0 Hz";
                 return;
             }
             else
-            { 
+            {
                 label_POSCO.Text = numericUpDown_POSC.Value.ToString() + " Hz";
             }
 
-            // Further implementation needed to calculate the system clock based on selected settings
             sysclk = Convert.ToInt32(numericUpDown_POSC.Value);
-            indiv = Convert.ToInt32(comboBox_FPLLIDIV.SelectedItem.ToString().Split('_')[1]);
-            mult = Convert.ToInt32(comboBox_FPLLMULT.SelectedItem.ToString().Split('_')[1]);
-            outdiv = Convert.ToInt32(comboBox_FPLLODIV.SelectedItem.ToString().Split('_')[1]);
+
+            if (!TryParseDiv(comboBox_FPLLIDIV.SelectedItem as string, out indiv) ||
+                !TryParseDiv(comboBox_FPLLMULT.SelectedItem as string, out mult) ||
+                !TryParseDiv(comboBox_FPLLODIV.SelectedItem as string, out outdiv) ||
+                indiv == 0 || outdiv == 0)
+            {
+                label_SPLL.Text = "N/A";
+                label_SPLL.ForeColor = Color.Black;
+                return;
+            }
+
             sysclk = (sysclk / indiv) * mult / outdiv;
             label_SPLL.Text = sysclk.ToString("0") + " Hz";
-            if(sysclk > 200000000)
-            {
+            if (sysclk > 200_000_000)
                 label_SPLL.ForeColor = Color.Red;
-            }
-            else if (sysclk == 200000000)
-            {
+            else if (sysclk == 200_000_000)
                 label_SPLL.ForeColor = Color.Blue;
-            }
             else
-            {
                 label_SPLL.ForeColor = Color.Black;
-            }
-
-
         }
 
+        private static bool TryParseDiv(string? text, out int value)
+        {
+            value = 0;
+            if (string.IsNullOrWhiteSpace(text)) return false;
+            var parts = text.Split('_');
+            return parts.Length >= 2 && int.TryParse(parts[1], out value);
+        }
 
         /// <summary>
         /// calculate frcdiv output frequeny based on frc input frequency
@@ -324,7 +340,7 @@ namespace PIC32Mn_PROJ
             int frc = 0; // default value
             int intfrc = 0;
 
-        
+
             if (text.EndsWith("Hz"))
             {
                 text = text.Replace(" Hz", "").Trim();
@@ -342,10 +358,10 @@ namespace PIC32Mn_PROJ
 
                     if (divs == null || divs.Length < 2)
                         return "ERR in arg 2 because divisor not present!";
-                    
-                   divs[1] = divs[1].Trim();
-                   if (int.TryParse(divs[1], out frc))
-                   {
+
+                    divs[1] = divs[1].Trim();
+                    if (int.TryParse(divs[1], out frc))
+                    {
 
                         if (int.TryParse(text, out int freq))
                         {
@@ -367,7 +383,7 @@ namespace PIC32Mn_PROJ
                 }
             }
 
-                return intfrc.ToString("0") + " Hz";
+            return intfrc.ToString("0") + " Hz";
         }
 
         /// <summary>
@@ -387,9 +403,1097 @@ namespace PIC32Mn_PROJ
                 label_SOSC.Text = "0 Hz";
             }
         }
-    
+
+
+        private async Task project_generate_fromttfiles()
+        {
+            // Path setup
+            string jsonPath = Path.Combine(projectDirPath, "ProjectSettings.json");
+            string ttPath = Path.Combine(rootPath, "dependancies", "templates", "config_bits.c.tt");
+            string outputPath = Path.Combine(projectDirPath, "srcs\\config_bits.c");
+
+            // Ensure ProjectSettingsManager knows which file to load
+            ProjectSettingsManager.SettingsFileName_ = "ProjectSettings.json";
+
+            // Load the raw dictionary
+            var rawSettings = ProjectSettingsManager.Load(projectDirPath); // ProjectSettings
+
+            // Get the device name (prefer what's in the JSON)
+            string deviceName = rawSettings.Device ?? ProjectSettingsManager.GetDevice(projectDirPath);
+
+            // Get the device config as a FLATTENED Dictionary<string, string>
+            Dictionary<string, string>? deviceConfig = null;
+            if (!string.IsNullOrEmpty(deviceName) && rawSettings.ExtensionData != null && rawSettings.ExtensionData.ContainsKey(deviceName))
+            {
+                var deviceElement = rawSettings.ExtensionData[deviceName];
+                deviceConfig = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+                static string ToStringValue(JsonElement el)
+                {
+                    if (el.ValueKind == JsonValueKind.String)
+                        return el.GetString() ?? string.Empty;
+                    // Numbers, booleans, hex literals etc.
+                    var raw = el.GetRawText();
+                    return string.IsNullOrEmpty(raw) ? string.Empty : raw.Trim();
+                }
+
+                // Flatten one level deep so keys like DEBUG, FNOSC, etc. are present
+                foreach (var prop in deviceElement.EnumerateObject())
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Object)
+                    {
+                        foreach (var sub in prop.Value.EnumerateObject())
+                            deviceConfig[sub.Name] = ToStringValue(sub.Value);
+                    }
+                    else
+                    {
+                        deviceConfig[prop.Name] = ToStringValue(prop.Value);
+                    }
+                }
+            }
+
+            // Prepare the T4 host and session
+            var host = new TemplateGenerator();
+            var session = new TextTemplatingSession();
+
+            // Build a model that exposes both Config and a property named after the device (for legacy .tt usage)
+            var model = new System.Dynamic.ExpandoObject() as IDictionary<string, object>;
+            model["Device"] = deviceName ?? "PIC32MZ1024EFH144";
+            model["Config"] = deviceConfig ?? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            if (!string.IsNullOrEmpty(deviceName) && deviceConfig != null)
+                model[deviceName] = deviceConfig;
+
+            session["config"] = model;
+
+            if (host is ITextTemplatingSessionHost sessionHost)
+                sessionHost.Session = session;
+
+            var sucess = await host.ProcessTemplateAsync(ttPath, outputPath);
+
+            if (sucess == true)
+                MessageBox.Show("config_bits.c generated successfully!", "Generation Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            else
+                MessageBox.Show("Was not able to generate content!!");
+        }
+
+
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
