@@ -36,6 +36,7 @@
             editToolStripMenuItem = new ToolStripMenuItem();
             deviceToolStripMenuItem = new ToolStripMenuItem();
             createProjectToolStripMenuItem = new ToolStripMenuItem();
+            generateToolStripMenuItem = new ToolStripMenuItem();
             tabControl1 = new TabControl();
             tabPage_View = new TabPage();
             tabPage_System = new TabPage();
@@ -71,7 +72,6 @@
             flowPanelPins = new FlowLayoutPanel();
             treeView_Project = new TreeView();
             splitContainer1 = new SplitContainer();
-            generateToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             tabControl1.SuspendLayout();
             tabPage_System.SuspendLayout();
@@ -95,7 +95,7 @@
             menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, editToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
-            menuStrip1.Size = new Size(132, 28);
+            menuStrip1.Size = new Size(124, 28);
             menuStrip1.TabIndex = 0;
             menuStrip1.Text = "menuStrip1";
             // 
@@ -109,27 +109,27 @@
             // openToolStripMenuItem
             // 
             openToolStripMenuItem.Name = "openToolStripMenuItem";
-            openToolStripMenuItem.Size = new Size(143, 26);
+            openToolStripMenuItem.Size = new Size(224, 26);
             openToolStripMenuItem.Text = "Open";
             openToolStripMenuItem.Click += openToolStripMenuItem_Click;
             // 
             // saveToolStripMenuItem
             // 
             saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            saveToolStripMenuItem.Size = new Size(143, 26);
+            saveToolStripMenuItem.Size = new Size(224, 26);
             saveToolStripMenuItem.Text = "Save";
             saveToolStripMenuItem.Click += saveToolStripMenuItem_Click;
             // 
             // saveAsToolStripMenuItem
             // 
             saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            saveAsToolStripMenuItem.Size = new Size(143, 26);
+            saveAsToolStripMenuItem.Size = new Size(224, 26);
             saveAsToolStripMenuItem.Text = "Save As";
             // 
             // exitToolStripMenuItem
             // 
             exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            exitToolStripMenuItem.Size = new Size(143, 26);
+            exitToolStripMenuItem.Size = new Size(224, 26);
             exitToolStripMenuItem.Text = "Exit";
             // 
             // editToolStripMenuItem
@@ -153,6 +153,13 @@
             createProjectToolStripMenuItem.Text = "Create Project";
             createProjectToolStripMenuItem.Click += createProjectToolStripMenuItem_Click;
             // 
+            // generateToolStripMenuItem
+            // 
+            generateToolStripMenuItem.Name = "generateToolStripMenuItem";
+            generateToolStripMenuItem.Size = new Size(224, 26);
+            generateToolStripMenuItem.Text = "Generate";
+            generateToolStripMenuItem.Click += generateToolStripMenuItem_Click;
+            // 
             // tabControl1
             // 
             tabControl1.Controls.Add(tabPage_View);
@@ -163,7 +170,7 @@
             tabControl1.Location = new Point(0, 0);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(1495, 937);
+            tabControl1.Size = new Size(1503, 937);
             tabControl1.TabIndex = 1;
             // 
             // tabPage_View
@@ -172,7 +179,7 @@
             tabPage_View.Location = new Point(4, 29);
             tabPage_View.Name = "tabPage_View";
             tabPage_View.Padding = new Padding(3);
-            tabPage_View.Size = new Size(1487, 904);
+            tabPage_View.Size = new Size(1495, 904);
             tabPage_View.TabIndex = 2;
             tabPage_View.Text = "View";
             tabPage_View.UseVisualStyleBackColor = true;
@@ -184,7 +191,7 @@
             tabPage_System.Location = new Point(4, 29);
             tabPage_System.Name = "tabPage_System";
             tabPage_System.Padding = new Padding(3);
-            tabPage_System.Size = new Size(1530, 904);
+            tabPage_System.Size = new Size(1495, 904);
             tabPage_System.TabIndex = 0;
             tabPage_System.Text = "System";
             tabPage_System.UseVisualStyleBackColor = true;
@@ -210,8 +217,8 @@
             splitContainer_System.Panel2.BackgroundImageLayout = ImageLayout.None;
             splitContainer_System.Panel2.Controls.Add(panel_ClockDiagram);
             splitContainer_System.Panel2MinSize = 1000;
-            splitContainer_System.Size = new Size(1524, 898);
-            splitContainer_System.SplitterDistance = 210;
+            splitContainer_System.Size = new Size(1489, 898);
+            splitContainer_System.SplitterDistance = 212;
             splitContainer_System.SplitterWidth = 10;
             splitContainer_System.TabIndex = 0;
             // 
@@ -222,7 +229,7 @@
             panelConfigSections.Dock = DockStyle.Fill;
             panelConfigSections.Location = new Point(0, 0);
             panelConfigSections.Name = "panelConfigSections";
-            panelConfigSections.Size = new Size(210, 898);
+            panelConfigSections.Size = new Size(212, 898);
             panelConfigSections.TabIndex = 0;
             // 
             // panel_ClockDiagram
@@ -258,7 +265,7 @@
             panel_ClockDiagram.Dock = DockStyle.Fill;
             panel_ClockDiagram.Location = new Point(0, 0);
             panel_ClockDiagram.Name = "panel_ClockDiagram";
-            panel_ClockDiagram.Size = new Size(1310, 898);
+            panel_ClockDiagram.Size = new Size(1267, 898);
             panel_ClockDiagram.TabIndex = 0;
             // 
             // label_SPLL
@@ -554,7 +561,7 @@
             tabPage_Gpio.Location = new Point(4, 29);
             tabPage_Gpio.Name = "tabPage_Gpio";
             tabPage_Gpio.Padding = new Padding(3);
-            tabPage_Gpio.Size = new Size(1530, 904);
+            tabPage_Gpio.Size = new Size(1495, 904);
             tabPage_Gpio.TabIndex = 1;
             tabPage_Gpio.Text = "Gpio";
             tabPage_Gpio.UseVisualStyleBackColor = true;
@@ -566,7 +573,7 @@
             flowPanelPins.FlowDirection = FlowDirection.TopDown;
             flowPanelPins.Location = new Point(3, 3);
             flowPanelPins.Name = "flowPanelPins";
-            flowPanelPins.Size = new Size(1524, 898);
+            flowPanelPins.Size = new Size(1489, 898);
             flowPanelPins.TabIndex = 0;
             flowPanelPins.WrapContents = false;
             // 
@@ -575,7 +582,7 @@
             treeView_Project.Dock = DockStyle.Fill;
             treeView_Project.Location = new Point(0, 28);
             treeView_Project.Name = "treeView_Project";
-            treeView_Project.Size = new Size(132, 909);
+            treeView_Project.Size = new Size(124, 909);
             treeView_Project.TabIndex = 2;
             // 
             // splitContainer1
@@ -596,16 +603,9 @@
             splitContainer1.Panel2.Controls.Add(tabControl1);
             splitContainer1.Panel2MinSize = 1480;
             splitContainer1.Size = new Size(1635, 937);
-            splitContainer1.SplitterDistance = 132;
+            splitContainer1.SplitterDistance = 124;
             splitContainer1.SplitterWidth = 8;
             splitContainer1.TabIndex = 3;
-            // 
-            // generateToolStripMenuItem
-            // 
-            generateToolStripMenuItem.Name = "generateToolStripMenuItem";
-            generateToolStripMenuItem.Size = new Size(224, 26);
-            generateToolStripMenuItem.Text = "Generate";
-            generateToolStripMenuItem.Click += generateToolStripMenuItem_Click;
             // 
             // Form1
             // 

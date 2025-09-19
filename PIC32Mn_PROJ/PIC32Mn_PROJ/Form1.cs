@@ -11,11 +11,14 @@ using System.Reflection;
 using System.Text.Json;
 using System.Drawing;
 using System.Windows;
-using System.Windows.Forms;
+//using System.Windows.Forms;
 using System.Windows.Forms.Integration;
 using System.Xml;
 using System.Xml.Linq;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Text; // added
+using System.Collections.Generic; // added
+using System.Linq; // added
 
 namespace PIC32Mn_PROJ
 {
@@ -56,6 +59,13 @@ namespace PIC32Mn_PROJ
         private string currentViewFilePath;
         // In Form1_Load, after initializing avalonEditor#
         #endregion Project properties
+
+        // Form fields
+        // Add these fields to the Form1 class
+        private ContextMenuStrip treeContextMenu;
+        private ToolStripMenuItem deleteMenuItem;
+        private TreeNode? contextNode;
+
 
         #region Form Initialization
         public Form1()
@@ -145,6 +155,7 @@ namespace PIC32Mn_PROJ
             }
 
             load_pinForm(gpioPath);
+            ApplyGpioOverridesFromProjectJson();
             // AvalonEdit setup
             TextEditor avalonEditor = new TextEditor();
             avalonEditor.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.White);
@@ -169,14 +180,66 @@ namespace PIC32Mn_PROJ
             treeView_Project.AfterSelect += treeView_Project_AfterSelect;
             panel_ClockDiagram.Resize += Panel_ClockDiagram_Resize;
 
-            assign_events_clockdiagram();
-            tooltips_clockdiagram();
-            this.Panel_ClockDiagram_Resize(panel_ClockDiagram, null);
+            // Add these lines to enable right-click delete on the dynamic tree
+            SetupTreeViewContextMenu();
+            treeView_Project.NodeMouseClick += treeView_Project_NodeMouseClick;
+            treeView_Project.KeyDown += treeView_Project_KeyDown;
         
             ApplyCHighlightingColors(avalonEditor);
         }
 
+        private void ApplyGpioOverridesFromProjectJson()
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(projectDirPath) || string.IsNullOrWhiteSpace(device)) return;
+                var node = ProjectModelWriter.LoadProjectJson(projectDirPath, device);
+                if (node?.gpio?.pins == null || node.gpio.pins.Count == 0) return;
 
+                // Map rows by pin name (textbox value like RE5)
+                var rows = new Dictionary<string, Panel>(StringComparer.OrdinalIgnoreCase);
+                foreach (Control row in flowPanelPins.Controls)
+                {
+                    if (row is Panel p)
+                    {
+                        var nameBox = p.Controls.OfType<TextBox>().FirstOrDefault();
+                        if (nameBox != null && !string.IsNullOrWhiteSpace(nameBox.Text))
+                        {
+                            rows[nameBox.Text] = p;
+                        }
+                    }
+                }
+
+                foreach (var pin in node.gpio.pins)
+                {
+                    if (!rows.TryGetValue(pin.name ?? string.Empty, out var p)) continue;
+
+                    var en = p.Controls.OfType<CheckBox>().FirstOrDefault(c => c.Text == "En");
+                    var dir = p.Controls.OfType<CheckBox>().FirstOrDefault(c => c.Text == "Out");
+                    var func = p.Controls.OfType<ComboBox>().FirstOrDefault();
+
+                    if (en != null) en.Checked = pin.enabled;
+                    if (dir != null) dir.Checked = pin.output;
+
+                    // Ensure function list reflects the direction before selecting
+                    if (dir != null && func != null)
+                    {
+                        // Trigger the CheckedChanged handler to repopulate
+                        dir.Checked = pin.output;
+                        if (!string.IsNullOrEmpty(pin.function))
+                        {
+                            // If function exists in current list, select it
+                            var idx = func.FindStringExact(pin.function);
+                            if (idx >= 0) func.SelectedIndex = idx;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"ApplyGpioOverridesFromProjectJson error: {ex.Message}");
+            }
+        }
 
         #endregion Form Initialization
 
@@ -209,6 +272,9 @@ namespace PIC32Mn_PROJ
                         string ttFilePath = Path.Combine(rootPath, "dependancies", "templates", "config_bits.c.tt");
                         var config = ProjectConfigProvider.LoadConfig(projectDirPath, ttFilePath, device);
                         ApplyConfigDefaultsToControls(config);
+
+                        // Reload GPIO overrides into UI
+                        ApplyGpioOverridesFromProjectJson();
                         return;
                     }
                     else
@@ -216,7 +282,7 @@ namespace PIC32Mn_PROJ
                         // Create ProjectSettings.json in the project directory if it doesn't exist
                         var settings = new ProjectSettings();
                         settings["Device"] = "";
-                        ProjectSettingsManager.Save(projectDirPath, settings);
+                        ProjectSettingsManager.Save(newProjectPath: projectDirPath, settings: settings);
                         // Prompt user to select device for newly created projectsettings.json
                         GetDevice();
                     }
@@ -228,6 +294,25 @@ namespace PIC32Mn_PROJ
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            // Try to recover current project/device if fields are empty
+            if (string.IsNullOrEmpty(projectDirPath))
+            {
+                var savedPath = AppSettings.Default["projectPath"]?.ToString();
+                if (!string.IsNullOrEmpty(savedPath) && Directory.Exists(savedPath))
+                {
+                    projectDirPath = savedPath;
+                }
+            }
+            if (string.IsNullOrEmpty(device) && !string.IsNullOrEmpty(projectDirPath))
+            {
+                try
+                {
+                    ProjectSettingsManager.SettingsFileName_ = "ProjectSettings.json";
+                    device = ProjectSettingsManager.GetDevice(projectDirPath);
+                }
+                catch { /* ignore */ }
+            }
+
             // Save the file in the editor if needed
             if (!string.IsNullOrEmpty(currentViewFilePath) && avalonEditor != null)
             {
@@ -239,6 +324,21 @@ namespace PIC32Mn_PROJ
             {
                 var config = CollectCurrentConfigValues();
                 ProjectConfigProvider.SaveDeviceConfig(projectDirPath, device, config);
+
+                // NEW: collect GPIO overrides and save + emit gpio.vars.properties for .tt
+                var gpioOverrides = CollectGpioOverrides();
+                SaveGpioOverridesToProject(projectDirPath, gpioOverrides);
+                WriteGpioVarsProperties(gpioOverrides);
+
+                // NEW: write consolidated device-rooted JSON for all generators
+                try
+                {
+                    ProjectModelWriter.SaveProjectJson(projectDirPath, device, config, gpioOverrides);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"ProjectModelWriter error: {ex.Message}");
+                }
 
                 // --- Reload config and re-apply to controls ---
                 string ttFilePath = Path.Combine(rootPath, "dependancies", "templates", "config_bits.c.tt");
@@ -332,9 +432,67 @@ namespace PIC32Mn_PROJ
             }
         }
 
-        private void generateToolStripMenuItem_Click(object sender, EventArgs e)
+        // Make the Generate click handler await the async generator and add guards
+        private async void generateToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            project_generate_fromttfiles();
+            if (string.IsNullOrWhiteSpace(projectDirPath))
+            {
+                System.Windows.Forms.MessageBox.Show("No project loaded.", "Generate", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Validate template paths before running
+            var cTtPath = Path.Combine(rootPath, "dependancies", "templates", "config_bits.c.tt");
+            var hTtPath = Path.Combine(rootPath, "dependancies", "templates", "config_bits.h.tt");
+            var cclkPath = Path.Combine(rootPath, "dependancies", "templates", "plib_clk.c.tt");
+            var hclkPath = Path.Combine(rootPath, "dependancies", "templates", "plib_clk.h.tt");
+            var gpioHPath = Path.Combine(rootPath, "dependancies", "templates", "plib_gpio.h.tt");
+            var gpioCPath = Path.Combine(rootPath, "dependancies", "templates", "plib_gpio.c.tt");
+
+            // Check config templates
+            if (!File.Exists(cTtPath))
+            {
+                System.Windows.Forms.MessageBox.Show($"Missing template:\n{cTtPath}", "Generate", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            if (!File.Exists(hTtPath))
+            {
+                System.Windows.Forms.MessageBox.Show($"Missing template:\n{hTtPath}", "Generate", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            // Check clock templates
+            if (!File.Exists(hclkPath))
+            {
+                System.Windows.Forms.MessageBox.Show($"Missing template:\n{hclkPath}", "Generate", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            if (!File.Exists(cclkPath))
+            {
+                System.Windows.Forms.MessageBox.Show($"Missing template:\n{cclkPath}", "Generate", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // Optional: ensure gpio templates exist
+            if (!File.Exists(gpioHPath) || !File.Exists(gpioCPath))
+            {
+                System.Windows.Forms.MessageBox.Show("GPIO templates (.tt) not found. Skipping GPIO generation.", "Generate", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+
+            // Disable while generating
+            var senderItem = sender as ToolStripItem;
+            if (senderItem?.Owner is MenuStrip ms && ms.FindForm() is Form f)
+                f.Cursor = Cursors.WaitCursor;
+            try
+            {
+                await project_generate_fromttfiles();
+                // Refresh the tree so the new files appear immediately
+                PopulateTreeViewWithFoldersAndFiles(projectDirPath);
+            }
+            finally
+            {
+                if (senderItem?.Owner is MenuStrip ms2 && ms2.FindForm() is Form f2)
+                    f2.Cursor = Cursors.Default;
+            }
         }
 
         #endregion menu
@@ -368,6 +526,115 @@ namespace PIC32Mn_PROJ
                 parentNode.Nodes.Add(fileNode);
             }
         }
+
+        // Add to Form1 class
+        private void SetupTreeViewContextMenu()
+        {
+            treeContextMenu = new ContextMenuStrip();
+            deleteMenuItem = new ToolStripMenuItem("Delete", null, (s, e) => DeleteSelectedNode());
+            treeContextMenu.Items.Add(deleteMenuItem);
+        }
+
+        private void treeView_Project_NodeMouseClick(object? sender, TreeNodeMouseClickEventArgs e)
+        {
+            if (e.Button != MouseButtons.Right) return;
+
+            treeView_Project.SelectedNode = e.Node;
+            contextNode = e.Node;
+
+            // Prevent deleting the root node
+            deleteMenuItem.Enabled = e.Node.Parent != null;
+            treeContextMenu.Show(treeView_Project, e.Location);
+        }
+
+        private void treeView_Project_KeyDown(object? sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                DeleteSelectedNode();
+                e.Handled = true;
+            }
+        }
+
+        private void DeleteSelectedNode()
+        {
+            var node = contextNode ?? treeView_Project.SelectedNode;
+            contextNode = null;
+            if (node == null) return;
+
+            // Disallow deleting the root (top-level) node
+            if (node.Parent == null)
+            {
+                System.Windows.Forms.MessageBox.Show("Cannot delete the project root folder.", "Delete",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            try
+            {
+                if (node.Tag is FileInfo fi)
+                {
+                    if (!IsUnderProjectRoot(fi.FullName))
+                    {
+                        System.Windows.Forms.MessageBox.Show("Blocked: outside project root.", "Delete", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    var confirm = System.Windows.Forms.MessageBox.Show($"Delete file:\n{fi.FullName}?", "Confirm Delete",
+                        MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+                    if (confirm != DialogResult.Yes) return;
+
+                    // If file is open in editor, clear it
+                    if (!string.IsNullOrEmpty(currentViewFilePath) &&
+                        string.Equals(currentViewFilePath, fi.FullName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        avalonEditor.Text = string.Empty;
+                        currentViewFilePath = string.Empty;
+                    }
+
+                    if (File.Exists(fi.FullName))
+                    {
+                        File.SetAttributes(fi.FullName, FileAttributes.Normal);
+                        File.Delete(fi.FullName);
+                    }
+
+                    node.Remove();
+                }
+                else if (node.Tag is DirectoryInfo di)
+                {
+                    if (!IsUnderProjectRoot(di.FullName))
+                    {
+                        System.Windows.Forms.MessageBox.Show("Blocked: outside project root.", "Delete", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    var confirm = System.Windows.Forms.MessageBox.Show($"Delete folder and all contents:\n{di.FullName}?",
+                        "Confirm Delete Folder", MessageBoxButtons.YesNo, MessageBoxIcon.Warning,
+                        MessageBoxDefaultButton.Button2);
+                    if (confirm != DialogResult.Yes) return;
+
+                    if (Directory.Exists(di.FullName))
+                        Directory.Delete(di.FullName, recursive: true);
+
+                    node.Remove();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show($"Delete failed:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private bool IsUnderProjectRoot(string path)
+        {
+            if (string.IsNullOrEmpty(projectDirPath)) return false;
+            var full = Path.GetFullPath(path).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            var root = Path.GetFullPath(projectDirPath).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            return full.StartsWith(root, StringComparison.OrdinalIgnoreCase);
+        }
+
+
+
         #endregion project tree view
 
         #region  gpio tab controls
@@ -458,6 +725,142 @@ namespace PIC32Mn_PROJ
             rowPanel.Controls.Add(functionCombo);
 
             flowPanelPins.Controls.Add(rowPanel);
+        }
+
+        // NEW: collect GPIO changes from UI
+        private List<GpioOverride> CollectGpioOverrides()
+        {
+            var list = new List<GpioOverride>();
+            foreach (Control row in flowPanelPins.Controls)
+            {
+                if (row is not Panel p) continue;
+                string pinKey = p.Tag as string ?? "";
+
+                var lbl = p.Controls.OfType<Label>().FirstOrDefault();
+                var en = p.Controls.OfType<CheckBox>().FirstOrDefault(c => c.Text == "En");
+                var nameBox = p.Controls.OfType<TextBox>().FirstOrDefault();
+                var dir = p.Controls.OfType<CheckBox>().FirstOrDefault(c => c.Text == "Out");
+                var func = p.Controls.OfType<ComboBox>().FirstOrDefault();
+
+                if (nameBox == null) continue;
+                // Only track rows where user checked Enable
+                if (en != null && en.Checked)
+                {
+                    list.Add(new GpioOverride
+                    {
+                        PinKey = pinKey,
+                        PinName = nameBox.Text ?? string.Empty,
+                        Enabled = true,
+                        Output = dir?.Checked == true,
+                        Function = func?.SelectedItem?.ToString()
+                    });
+                }
+            }
+            return list;
+        }
+
+        // NEW: save overrides into ProjectSettings.json under key GPIOOverrides
+        private void SaveGpioOverridesToProject(string projectDir, List<GpioOverride> overrides)
+        {
+            var settings = ProjectSettingsManager.Load(projectDir);
+            settings["GPIOOverrides"] = overrides;
+            ProjectSettingsManager.Save(projectDir, settings);
+        }
+
+        // NEW: Emit gpio.vars.properties used by plib_gpio .tt templates
+        private void WriteGpioVarsProperties(List<GpioOverride> overrides)
+        {
+            string propsDir = Path.Combine(rootPath, "dependancies", "templates");
+            Directory.CreateDirectory(propsDir);
+            string propsPath = Path.Combine(propsDir, "gpio.vars.properties");
+
+            // Consider only rows that have valid channel/pin and were enabled via checkbox
+            var validOverrides = overrides
+                .Where(o => !string.IsNullOrEmpty(o.PortChannel) && o.PortPin >= 0 && o.Enabled)
+                .ToList();
+
+            var sb = new StringBuilder();
+
+            // Gate generation of GPIO files based on at least one enabled pin
+            bool generateGpio = validOverrides.Count > 0;
+            sb.AppendLine($"GENERATE_GPIO={(generateGpio ? "true" : "false")}");
+
+            // Always include to keep interrupts include present in generated C if desired
+            sb.AppendLine("CoreSysIntFile=true");
+
+            // Map channels present and pins count
+            var channels = validOverrides
+                .GroupBy(o => o.PortChannel)
+                .OrderBy(g => g.Key)
+                .ToList();
+
+            int chTotal = channels.Count == 0 ? 0 : channels.Max(g => (g.Key[0] - 'A')) + 1;
+            int pinTotal = validOverrides.Count;
+
+            sb.AppendLine($"GPIO_CHANNEL_TOTAL={chTotal}");
+            sb.AppendLine($"GPIO_PIN_TOTAL={pinTotal}");
+
+            // Per-channel aggregate masks (TRIS to clear for outputs, ANSEL to clear for digital, LAT initial)
+            var trisByCh = new Dictionary<string, int>();
+            var anselByCh = new Dictionary<string, int>();
+            var latByCh = new Dictionary<string, int>();
+
+            foreach (var g in channels)
+            {
+                int idx = g.Key[0] - 'A';
+                sb.AppendLine($"GPIO_CHANNEL_{idx}_NAME={g.Key}");
+
+                // Initialize masks
+                trisByCh[g.Key] = 0;
+                anselByCh[g.Key] = 0;
+                latByCh[g.Key] = 0; // default 0
+
+                foreach (var o in g)
+                {
+                    if (o.PortPin >= 0 && o.PortPin <= 15)
+                    {
+                        int bit = 1 << o.PortPin;
+                        // Any configured pin: set digital mode (ANSELxCLR)
+                        anselByCh[g.Key] |= bit;
+                        // If output requested, clear TRIS bit (TRISxCLR)
+                        if (o.Output)
+                            trisByCh[g.Key] |= bit;
+                    }
+                }
+
+                // Mark CN used if any override is input
+                bool cnUsed = g.Any(o => !o.Output);
+                sb.AppendLine($"SYS_PORT_{g.Key}_CN_USED={(cnUsed ? "true" : "false")}");
+
+                // Emit masks as hex strings (without 0x prefix, template adds it)
+                string trisHex = trisByCh[g.Key].ToString("x");
+                string anselHex = anselByCh[g.Key].ToString("x");
+                string latHex = latByCh[g.Key].ToString("x");
+
+                sb.AppendLine($"SYS_PORT_{g.Key}_TRIS={trisHex}");
+                sb.AppendLine($"SYS_PORT_{g.Key}_ANSEL={anselHex}");
+                sb.AppendLine($"SYS_PORT_{g.Key}_LAT={latHex}");
+            }
+
+            // BSP pin entries 1..N per overrides order using the PinName textbox value
+            for (int i = 0; i < validOverrides.Count; i++)
+            {
+                var o = validOverrides[i];
+                int idx = i + 1;
+                sb.AppendLine($"BSP_PIN_{idx}_PORT_CHANNEL={o.PortChannel}");
+                sb.AppendLine($"BSP_PIN_{idx}_PORT_PIN={o.PortPin}");
+                sb.AppendLine($"BSP_PIN_{idx}_FUNCTION_TYPE={(string.IsNullOrEmpty(o.Function) ? "GPIO" : o.Function)}");
+                sb.AppendLine($"BSP_PIN_{idx}_FUNCTION_NAME={o.PinName}");
+                // CN default true for inputs when enabled
+                string cn = (!o.Output).ToString();
+                sb.AppendLine($"BSP_PIN_{idx}_CN={cn}");
+            }
+
+            // Leave PPS related values unset unless available; generator will skip
+            // If you want to always unlock IOLOCK like sample, uncomment below:
+            // sb.AppendLine("IOLOCK_ENABLE=true");
+
+            File.WriteAllText(propsPath, sb.ToString());
         }
 
         #endregion gpio tab controls
@@ -554,7 +957,7 @@ namespace PIC32Mn_PROJ
         {
             using var fs = File.OpenRead(path);
             using var reader = new XmlTextReader(fs);
-                    return HighlightingLoader.Load(reader, HighlightingManager.Instance);
+            return HighlightingLoader.Load(reader, HighlightingManager.Instance);
         }
 
         private void EnsureCustomCHighlightingRegistered()
@@ -956,8 +1359,6 @@ namespace PIC32Mn_PROJ
 
         #endregion GetDefaults for config from tt file or project settings
 
-
-     
 
     }
 

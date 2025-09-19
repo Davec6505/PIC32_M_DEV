@@ -50,7 +50,6 @@
     <Folder Include="dependancies\modules\" />
     <Folder Include="dependancies\gpio\" />
     <Folder Include="dependancies\datasheets\" />
-    <Folder Include="dependancies\templates\" />
     <Folder Include="interfaces\" />
   </ItemGroup>
 
@@ -75,6 +74,45 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="dependancies\templates\plib_clk.c.c">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>plib_clk.c.tt</DependentUpon>
+    </Content>
+    <Content Update="dependancies\templates\plib_clk.c.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>plib_clk.c.c</LastGenOutput>
+    </Content>
+    <Content Update="dependancies\templates\plib_clk.h.h">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>plib_clk.h.tt</DependentUpon>
+    </Content>
+    <Content Update="dependancies\templates\plib_clk.h.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>plib_clk.h.h</LastGenOutput>
+    </Content>
+    <Content Update="dependancies\templates\plib_gpio.c.c">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>plib_gpio.c.tt</DependentUpon>
+    </Content>
+    <Content Update="dependancies\templates\plib_gpio.c.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>plib_gpio.c.c</LastGenOutput>
+    </Content>
+    <Content Update="dependancies\templates\plib_gpio.h.h">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>plib_gpio.h.tt</DependentUpon>
+    </Content>
+    <Content Update="dependancies\templates\plib_gpio.h.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>plib_gpio.h.h</LastGenOutput>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <EmbeddedResource Update="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -92,6 +130,10 @@
     <None Update="dependancies\makefiles\Makefile_Srcs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
 
 </Project>
