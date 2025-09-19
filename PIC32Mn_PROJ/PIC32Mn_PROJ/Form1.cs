@@ -18,7 +18,8 @@ using System.Xml.Linq;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Text; // added
 using System.Collections.Generic; // added
-using System.Linq; // added
+using System.Linq;
+using DataFormats = System.Windows.Forms.DataFormats; // added
 
 namespace PIC32Mn_PROJ
 {
@@ -66,6 +67,10 @@ namespace PIC32Mn_PROJ
         private ToolStripMenuItem deleteMenuItem;
         private TreeNode? contextNode;
         private string projectDirPathRight { get; set; } // Added for right project directory
+
+        private ContextMenuStrip rightTreeContextMenu;
+        private ToolStripMenuItem rightDeleteMenuItem;
+        private TreeNode? rightContextNode;
 
         #region Form Initialization
         public Form1()
@@ -141,6 +146,11 @@ namespace PIC32Mn_PROJ
             treeView_Right.DragDrop += TreeView_Right_DragDrop;
 
             ApplyCHighlightingColors(avalonEditor);
+
+            // In Form1_Load, after you wire DnD on treeView_Right
+            SetupRightTreeViewContextMenu();
+            treeView_Right.NodeMouseClick += treeView_Right_NodeMouseClick;
+            treeView_Right.KeyDown += treeView_Right_KeyDown;
         }
 
         #endregion Form Initialization
@@ -460,7 +470,7 @@ namespace PIC32Mn_PROJ
             void Set(string name, string? fg = null, bool? bold = null, bool? italic = null)
             {
                 var colorEntry = def.NamedHighlightingColors.FirstOrDefault(x => x.Name == name);
-                if (colorEntry == null) return;
+                if (colorEntry== null) return;
                 if (fg != null)
                 {
                     var drawingColor = (System.Drawing.Color)System.ComponentModel.TypeDescriptor.GetConverter(typeof(System.Drawing.Color)).ConvertFromString(fg);
@@ -619,7 +629,8 @@ namespace PIC32Mn_PROJ
                 var path = GetNodePath(node);
                 if (string.IsNullOrEmpty(path)) return;
 
-                var data = new DataObject();
+                // FIX: Use System.Windows.Forms.DataObject, not System.Security.Cryptography.Xml.DataObject
+                var data = new System.Windows.Forms.DataObject();
                 data.SetData(DataFormats.FileDrop, new[] { path }); // standard file drop
                 data.SetData("SourceRootPath", projectDirPath ?? string.Empty); // custom, if needed later
 
@@ -628,48 +639,48 @@ namespace PIC32Mn_PROJ
         }
 
         // Right tree drag handlers
-        private void TreeView_Right_DragEnter(object? sender, DragEventArgs e)
+        private void TreeView_Right_DragEnter(object? sender, System.Windows.Forms.DragEventArgs e)
         {
             if (e.Data != null && e.Data.GetDataPresent(DataFormats.FileDrop))
-                e.Effect = DragDropEffects.Copy; // WinForms DragDropEffects
+                e.Effect = System.Windows.Forms.DragDropEffects.Copy; // WinForms DragDropEffects
             else
-                e.Effect = DragDropEffects.None;
+                e.Effect = System.Windows.Forms.DragDropEffects.None;
         }
 
-        private void TreeView_Right_DragOver(object? sender, DragEventArgs e)
+        private void TreeView_Right_DragOver(object? sender, System.Windows.Forms.DragEventArgs e)
         {
             TreeView_SetCopyEffectIfValid(treeView_Right, e);
         }
 
-        private void TreeView_SetCopyEffectIfValid(TreeView tv, DragEventArgs e)
+        private void TreeView_SetCopyEffectIfValid(TreeView tv, System.Windows.Forms.DragEventArgs e)
         {
             if (!(e.Data?.GetDataPresent(DataFormats.FileDrop) ?? false))
             {
-                e.Effect = DragDropEffects.None;
+                e.Effect = System.Windows.Forms.DragDropEffects.None;
                 return;
             }
 
-            var targetNode = tv.GetNodeAt(tv.PointToClient(new Point(e.X, e.Y)));
+            var targetNode = tv.GetNodeAt(tv.PointToClient(new System.Drawing.Point(e.X, e.Y)));
             if (targetNode?.Tag is FileInfo)
             {
                 // dropping on a file: copy alongside it -> valid
-                e.Effect = DragDropEffects.Copy;
+                e.Effect = System.Windows.Forms.DragDropEffects.Copy;
             }
             else
             {
                 // folder or empty (root): valid as well
-                e.Effect = DragDropEffects.Copy;
+                e.Effect = System.Windows.Forms.DragDropEffects.Copy;
             }
         }
 
-        private void TreeView_Right_DragDrop(object? sender, DragEventArgs e)
+        private void TreeView_Right_DragDrop(object? sender, System.Windows.Forms.DragEventArgs e)
         {
             if (!(e.Data?.GetDataPresent(DataFormats.FileDrop) ?? false)) return;
             var files = (string[])e.Data!.GetData(DataFormats.FileDrop)!;
 
             // Find drop target
             var tv = treeView_Right;
-            var clientPoint = tv.PointToClient(new Point(e.X, e.Y));
+            var clientPoint = tv.PointToClient(new System.Drawing.Point(e.X, e.Y));
             var targetNode = tv.GetNodeAt(clientPoint);
 
             var targetDir = GetDropTargetDirectory(targetNode, projectDirPathRight);
@@ -705,34 +716,153 @@ namespace PIC32Mn_PROJ
         }
 
         // Helpers
-        private static string? GetNodePath(TreeNode node)
+        private static string GetDropTargetDirectory(TreeNode? targetNode, string rootPath)
         {
-            return node.Tag switch
-            {
-                FileInfo fi => fi.FullName,
-                DirectoryInfo di => di.FullName,
-                _ => null
-            };
-        }
-
-        private static string GetDropTargetDirectory(TreeNode? targetNode, string rightRoot)
-        {
-            if (targetNode == null || targetNode.Tag == null) return rightRoot;
+            if (targetNode == null || targetNode.Tag == null)
+                return rootPath;
 
             return targetNode.Tag switch
             {
                 DirectoryInfo di => di.FullName,
-                FileInfo fi => Path.GetDirectoryName(fi.FullName) ?? rightRoot,
-                _ => rightRoot
+                FileInfo fi => Path.GetDirectoryName(fi.FullName) ?? rootPath,
+                _ => rootPath
             };
         }
 
+        // Add these methods (e.g., after SetupTreeViewContextMenu)
+        private void SetupRightTreeViewContextMenu()
+        {
+            rightTreeContextMenu = new ContextMenuStrip();
+            rightDeleteMenuItem = new ToolStripMenuItem("Delete", null, (s, e) => DeleteSelectedNodeRight());
+            rightTreeContextMenu.Items.Add(rightDeleteMenuItem);
+        }
+
+        private void treeView_Right_NodeMouseClick(object? sender, TreeNodeMouseClickEventArgs e)
+        {
+            if (e.Button != MouseButtons.Right) return;
+
+            treeView_Right.SelectedNode = e.Node;
+            rightContextNode = e.Node;
+
+            // Prevent deleting the root node
+            rightDeleteMenuItem.Enabled = e.Node.Parent != null;
+            rightTreeContextMenu.Show(treeView_Right, e.Location);
+        }
+
+        private void treeView_Right_KeyDown(object? sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                DeleteSelectedNodeRight();
+                e.Handled = true;
+            }
+        }
+
+        private void DeleteSelectedNodeRight()
+        {
+            var node = rightContextNode ?? treeView_Right.SelectedNode;
+            rightContextNode = null;
+            if (node == null) return;
+
+            // Disallow deleting the root (top-level) node
+            if (node.Parent == null)
+            {
+                System.Windows.Forms.MessageBox.Show("Cannot delete the project root folder.", "Delete",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            if (string.IsNullOrEmpty(projectDirPathRight) || !Directory.Exists(projectDirPathRight))
+            {
+                System.Windows.Forms.MessageBox.Show("No RIGHT project root is open.", "Delete",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            try
+            {
+                if (node.Tag is FileInfo fi)
+                {
+                    if (!IsUnderRoot(fi.FullName, projectDirPathRight))
+                    {
+                        System.Windows.Forms.MessageBox.Show("Blocked: outside RIGHT project root.", "Delete",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    var confirm = System.Windows.Forms.MessageBox.Show($"Delete file:\n{fi.FullName}?", "Confirm Delete",
+                        MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+                    if (confirm != DialogResult.Yes) return;
+
+                    // If file is open in editor, clear it
+                    if (!string.IsNullOrEmpty(currentViewFilePath) &&
+                        string.Equals(currentViewFilePath, fi.FullName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        avalonEditor.Text = string.Empty;
+                        currentViewFilePath = string.Empty;
+                    }
+
+                    if (File.Exists(fi.FullName))
+                    {
+                        File.SetAttributes(fi.FullName, FileAttributes.Normal);
+                        File.Delete(fi.FullName);
+                    }
+
+                    node.Remove();
+                }
+                else if (node.Tag is DirectoryInfo di)
+                {
+                    if (!IsUnderRoot(di.FullName, projectDirPathRight))
+                    {
+                        System.Windows.Forms.MessageBox.Show("Blocked: outside RIGHT project root.", "Delete",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    var confirm = System.Windows.Forms.MessageBox.Show($"Delete folder and all contents:\n{di.FullName}?",
+                        "Confirm Delete Folder", MessageBoxButtons.YesNo, MessageBoxIcon.Warning,
+                        MessageBoxDefaultButton.Button2);
+                    if (confirm != DialogResult.Yes) return;
+
+                    if (Directory.Exists(di.FullName))
+                        Directory.Delete(di.FullName, recursive: true);
+
+                    node.Remove();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show($"Delete failed:\n{ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // Small helper to validate a path is under a given root (case-insensitive)
+        private static bool IsUnderRoot(string path, string rootPath)
+        {
+            if (string.IsNullOrEmpty(rootPath)) return false;
+            var full = Path.GetFullPath(path).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            var root = Path.GetFullPath(rootPath).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            return full.StartsWith(root, StringComparison.OrdinalIgnoreCase);
+        }
+
+        // Add this helper method to the Form1 class to fix CS0103
+        private string GetNodePath(TreeNode node)
+        {
+            if (node?.Tag is FileSystemInfo fsi)
+                return fsi.FullName;
+            return string.Empty;
+        }
+
+        // Recursively copy a directory tree (copy-only, preserves structure)
         private static void CopyDirectory(string sourceDir, string destDir)
         {
             var src = new DirectoryInfo(sourceDir);
             if (!src.Exists) return;
 
             Directory.CreateDirectory(destDir);
+
+            // Copy files in current directory
             foreach (var file in src.GetFiles("*", SearchOption.TopDirectoryOnly))
             {
                 var target = Path.Combine(destDir, file.Name);
@@ -740,11 +870,12 @@ namespace PIC32Mn_PROJ
                 File.SetAttributes(target, FileAttributes.Normal);
             }
 
+            // Recurse into subdirectories
             foreach (var dir in src.GetDirectories("*", SearchOption.TopDirectoryOnly))
             {
                 CopyDirectory(dir.FullName, Path.Combine(destDir, dir.Name));
             }
         }
-    }
 
+    }
 }

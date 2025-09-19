@@ -131,14 +131,14 @@
             generateToolStripMenuItem.Text = "Generate";
             generateToolStripMenuItem.Click += generateToolStripMenuItem_Click;
 
-            // treeView_Project (legacy left panel tree)
+            // treeView_Project
             treeView_Project.Dock = DockStyle.Fill;
             treeView_Project.Location = new Point(0, 28);
             treeView_Project.Name = "treeView_Project";
             treeView_Project.Size = new Size(120, 909);
             treeView_Project.TabIndex = 2;
 
-            // splitContainer1 (main layout)
+            // splitContainer1
             splitContainer1.Dock = DockStyle.Fill;
             splitContainer1.FixedPanel = FixedPanel.Panel2;
             splitContainer1.Location = new Point(0, 0);
@@ -155,7 +155,7 @@
             splitContainer1.SplitterWidth = 8;
             splitContainer1.TabIndex = 3;
 
-            // tabPage_View (AvalonEdit host)
+            // tabPage_View
             tabPage_View.Font = new Font("Segoe UI", 9F, FontStyle.Italic, GraphicsUnit.Point, 0);
             tabPage_View.Location = new Point(4, 29);
             tabPage_View.Name = "tabPage_View";
@@ -241,10 +241,29 @@
             ResumeLayout(false);
         }
 
-        private System.Windows.Forms.ToolStripMenuItem openRightToolStripMenuItem;
-        private System.Windows.Forms.TabPage tabPage_Projects;
-        private System.Windows.Forms.SplitContainer splitProjects;
-        private System.Windows.Forms.TreeView treeView_Left;
-        private System.Windows.Forms.TreeView treeView_Right;
+        #endregion
+
+        // Designer fields
+        private MenuStrip menuStrip1;
+        private ToolStripMenuItem fileToolStripMenuItem;
+        private ToolStripMenuItem openToolStripMenuItem;
+        private ToolStripMenuItem saveToolStripMenuItem;
+        private ToolStripMenuItem saveAsToolStripMenuItem;
+        private ToolStripMenuItem exitToolStripMenuItem;
+        private ToolStripMenuItem editToolStripMenuItem;
+        private ToolStripMenuItem deviceToolStripMenuItem;
+        private TreeView treeView_Project;
+        private SplitContainer splitContainer1;
+        private ToolStripMenuItem createProjectToolStripMenuItem;
+        private ToolStripMenuItem generateToolStripMenuItem;
+        private TabControl tabControl1;
+        private TabPage tabPage_View;
+
+        // New fields for Projects tab
+        private ToolStripMenuItem openRightToolStripMenuItem;
+        private TabPage tabPage_Projects;
+        private SplitContainer splitProjects;
+        private TreeView treeView_Left;
+        private TreeView treeView_Right;
     }
 }
