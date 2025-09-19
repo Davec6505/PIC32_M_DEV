@@ -59,15 +59,5 @@ namespace PIC32Mn_PROJ.Properties {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap clock_154 {
-            get {
-                object obj = ResourceManager.GetObject("clock-154", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
     }
 }

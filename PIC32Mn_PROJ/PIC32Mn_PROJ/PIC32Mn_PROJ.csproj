@@ -5,11 +5,11 @@
     <TargetFramework>net8.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
+    <UseWPF>true</UseWPF>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="dependancies\project_files\main.c" />
     <None Remove="dependancies\project_files\startup.S" />
     <None Remove="PIC_H\p32mz2048efh064.h" />
     <None Remove="PIC_H\p32mz2048efh100.h" />
@@ -47,8 +47,7 @@
 
 
   <ItemGroup>
-    <Folder Include="dependancies\modules\" />
-    <Folder Include="dependancies\gpio\" />
+    <Folder Include="classes\" />
     <Folder Include="dependancies\datasheets\" />
     <Folder Include="interfaces\" />
   </ItemGroup>
@@ -71,45 +70,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Update="dependancies\templates\plib_clk.c.c">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>plib_clk.c.tt</DependentUpon>
-    </Content>
-    <Content Update="dependancies\templates\plib_clk.c.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>plib_clk.c.c</LastGenOutput>
-    </Content>
-    <Content Update="dependancies\templates\plib_clk.h.h">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>plib_clk.h.tt</DependentUpon>
-    </Content>
-    <Content Update="dependancies\templates\plib_clk.h.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>plib_clk.h.h</LastGenOutput>
-    </Content>
-    <Content Update="dependancies\templates\plib_gpio.c.c">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>plib_gpio.c.tt</DependentUpon>
-    </Content>
-    <Content Update="dependancies\templates\plib_gpio.c.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>plib_gpio.c.c</LastGenOutput>
-    </Content>
-    <Content Update="dependancies\templates\plib_gpio.h.h">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>plib_gpio.h.tt</DependentUpon>
-    </Content>
-    <Content Update="dependancies\templates\plib_gpio.h.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>plib_gpio.h.h</LastGenOutput>
-    </Content>
   </ItemGroup>
 
   <ItemGroup>
