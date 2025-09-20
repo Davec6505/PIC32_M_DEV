@@ -11,18 +11,6 @@
 
   <ItemGroup>
     <None Remove="dependancies\project_files\startup.S" />
-    <None Remove="PIC_H\p32mz2048efh064.h" />
-    <None Remove="PIC_H\p32mz2048efh100.h" />
-    <None Remove="PIC_H\p32mz2048efh124.h" />
-    <None Remove="PIC_H\p32mz2048efh144.h" />
-    <None Remove="XML\atdf\PIC32MZ2048EFH064.atdf" />
-    <None Remove="XML\atdf\PIC32MZ2048EFH100.atdf" />
-    <None Remove="XML\atdf\PIC32MZ2048EFH124.atdf" />
-    <None Remove="XML\atdf\PIC32MZ2048EFH144.atdf" />
-    <None Remove="XML\edc\PIC32MZ2048EFH064.PIC" />
-    <None Remove="XML\edc\PIC32MZ2048EFH100.PIC" />
-    <None Remove="XML\edc\PIC32MZ2048EFH124.PIC" />
-    <None Remove="XML\edc\PIC32MZ2048EFH144.PIC" />
   </ItemGroup>
 
   <ItemGroup>
@@ -47,7 +35,6 @@
 
 
   <ItemGroup>
-    <Folder Include="classes\" />
     <Folder Include="dependancies\datasheets\" />
     <Folder Include="interfaces\" />
   </ItemGroup>
@@ -94,6 +81,18 @@
 
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="dependancies\scripts\startMcc.ps1">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="dependancies\scripts\startMplabX.ps1">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="dependancies\scripts\vscode.ps1">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

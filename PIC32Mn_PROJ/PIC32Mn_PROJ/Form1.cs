@@ -4,22 +4,14 @@ using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 
 using Microsoft.WindowsAPICodePack.Dialogs;
 // removed: using PIC32Mn_PROJ.classes;
-using System.Configuration;
-using System.Diagnostics;
 using System.IO;
 using System.Reflection;
-using System.Text.Json;
-using System.Drawing;
 using System.Windows; // WPF base types (FontWeights, etc.)
-using System.Windows.Forms; // WinForms
 using System.Windows.Forms.Integration; // ElementHost
 using System.Xml;
-using System.Xml.Linq;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using System.Text; // added
-using System.Collections.Generic; // added
-using System.Linq;
-using DataFormats = System.Windows.Forms.DataFormats; // added
+using DataFormats = System.Windows.Forms.DataFormats;
+using Microsoft.Win32;
+using PIC32Mn_PROJ.classes; // added
 
 namespace PIC32Mn_PROJ
 {
@@ -35,14 +27,7 @@ namespace PIC32Mn_PROJ
         #region App specific paths    
         string rootPath = string.Empty;
         string packsPath = string.Empty;
-        string picPath = string.Empty;
 
-        string adtfPath = string.Empty;   //path to .atdf
-        string configOutput = string.Empty; //path to .json
-        string adchsOutput = string.Empty; //path to adchs .json                                          
-        string gpioPath = string.Empty; //path to pin .data
-        string outputPath = string.Empty;   //path to pin .json
-        string opath = string.Empty;
         #endregion App specific paths
 
         // Project properties
@@ -53,6 +38,8 @@ namespace PIC32Mn_PROJ
         public string projectVersion { get; set; }
         public string projectDir { get; set; }
         public string projectType { get; set; }
+
+        public string mirror_projectPath { get; set; }
 
         public string device { get; set; }
         public bool saveNeeded { get; set; } = false;
@@ -72,6 +59,10 @@ namespace PIC32Mn_PROJ
         private ToolStripMenuItem rightDeleteMenuItem;
         private TreeNode? rightContextNode;
 
+        private ToolStripMenuItem leftPasteMenuItem;
+        private ToolStripMenuItem rightCopyMenuItem;
+        private List<string> rightCopyBufferPaths = new();
+
         #region Form Initialization
         public Form1()
         {
@@ -83,27 +74,25 @@ namespace PIC32Mn_PROJ
             packsPath = $"{rootPath}XML\\";
 
             //paths specific to this application, will have to sort this out
-            picPath = $"{packsPath}edc\\PIC32MZ2048EFH064.PIC"; // Replace with your actual XML file path
-            adtfPath = $"{packsPath}atdf\\PIC32MZ2048EFH064.atdf";
 
-            configOutput = $"{rootPath}dependancies\\CONFIGValues.json";
-            adchsOutput = $"{rootPath}dependancies\\ADCHSValues.json";
-
-            gpioPath = $"{rootPath}dependancies\\gpio\\pic32mz_device.json";
-            outputPath = $"{rootPath}dependancies\\gpio\\PinMappings.txt"; // Output file
-            opath = $"{rootPath}dependancies\\modules\\";
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
             // Project Initialization
             var savedPath = AppSettings.Default.ProjectPath;
-
             if (!string.IsNullOrEmpty(savedPath))
             {
                 projectDirPath = savedPath;
                 PopulateTreeViewWithFoldersAndFiles(projectDirPath);
             }
+            var savedMirror = AppSettings.Default.mirror_ProjectPath;
+            if (!string.IsNullOrEmpty(savedMirror))
+            {
+                mirror_projectPath = savedMirror;
+                PopulateTreeView(treeView_Right, mirror_projectPath);
+            }
+
 
             // AvalonEdit setup
             TextEditor avalonEditor = new TextEditor();
@@ -127,23 +116,29 @@ namespace PIC32Mn_PROJ
             avalonEditor.TextChanged += (s, e2) => { saveNeeded = true; };
             // Removed LoadDefaults(); since functionality was deleted
             treeView_Project.AfterSelect += treeView_Project_AfterSelect;
-
+            // treeView_Project.
             // Add these lines to enable right-click delete on the dynamic tree
             SetupTreeViewContextMenu();
             treeView_Project.NodeMouseClick += treeView_Project_NodeMouseClick;
             treeView_Project.KeyDown += treeView_Project_KeyDown;
 
-            // Hook both trees to the same selection preview (optional, previews in View tab)
-            treeView_Left.AfterSelect += treeView_Project_AfterSelect;
+            // Selection preview
+            treeView_Project.AfterSelect += treeView_Project_AfterSelect;
             treeView_Right.AfterSelect += treeView_Project_AfterSelect;
 
-            // Drag from left tree
-            treeView_Left.ItemDrag += TreeView_Left_ItemDrag;
+            // DRAG SOURCE: right Projects tree
+            treeView_Right.ItemDrag += TreeView_Right_ItemDrag;
 
-            // Drop onto right tree
-            treeView_Right.DragEnter += TreeView_Right_DragEnter;
-            treeView_Right.DragOver += TreeView_Right_DragOver;
-            treeView_Right.DragDrop += TreeView_Right_DragDrop;
+            // DROP TARGET: left original tree
+            treeView_Project.AllowDrop = true;
+            treeView_Project.DragEnter += TreeView_Project_DragEnter;
+            treeView_Project.DragOver += TreeView_Project_DragOver;
+            treeView_Project.DragDrop += TreeView_Project_DragDrop;
+
+            // Keep right-click delete on right tree
+            SetupRightTreeViewContextMenu();
+            treeView_Right.NodeMouseClick += treeView_Right_NodeMouseClick;
+            treeView_Right.KeyDown += treeView_Right_KeyDown;
 
             ApplyCHighlightingColors(avalonEditor);
 
@@ -170,8 +165,8 @@ namespace PIC32Mn_PROJ
                     projectDirPath = dialog.FileName;
 
                     // Populate the new LEFT tree (Projects tab)
-                    if (treeView_Left != null)
-                        PopulateTreeView(treeView_Left, projectDirPath);
+                    // if (treeView_Left != null)
+                    //PopulateTreeView(treeView_Left, projectDirPath);
 
                     // Optional: keep legacy tree populated as well
                     PopulateTreeViewWithFoldersAndFiles(projectDirPath);
@@ -222,9 +217,27 @@ namespace PIC32Mn_PROJ
         }
 
 
-        private void deviceToolStripMenuItem_Click(object sender, EventArgs e)
+        private void mCCStandaloneToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Device selection removed in this simplified branch
+            scripts scr = new scripts();
+            scr.launchMcc(mirror_projectPath);
+            scr.alert_changes(mirror_projectPath);
+        }
+
+        private void mPLABXToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Device selection removed in this simplified branch
+            scripts scr = new scripts();
+            scr.launchMplabX(mirror_projectPath);
+            scr.alert_changes(mirror_projectPath);
+        }
+
+        private void vSCodeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var scr = new scripts();
+            scr.launch("vscode", projectDirPath);
+            scr.alert_changes(projectDirPath);
         }
 
         private void createProjectToolStripMenuItem_Click(object sender, EventArgs e)
@@ -269,7 +282,7 @@ namespace PIC32Mn_PROJ
                     File.Copy($"{rootPath}dependancies\\makefiles\\Makefile_Root", Path.Combine(newProjectPath, "", "Makefile"));
                     if (Directory.Exists(Path.Combine(newProjectPath, "srcs")))
                     {
-                        File.Copy($"{rootPath}dependancies\\project_files\\main.c", Path.Combine(newProjectPath, "srcs", "main.c"));
+                        //File.Copy($"{rootPath}dependancies\\project_files\\main.c", Path.Combine(newProjectPath, "srcs", "main.c"));
                         File.Copy($"{rootPath}dependancies\\makefiles\\Makefile_Srcs", Path.Combine(newProjectPath, "srcs", "Makefile"));
 
                         Directory.CreateDirectory(Path.Combine(newProjectPath, "srcs\\startup"));
@@ -284,9 +297,27 @@ namespace PIC32Mn_PROJ
                     AppSettings.Default.ProjectPath = projectDirPath;
                     AppSettings.Default.Save();
 
-                    // Removed: GetDevice();
-
                 }
+            }
+            // Prompt to select mirror project
+            var res = System.Windows.Forms.MessageBox.Show("Now select the mirror project for your new project.", "Mirror Project", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Information);
+
+            if (res == DialogResult.No)
+                return;
+
+            var mirror = (string.IsNullOrEmpty(mirror_projectPath)) ? "C:\\" : mirror_projectPath;
+            OpenFolderDialog ofd = new OpenFolderDialog
+            {
+                Title = "Select the device mirror project for the " + projectName,
+                InitialDirectory = mirror
+            };
+            ofd.ShowDialog();
+            if (!string.IsNullOrEmpty(ofd.FolderName) && Directory.Exists(ofd.FolderName))
+            {
+                mirror_projectPath = ofd.FolderName;
+                AppSettings.Default.mirror_ProjectPath = mirror_projectPath;
+                AppSettings.Default.Save();
+                PopulateTreeView(treeView_Right, mirror_projectPath);
             }
         }
 
@@ -309,6 +340,7 @@ namespace PIC32Mn_PROJ
                 if (dialog.ShowDialog() == CommonFileDialogResult.Ok && !string.IsNullOrEmpty(dialog.FileName))
                 {
                     projectDirPathRight = dialog.FileName;
+                    AppSettings.Default.mirror_ProjectPath = projectDirPathRight;
                     PopulateTreeView(treeView_Right, projectDirPathRight);
                 }
             }
@@ -346,10 +378,14 @@ namespace PIC32Mn_PROJ
             }
         }
 
-        // Add to Form1 class
+        // Update SetupTreeViewContextMenu to include Paste
         private void SetupTreeViewContextMenu()
         {
             treeContextMenu = new ContextMenuStrip();
+
+            leftPasteMenuItem = new ToolStripMenuItem("Paste", null, (s, e) => LeftPasteFromRightClipboard());
+            treeContextMenu.Items.Add(leftPasteMenuItem);
+
             deleteMenuItem = new ToolStripMenuItem("Delete", null, (s, e) => DeleteSelectedNode());
             treeContextMenu.Items.Add(deleteMenuItem);
         }
@@ -361,8 +397,12 @@ namespace PIC32Mn_PROJ
             treeView_Project.SelectedNode = e.Node;
             contextNode = e.Node;
 
+            // Enable paste when buffer has content
+            leftPasteMenuItem.Enabled = rightCopyBufferPaths != null && rightCopyBufferPaths.Count > 0;
+
             // Prevent deleting the root node
             deleteMenuItem.Enabled = e.Node.Parent != null;
+
             treeContextMenu.Show(treeView_Project, e.Location);
         }
 
@@ -470,7 +510,7 @@ namespace PIC32Mn_PROJ
             void Set(string name, string? fg = null, bool? bold = null, bool? italic = null)
             {
                 var colorEntry = def.NamedHighlightingColors.FirstOrDefault(x => x.Name == name);
-                if (colorEntry== null) return;
+                if (colorEntry == null) return;
                 if (fg != null)
                 {
                     var drawingColor = (System.Drawing.Color)System.ComponentModel.TypeDescriptor.GetConverter(typeof(System.Drawing.Color)).ConvertFromString(fg);
@@ -638,7 +678,20 @@ namespace PIC32Mn_PROJ
             }
         }
 
-        // Right tree drag handlers
+        // Drag from RIGHT Projects tree
+        private void TreeView_Right_ItemDrag(object? sender, ItemDragEventArgs e)
+        {
+            if (e.Item is not TreeNode node) return;
+            var path = GetNodePath(node);
+            if (string.IsNullOrEmpty(path)) return;
+
+            var data = new System.Windows.Forms.DataObject();
+            data.SetData(DataFormats.FileDrop, new[] { path });
+            data.SetData("SourceRootPath", projectDirPathRight ?? string.Empty);
+            DoDragDrop(data, System.Windows.Forms.DragDropEffects.Copy);
+        }
+
+        // Drop onto right tree
         private void TreeView_Right_DragEnter(object? sender, System.Windows.Forms.DragEventArgs e)
         {
             if (e.Data != null && e.Data.GetDataPresent(DataFormats.FileDrop))
@@ -715,6 +768,75 @@ namespace PIC32Mn_PROJ
                 PopulateTreeView(treeView_Right, projectDirPathRight);
         }
 
+        // Drop onto LEFT original tree
+        private void TreeView_Project_DragEnter(object? sender, System.Windows.Forms.DragEventArgs e)
+        {
+            e.Effect = (e.Data != null && e.Data.GetDataPresent(DataFormats.FileDrop))
+                ? System.Windows.Forms.DragDropEffects.Copy
+                : System.Windows.Forms.DragDropEffects.None;
+        }
+
+        private void TreeView_Project_DragOver(object? sender, System.Windows.Forms.DragEventArgs e)
+        {
+            if (!(e.Data?.GetDataPresent(DataFormats.FileDrop) ?? false))
+            {
+                e.Effect = System.Windows.Forms.DragDropEffects.None;
+                return;
+            }
+
+            var tv = treeView_Project;
+            var targetNode = tv.GetNodeAt(tv.PointToClient(new System.Drawing.Point(e.X, e.Y)));
+            // Dropping on a file copies alongside; on a folder (or empty) copies inside -> valid
+            e.Effect = System.Windows.Forms.DragDropEffects.Copy;
+        }
+
+        private void TreeView_Project_DragDrop(object? sender, System.Windows.Forms.DragEventArgs e)
+        {
+            if (!(e.Data?.GetDataPresent(DataFormats.FileDrop) ?? false)) return;
+            var files = (string[])e.Data.GetData(DataFormats.FileDrop)!;
+
+            var tv = treeView_Project;
+            var clientPoint = tv.PointToClient(new System.Drawing.Point(e.X, e.Y));
+            var targetNode = tv.GetNodeAt(clientPoint);
+
+            var targetDir = GetDropTargetDirectory(targetNode, projectDirPath);
+            if (string.IsNullOrEmpty(targetDir) || !Directory.Exists(targetDir)) return;
+
+            var policy = OverwritePolicy.Ask;
+
+            try
+            {
+                foreach (var srcPath in files)
+                {
+                    if (Directory.Exists(srcPath))
+                    {
+                        var srcDir = new DirectoryInfo(srcPath);
+                        var destDir = Path.Combine(targetDir, srcDir.Name);
+                        CopyDirectoryWithPrompt(srcDir.FullName, destDir, ref policy);
+                    }
+                    else if (File.Exists(srcPath))
+                    {
+                        var fileName = Path.GetFileName(srcPath);
+                        var destFile = Path.Combine(targetDir, fileName);
+                        TryCopyFileWithPrompt(srcPath, destFile, ref policy);
+                    }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // user cancelled; stop
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show($"Copy failed:\n{ex.Message}", "Copy", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            // Refresh only the affected directory node (keeps expansion state)
+            var dirNodeToRefresh = GetDirectoryNodeForDrop(targetNode);
+            if (dirNodeToRefresh != null)
+                RepopulateDirectoryNode(dirNodeToRefresh);
+        }
+
         // Helpers
         private static string GetDropTargetDirectory(TreeNode? targetNode, string rootPath)
         {
@@ -733,6 +855,10 @@ namespace PIC32Mn_PROJ
         private void SetupRightTreeViewContextMenu()
         {
             rightTreeContextMenu = new ContextMenuStrip();
+
+            rightCopyMenuItem = new ToolStripMenuItem("Copy", null, (s, e) => RightCopySelectedNode());
+            rightTreeContextMenu.Items.Add(rightCopyMenuItem);
+
             rightDeleteMenuItem = new ToolStripMenuItem("Delete", null, (s, e) => DeleteSelectedNodeRight());
             rightTreeContextMenu.Items.Add(rightDeleteMenuItem);
         }
@@ -745,7 +871,8 @@ namespace PIC32Mn_PROJ
             rightContextNode = e.Node;
 
             // Prevent deleting the root node
-            rightDeleteMenuItem.Enabled = e.Node.Parent != null;
+            //rightDeleteMenuItem.Enabled = e.Node.Parent != null;
+
             rightTreeContextMenu.Show(treeView_Right, e.Location);
         }
 
@@ -876,6 +1003,184 @@ namespace PIC32Mn_PROJ
                 CopyDirectory(dir.FullName, Path.Combine(destDir, dir.Name));
             }
         }
+
+        // Add this helper to copy directories while honoring the overwrite policy
+        private static void CopyDirectoryWithPrompt(string sourceDir, string destDir, ref OverwritePolicy policy)
+        {
+            var src = new DirectoryInfo(sourceDir);
+            if (!src.Exists) return;
+
+            Directory.CreateDirectory(destDir);
+
+            foreach (var file in src.GetFiles("*", SearchOption.TopDirectoryOnly))
+            {
+                var target = Path.Combine(destDir, file.Name);
+                TryCopyFileWithPrompt(file.FullName, target, ref policy);
+            }
+
+            foreach (var dir in src.GetDirectories("*", SearchOption.TopDirectoryOnly))
+            {
+                var subDest = Path.Combine(destDir, dir.Name);
+                CopyDirectoryWithPrompt(dir.FullName, subDest, ref policy);
+            }
+        }
+
+        private void RightCopySelectedNode()
+        {
+            var node = rightContextNode ?? treeView_Right.SelectedNode;
+            if (node == null || node.Tag is not FileSystemInfo fsi) return;
+
+            rightCopyBufferPaths = new List<string> { fsi.FullName };
+            // Optionally: notify user
+            // System.Windows.Forms.MessageBox.Show($"Copied: {fsi.FullName}", "Copy", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void LeftPasteFromRightClipboard()
+        {
+            if (rightCopyBufferPaths == null || rightCopyBufferPaths.Count == 0) return;
+            if (string.IsNullOrEmpty(projectDirPath) || !Directory.Exists(projectDirPath))
+            {
+                System.Windows.Forms.MessageBox.Show("No LEFT project root is open.", "Paste",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var node = contextNode ?? treeView_Project.SelectedNode;
+            var targetDir = GetDropTargetDirectory(node, projectDirPath);
+            if (string.IsNullOrEmpty(targetDir) || !Directory.Exists(targetDir)) return;
+
+            var policy = OverwritePolicy.Ask;
+
+            try
+            {
+                foreach (var srcPath in rightCopyBufferPaths)
+                {
+                    if (Directory.Exists(srcPath))
+                    {
+                        var srcDir = new DirectoryInfo(srcPath);
+                        var destDir = Path.Combine(targetDir, srcDir.Name);
+                        CopyDirectoryWithPrompt(srcDir.FullName, destDir, ref policy);
+                    }
+                    else if (File.Exists(srcPath))
+                    {
+                        var fileName = Path.GetFileName(srcPath);
+                        var destFile = Path.Combine(targetDir, fileName);
+                        TryCopyFileWithPrompt(srcPath, destFile, ref policy);
+                    }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // user cancelled; stop
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show($"Paste failed:\n{ex.Message}", "Paste",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            // Refresh only the affected directory node (keeps expansion state)
+            var dirNodeToRefresh = GetDirectoryNodeForDrop(node);
+            if (dirNodeToRefresh != null)
+                RepopulateDirectoryNode(dirNodeToRefresh);
+        }
+
+        private TreeNode GetDirectoryNodeForDrop(TreeNode node)
+        {
+            // Assuming the node represents a directory, return it directly.
+            return node;
+        }
+
+        // Add this helper method to the Form1 class to fix CS0103
+        private void RepopulateDirectoryNode(TreeNode dirNode)
+        {
+            if (dirNode == null || dirNode.Tag is not DirectoryInfo di) return;
+
+            dirNode.Nodes.Clear();
+            AddDirectoriesAndFiles(di, dirNode);
+            dirNode.Expand();
+        }
+
+        // Add this enum anywhere in the Form1 class (e.g., near other helpers)
+        private enum OverwritePolicy
+        {
+            Ask,
+            YesToAll,
+            NoToAll
+        }
+
+        // Add this helper: copy with per-file prompt, remembering policy across the operation
+        private static bool TryCopyFileWithPrompt(string srcFile, string destFile, ref OverwritePolicy policy)
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(destFile)!);
+
+            // If there's no existing file, just copy
+            if (!File.Exists(destFile))
+            {
+                File.Copy(srcFile, destFile, overwrite: true);
+                File.SetAttributes(destFile, FileAttributes.Normal);
+                return true;
+            }
+
+            // Existing file: decide based on policy
+            switch (policy)
+            {
+                case OverwritePolicy.YesToAll:
+                    File.Copy(srcFile, destFile, overwrite: true);
+                    File.SetAttributes(destFile, FileAttributes.Normal);
+                    return true;
+
+                case OverwritePolicy.NoToAll:
+                    return false;
+
+                case OverwritePolicy.Ask:
+                default:
+                    // Ask for this file
+                    var res = System.Windows.Forms.MessageBox.Show(
+                        $"The file already exists:\n{destFile}\nDo you want to replace it?",
+                        "Copy and Replace",
+                        MessageBoxButtons.YesNoCancel,
+                        MessageBoxIcon.Question,
+                        MessageBoxDefaultButton.Button2);
+
+                    if (res == DialogResult.Cancel)
+                        throw new OperationCanceledException("User cancelled copy.");
+
+                    if (res == DialogResult.Yes)
+                    {
+                        // Optional: ask to apply to all remaining conflicts
+                        var applyAll = System.Windows.Forms.MessageBox.Show(
+                            "Apply this choice (Replace) to all remaining existing files?",
+                            "Apply to All",
+                            MessageBoxButtons.YesNo,
+                            MessageBoxIcon.Question,
+                            MessageBoxDefaultButton.Button2);
+
+                        if (applyAll == DialogResult.Yes)
+                            policy = OverwritePolicy.YesToAll;
+
+                        File.Copy(srcFile, destFile, overwrite: true);
+                        File.SetAttributes(destFile, FileAttributes.Normal);
+                        return true;
+                    }
+                    else
+                    {
+                        // res == No
+                        var applyAll = System.Windows.Forms.MessageBox.Show(
+                            "Apply this choice (Skip) to all remaining existing files?",
+                            "Apply to All",
+                            MessageBoxButtons.YesNo,
+                            MessageBoxIcon.Question,
+                            MessageBoxDefaultButton.Button2);
+
+                        if (applyAll == DialogResult.Yes)
+                            policy = OverwritePolicy.NoToAll;
+
+                        return false;
+                    }
+            }
+        }
+
 
     }
 }

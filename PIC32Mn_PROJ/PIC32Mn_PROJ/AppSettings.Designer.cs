@@ -34,5 +34,17 @@ namespace PIC32Mn_PROJ {
                 this["ProjectPath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string mirror_ProjectPath {
+            get {
+                return ((string)(this["mirror_ProjectPath"]));
+            }
+            set {
+                this["mirror_ProjectPath"] = value;
+            }
+        }
     }
 }
