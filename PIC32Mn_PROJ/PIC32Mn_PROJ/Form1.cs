@@ -1,28 +1,25 @@
 ﻿using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
-
+using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using PIC32Mn_PROJ.classes; // added
 // removed: using PIC32Mn_PROJ.classes;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using System.Windows; // WPF base types (FontWeights, etc.)
 using System.Windows.Forms.Integration; // ElementHost
 using System.Xml;
 using DataFormats = System.Windows.Forms.DataFormats;
-using Microsoft.Win32;
-using PIC32Mn_PROJ.classes; // added
 
 namespace PIC32Mn_PROJ
 {
     public partial class Form1 : Form
     {
 
-        // Removed deleted dependencies to simplify build
-        // ConfigLoader configLoader = new();
-        // Modules mods;
-        // pins pins;
-
+   
         // Application specific paths
         #region App specific paths    
         string rootPath = string.Empty;
@@ -63,6 +60,18 @@ namespace PIC32Mn_PROJ
         private ToolStripMenuItem rightCopyMenuItem;
         private List<string> rightCopyBufferPaths = new();
 
+        // PowerShell console fields
+        private Process? psProcess;
+        private RichTextBox psOutput;
+        private TextBox psInput;
+
+        // Console-triggered refresh state
+        private bool pendingMakeRefresh;
+        private TreeNode? pendingRefreshNode;
+
+        // View tab header label to show current filename
+        private System.Windows.Forms.Label viewHeaderLabel;
+
         #region Form Initialization
         public Form1()
         {
@@ -77,8 +86,9 @@ namespace PIC32Mn_PROJ
 
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        public void Form1_Load(object sender, EventArgs e)
         {
+           
             // Project Initialization
             var savedPath = AppSettings.Default.ProjectPath;
             if (!string.IsNullOrEmpty(savedPath))
@@ -101,16 +111,116 @@ namespace PIC32Mn_PROJ
             avalonEditor.ShowLineNumbers = true;
             avalonEditor.SyntaxHighlighting = null;
             avalonEditor.IsReadOnly = false;
+            // Add a small top inset so the first line is never visually clipped under host/split borders
+            avalonEditor.Margin = new Thickness(0);
+            avalonEditor.Padding = new Thickness(0, 4, 0, 0);
+            avalonEditor.TextArea.TextView.Margin = new Thickness(0, 2, 0, 0);
 
-            ElementHost elementHost = new ElementHost();
-            elementHost.BackColor = System.Drawing.Color.White;
-            elementHost.Margin = new Padding(0);
-            elementHost.Padding = new Padding(0);
-            elementHost.Dock = DockStyle.Fill;
-            elementHost.Child = avalonEditor;
+            // Add editor context menu (cut/copy/paste/save/close)
+            SetupAvalonEditorContextMenu(avalonEditor);
 
+            // Container to control layout inside the View tab
+            var viewContainer = new System.Windows.Forms.Panel
+            {
+                Dock = DockStyle.Fill,
+                Margin = new Padding(0),
+                Padding = new Padding(0),
+                BackColor = System.Drawing.Color.White
+            };
             tabPage_View.Padding = new Padding(0);
-            tabPage_View.Controls.Add(elementHost);
+            tabPage_View.Controls.Add(viewContainer);
+
+
+            // ElementHost fills the remaining space under the header
+            ElementHost elementHost = new ElementHost
+            {
+                BackColor = System.Drawing.Color.White,
+                Margin = new Padding(0),
+                Padding = new Padding(0),
+                Dock = DockStyle.Fill,
+                Child = avalonEditor
+            };
+
+            // IMPORTANT: add Fill first, then Top (header last) so it docks first
+            viewContainer.SuspendLayout();
+            viewContainer.Controls.Add(elementHost);
+            viewContainer.ResumeLayout(true);
+
+            // Split: top editor, bottom PowerShell
+            var splitView = new SplitContainer
+            {
+                Dock = DockStyle.Fill,
+                Orientation = Orientation.Horizontal,
+                FixedPanel = FixedPanel.Panel2,
+                SplitterWidth = 6
+            };
+            // Ensure no accidental insets
+            splitView.Margin = new Padding(0);
+            splitView.Panel1.Padding = new Padding(0);
+            splitView.Panel2.Padding = new Padding(0);
+
+            // TOP: editor
+            splitView.Panel1.Controls.Add(elementHost);
+
+            // BOTTOM: PowerShell console
+            var consolePanel = new Panel
+            {
+                Dock = DockStyle.Fill,
+                BackColor = System.Drawing.Color.White
+            };
+
+            // output (fills)
+            psOutput = new RichTextBox
+            {
+                Dock = DockStyle.Fill,
+                ReadOnly = true,
+                BorderStyle = BorderStyle.FixedSingle,
+                BackColor = System.Drawing.Color.White,
+                Font = new System.Drawing.Font("Consolas", 9f)
+            };
+
+            // input (bottom)
+            var inputPanel = new Panel
+            {
+                Dock = DockStyle.Bottom,
+                Height = 28
+            };
+            psInput = new TextBox
+            {
+                Dock = DockStyle.Fill,
+                BorderStyle = BorderStyle.FixedSingle
+            };
+            var btnRun = new Button
+            {
+                Text = "Run",
+                Dock = DockStyle.Right,
+                Width = 60
+            };
+            btnRun.Click += (s, e2) => SendShellCommand(psInput.Text);
+            psInput.KeyDown += (s, e2) =>
+            {
+                if (e2.KeyCode == Keys.Enter)
+                {
+                    e2.SuppressKeyPress = true;
+                    SendShellCommand(psInput.Text);
+                }
+            };
+
+            inputPanel.Controls.Add(psInput);
+            inputPanel.Controls.Add(btnRun);
+
+            consolePanel.Controls.Add(psOutput);
+            consolePanel.Controls.Add(inputPanel);
+
+            // assemble split
+            splitView.Panel2.Controls.Add(consolePanel);
+
+            // IMPORTANT: add split under the header panel you already created
+            viewContainer.Controls.Add(splitView);
+            viewContainer.Controls.SetChildIndex(splitView, 1); // keep header at index 0
+
+            // start shell process lazily on first use
+            this.FormClosed += Form1_FormClosed;
 
             this.avalonEditor = avalonEditor;
             avalonEditor.TextChanged += (s, e2) => { saveNeeded = true; };
@@ -146,11 +256,13 @@ namespace PIC32Mn_PROJ
             SetupRightTreeViewContextMenu();
             treeView_Right.NodeMouseClick += treeView_Right_NodeMouseClick;
             treeView_Right.KeyDown += treeView_Right_KeyDown;
+
         }
+
 
         #endregion Form Initialization
 
-        // Project menustrip items
+        // Project menustrip items  
         #region  menu items
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -177,6 +289,25 @@ namespace PIC32Mn_PROJ
             }
         }
 
+        private void closeRightToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Close the right-side project view
+            tabControl1.TabPages.Remove(tabPage_Projects);
+            projectDirPathRight = string.Empty;
+            AppSettings.Default.mirror_ProjectPath = string.Empty;
+            AppSettings.Default.Save();
+            treeView_Right.Nodes.Clear();
+            rightContextNode = null;
+            rightCopyBufferPaths.Clear();
+            rightCopyMenuItem.Enabled = false;
+            rightDeleteMenuItem.Enabled = false;
+            // Optionally, re-add the tab for future use
+            if (!tabControl1.TabPages.Contains(tabPage_Projects))
+            {
+                tabControl1.TabPages.Add(tabPage_Projects);
+            }
+        }
+
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -190,26 +321,222 @@ namespace PIC32Mn_PROJ
                 }
             }
 
-
-            // Save the file in the editor if needed
-            if (!string.IsNullOrEmpty(currentViewFilePath) && avalonEditor != null)
+            if (avalonEditor == null)
             {
-                File.WriteAllText(currentViewFilePath, avalonEditor.Text);
+                System.Windows.Forms.MessageBox.Show("Editor is not ready.", "Save",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
 
-            // Persist the project path for next run
-            if (!string.IsNullOrEmpty(projectDirPath))
+            try
             {
-                AppSettings.Default.ProjectPath = projectDirPath;
-                AppSettings.Default.Save();
-                System.Windows.Forms.MessageBox.Show("Project settings saved.", "Save", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Information);
-                RefreshAvalonEditor();
+                // If this is a new, unsaved buffer, prompt Save As
+                if (string.IsNullOrWhiteSpace(currentViewFilePath))
+                {
+                    if (ExecuteSaveAs()) // saved successfully
+                    {
+                        // Persist the project path for next run (unchanged behavior)
+                        if (!string.IsNullOrEmpty(projectDirPath))
+                        {
+                            AppSettings.Default.ProjectPath = projectDirPath;
+                            AppSettings.Default.Save();
+                            RefreshAvalonEditor();
+                        }
+                    }
+                    return;
+                }
+
+                // Normal Save to existing path
+                File.WriteAllText(currentViewFilePath, avalonEditor.Text);
+                saveNeeded = false;
+
+                // Persist the project path for next run
+                if (!string.IsNullOrEmpty(projectDirPath))
+                {
+                    AppSettings.Default.ProjectPath = projectDirPath;
+                    AppSettings.Default.Save();
+                    System.Windows.Forms.MessageBox.Show("File saved.", "Save",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    RefreshAvalonEditor();
+                }
+                else
+                {
+                    System.Windows.Forms.MessageBox.Show("No project selected.", "Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show($"Save failed:\n{ex.Message}", "Save",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (ExecuteSaveAs())
+                {
+                    System.Windows.Forms.MessageBox.Show("File saved.", "Save As",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show($"Save As failed:\n{ex.Message}", "Save As",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void exitToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+           this.Close();
+        }
+
+        // Reusable Save As implementation used by both Save and Save As
+        private bool ExecuteSaveAs()
+        {
+            if (avalonEditor == null)
+                throw new InvalidOperationException("Editor is not ready.");
+
+            // Initial directory preference: current file dir -> project root -> Documents
+            var initialDir =
+                (!string.IsNullOrEmpty(currentViewFilePath) && Directory.Exists(Path.GetDirectoryName(currentViewFilePath!)))
+                    ? Path.GetDirectoryName(currentViewFilePath)!
+                    : (!string.IsNullOrEmpty(projectDirPath) && Directory.Exists(projectDirPath))
+                        ? projectDirPath
+                        : Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+            var currentName = !string.IsNullOrEmpty(currentViewFilePath)
+                ? Path.GetFileName(currentViewFilePath)
+                : "untitled.c";
+
+            var sfd = new System.Windows.Forms.SaveFileDialog
+            {
+                InitialDirectory = initialDir,
+                FileName = currentName,
+                Filter =
+                    "C/C header/source (*.c;*.h)|*.c;*.h|" +
+                    "Assembly (*.s;*.asm)|*.s;*.asm|" +
+                    "Makefiles (Makefile;*.mk)|Makefile;*.mk|" +
+                    "JSON (*.json)|*.json|" +
+                    "XML (*.xml)|*.xml|" +
+                    "All files (*.*)|*.*",
+                AddExtension = true,
+                OverwritePrompt = true,
+                ValidateNames = true
+            };
+
+            var ext = Path.GetExtension(currentName);
+            if (!string.IsNullOrEmpty(ext))
+                sfd.DefaultExt = ext.TrimStart('.');
+
+            if (sfd.ShowDialog(this) != DialogResult.OK)
+                return false;
+
+            // Write file
+            File.WriteAllText(sfd.FileName, avalonEditor.Text, Encoding.UTF8);
+
+            // Update context
+            currentViewFilePath = sfd.FileName;
+            saveNeeded = false;
+
+            // Re-apply highlighting based on the new filename/extension
+            DisplayFileInViewTab(currentViewFilePath);
+
+            // Incrementally update the tree ONLY if saved inside the project root (no collapse)
+            if (!string.IsNullOrEmpty(projectDirPath) && IsUnderProjectRoot(currentViewFilePath))
+            {
+                AddOrUpdateFileNode(treeView_Project, projectDirPath, currentViewFilePath);
+            }
+
+            return true;
+        }
+
+        // Incrementally add/update a file node under the project tree without collapsing the whole tree
+        private void AddOrUpdateFileNode(TreeView tree, string rootFolderPath, string filePath)
+        {
+            if (tree.Nodes.Count == 0 || string.IsNullOrEmpty(rootFolderPath) || string.IsNullOrEmpty(filePath))
+                return;
+
+            // Root node is the project root
+            var rootNode = tree.Nodes[0];
+            if (rootNode.Tag is not DirectoryInfo rootDi)
+                return;
+
+            // Make sure we are operating under the same root
+            var normRoot = Path.GetFullPath(rootFolderPath).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            var normFile = Path.GetFullPath(filePath).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            if (!normFile.StartsWith(normRoot, StringComparison.OrdinalIgnoreCase))
+                return;
+
+            // Find or create the directory chain under the root
+            var rel = Path.GetRelativePath(normRoot, normFile);
+            var dirRel = Path.GetDirectoryName(rel) ?? string.Empty;
+            var segments = dirRel.Split(new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries);
+
+            TreeNode current = rootNode;
+            string currentPath = normRoot;
+
+            foreach (var seg in segments)
+            {
+                currentPath = Path.Combine(currentPath, seg);
+                // Look for existing directory child by full path
+                TreeNode? dirNode = null;
+                foreach (TreeNode child in current.Nodes)
+                {
+                    if (child.Tag is DirectoryInfo cdi && string.Equals(
+                            Path.GetFullPath(cdi.FullName).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar),
+                            currentPath, StringComparison.OrdinalIgnoreCase))
+                    {
+                        dirNode = child;
+                        break;
+                    }
+                }
+
+                if (dirNode == null)
+                {
+                    var di = new DirectoryInfo(currentPath);
+                    if (!di.Exists) Directory.CreateDirectory(di.FullName);
+                    dirNode = new TreeNode(di.Name) { Tag = di };
+                    current.Nodes.Add(dirNode);
+                }
+
+                current = dirNode;
+            }
+
+            // Add or update the file node under the final directory
+            var fileName = Path.GetFileName(normFile);
+            TreeNode? fileNode = null;
+            foreach (TreeNode child in current.Nodes)
+            {
+                if (child.Tag is FileInfo cfi && string.Equals(
+                        Path.GetFullPath(cfi.FullName).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar),
+                        normFile, StringComparison.OrdinalIgnoreCase))
+                {
+                    fileNode = child;
+                    break;
+                }
+            }
+
+            if (fileNode == null)
+            {
+                var fi = new FileInfo(normFile);
+                fileNode = new TreeNode(fi.Name) { Tag = fi };
+                current.Nodes.Add(fileNode);
             }
             else
             {
-                System.Windows.Forms.MessageBox.Show("No project selected.", "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+                // Update node text/tag in case it changed (rare, but safe)
+                fileNode.Text = fileName;
+                fileNode.Tag = new FileInfo(normFile);
             }
+
+            // Optionally expand just the parent chain to reveal the new file
+            current.Expand();
         }
+
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -221,7 +548,7 @@ namespace PIC32Mn_PROJ
         {
             // Device selection removed in this simplified branch
             scripts scr = new scripts();
-            scr.launchMcc(mirror_projectPath);
+            scr.launch("startMcc", mirror_projectPath);
             scr.alert_changes(mirror_projectPath);
         }
 
@@ -229,7 +556,7 @@ namespace PIC32Mn_PROJ
         {
             // Device selection removed in this simplified branch
             scripts scr = new scripts();
-            scr.launchMplabX(mirror_projectPath);
+            scr.launch("startMplabX", mirror_projectPath);
             scr.alert_changes(mirror_projectPath);
         }
 
@@ -327,6 +654,74 @@ namespace PIC32Mn_PROJ
             // Placeholder: generation functionality removed/under construction
             await System.Threading.Tasks.Task.CompletedTask;
             System.Windows.Forms.MessageBox.Show("Generate is not implemented in this branch.");
+        }
+
+        private void cSourceToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (avalonEditor == null)
+                {
+                    System.Windows.Forms.MessageBox.Show("Editor is not ready.", "New C Source",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Create an unsaved buffer with a minimal template
+                string template = C_FileBuilder.BuildCSourceTemplate("untitled.c");
+                avalonEditor.Text = template;
+
+                // Mark as unsaved buffer
+                currentViewFilePath = string.Empty;
+                saveNeeded = true;
+
+                // Apply C highlighting for the buffer
+                EnsureCustomCHighlightingRegistered();
+                avalonEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("C-PIC");
+
+                // Update header title
+                UpdateViewHeader("untitled.c");
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show($"Create C source failed:\n{ex.Message}", "New C Source",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+        }
+
+
+        private void headerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (avalonEditor == null)
+                {
+                    System.Windows.Forms.MessageBox.Show("Editor is not ready.", "New Header",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Create an unsaved buffer with a minimal header template
+                string template = C_FileBuilder.BuildHeaderTemplate("untitled.h");
+                avalonEditor.Text = template;
+
+                // Mark as unsaved buffer
+                currentViewFilePath = string.Empty;
+                saveNeeded = true;
+
+                // Apply C highlighting for the buffer
+                EnsureCustomCHighlightingRegistered();
+                avalonEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("C-PIC");
+
+                // Update header title
+                UpdateViewHeader("untitled.h");
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show($"Create header failed:\n{ex.Message}", "New Header",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void openRightToolStripMenuItem_Click(object sender, EventArgs e)
@@ -449,6 +844,7 @@ namespace PIC32Mn_PROJ
                     {
                         avalonEditor.Text = string.Empty;
                         currentViewFilePath = string.Empty;
+                        UpdateViewHeader(null);
                     }
 
                     if (File.Exists(fi.FullName))
@@ -560,6 +956,7 @@ namespace PIC32Mn_PROJ
 
             avalonEditor.Text = File.ReadAllText(filePath);
             currentViewFilePath = filePath;
+            UpdateViewHeader(filePath);
             string ext = Path.GetExtension(filePath).ToLowerInvariant();
             string fileName = Path.GetFileName(filePath);
 
@@ -616,7 +1013,19 @@ namespace PIC32Mn_PROJ
             }
         }
 
+        private void CloseCurrentView()
+        {
+            if (avalonEditor == null) return;
 
+            // optional: prompt to save if needed
+            // if (saveNeeded) { ... }
+
+            avalonEditor.Text = string.Empty;
+            currentViewFilePath = string.Empty;
+            saveNeeded = false;
+            avalonEditor.SyntaxHighlighting = null;
+            UpdateViewHeader(null);
+        }
         #endregion Avilon Edit View Tab
 
         #region treeview event handlers
@@ -927,6 +1336,7 @@ namespace PIC32Mn_PROJ
                     {
                         avalonEditor.Text = string.Empty;
                         currentViewFilePath = string.Empty;
+                        UpdateViewHeader(null);
                     }
 
                     if (File.Exists(fi.FullName))
@@ -1182,5 +1592,256 @@ namespace PIC32Mn_PROJ
         }
 
 
+        // Add inside the Form1 class, near the other shell helpers
+        private void AppendConsoleLine(string line)
+        {
+            if (psOutput == null) return;
+
+            if (psOutput.InvokeRequired)
+            {
+                psOutput.BeginInvoke(new Action<string>(AppendConsoleLine), line);
+                return;
+            }
+
+            psOutput.AppendText(line + Environment.NewLine);
+            psOutput.SelectionStart = psOutput.TextLength;
+            psOutput.ScrollToCaret();
+        }
+        private void EnsureShellStarted()
+        {
+            if (psProcess != null && !psProcess.HasExited) return;
+
+            var exe = GetAvailablePowerShell(); // tries pwsh, then powershell.exe
+            var cwd = GetLeftWorkingDirectory(); // <-- get working dir from left tree
+            var psi = new ProcessStartInfo
+            {
+                FileName = exe,
+                Arguments = "-NoLogo -NoExit",
+                UseShellExecute = false,
+                RedirectStandardInput = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                CreateNoWindow = true,
+                WorkingDirectory = cwd // <-- start in that directory
+            };
+
+            psProcess = new Process { StartInfo = psi, EnableRaisingEvents = true };
+            psProcess.OutputDataReceived += (s, e) => { if (e.Data != null) OnShellOutput(e.Data); };
+            psProcess.ErrorDataReceived  += (s, e) => { if (e.Data != null) OnShellOutput(e.Data); };
+            psProcess.Exited += (s, e) => AppendConsoleLine("[process exited]");
+
+            if (psProcess.Start())
+            {
+                psProcess.BeginOutputReadLine();
+                psProcess.BeginErrorReadLine();
+                AppendConsoleLine($"Started {exe} (cwd: {cwd})");
+            }
+            else
+            {
+                AppendConsoleLine("Failed to start PowerShell.");
+            }
+        }
+
+        // Add this helper inside the Form1 class (e.g., near the other shell helpers)
+        private string GetLeftWorkingDirectory()
+        {
+            try
+            {
+                var node = treeView_Project?.SelectedNode;
+
+                // Use selected directory, or the directory of the selected file
+                switch (node?.Tag)
+                {
+                    case DirectoryInfo di when di.Exists:
+                        return di.FullName;
+                    case FileInfo fi when File.Exists(fi.FullName):
+                        return Path.GetDirectoryName(fi.FullName)!;
+                }
+            }
+            catch { /* ignore */ }
+
+            // Fallback to the left project root, then current process dir
+            if (!string.IsNullOrEmpty(projectDirPath) && Directory.Exists(projectDirPath))
+                return projectDirPath;
+
+            return Environment.CurrentDirectory;
+        }
+
+
+
+        private static string GetAvailablePowerShell()
+        {
+            // Prefer pwsh if available, fallback to Windows PowerShell
+            var pwsh = "pwsh.exe";
+            var winps = "powershell.exe";
+            try
+            {
+                // Try to resolve pwsh on PATH
+                using var probe = Process.Start(new ProcessStartInfo
+                {
+                    FileName = pwsh,
+                    Arguments = "-v",
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    CreateNoWindow = true
+                });
+                if (probe != null) return pwsh;
+            }
+            catch { /* ignore */ }
+            return winps;
+        }
+
+
+        private void OnShellOutput(string line)
+        {
+            AppendConsoleLine(line);
+            if (pendingMakeRefresh && line.Contains("__MAKE_DONE__", StringComparison.Ordinal))
+            {
+                pendingMakeRefresh = false;
+                // Refresh the captured directory node on the UI thread
+                if (pendingRefreshNode != null)
+                {
+                    if (InvokeRequired)
+                        BeginInvoke(new Action(() => SafeRefreshNode(pendingRefreshNode)));
+                    else
+                        SafeRefreshNode(pendingRefreshNode);
+                }
+            }
+        }
+
+        // Ensure the node is a directory node and refresh it
+        private void SafeRefreshNode(TreeNode node)
+        {
+            var dirNode = node;
+            if (dirNode.Tag is FileInfo && dirNode.Parent != null)
+                dirNode = dirNode.Parent;
+
+            if (dirNode.Tag is DirectoryInfo di && Directory.Exists(di.FullName))
+                RepopulateDirectoryNode(dirNode);
+        }
+
+        // Get current directory node from left tree selection
+        private TreeNode? GetSelectedDirectoryNode()
+        {
+            var node = treeView_Project?.SelectedNode;
+            if (node == null) return null;
+            if (node.Tag is DirectoryInfo) return node;
+            if (node.Tag is FileInfo) return node.Parent;
+            return null;
+        }
+
+
+        private void SendShellCommand(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text)) return;
+            EnsureShellStarted();
+
+            try
+            {
+                var trimmed = text.Trim();
+                var cwd = GetLeftWorkingDirectory();
+                var psLiteral = cwd.Replace("'", "''");
+
+                AppendConsoleLine($"> {text}");
+                psProcess!.StandardInput.WriteLine($"Set-Location -LiteralPath '{psLiteral}'");
+
+                if (string.Equals(trimmed, "make build_dir", StringComparison.OrdinalIgnoreCase))
+                {
+                    // capture which node to refresh and send sentinel
+                    pendingRefreshNode = GetSelectedDirectoryNode();
+                    pendingMakeRefresh = true;
+                    psProcess.StandardInput.WriteLine("make build_dir; Write-Host __MAKE_DONE__");
+                }
+                else
+                {
+                    psProcess.StandardInput.WriteLine(text);
+                }
+
+                psProcess.StandardInput.Flush();
+                psInput.Clear();
+            }
+            catch (Exception ex)
+            {
+                AppendConsoleLine($"[error] {ex.Message}");
+            }
+        }
+
+        private void Form1_FormClosed(object? sender, FormClosedEventArgs e)
+        {
+            try
+            {
+                if (psProcess != null && !psProcess.HasExited)
+                {
+                    psProcess.StandardInput.WriteLine("exit");
+                    if (!psProcess.WaitForExit(1500))
+                        psProcess.Kill(entireProcessTree: true);
+                }
+                psProcess?.Dispose();
+            }
+            catch { /* ignore */ }
+        }
+
+        // Update the view tab header with current filename (or clear when null)
+        private void UpdateViewHeader(string? path)
+        {
+            if (viewHeaderLabel == null) return;
+            viewHeaderLabel.Text = string.IsNullOrEmpty(path) ? string.Empty : Path.GetFileName(path);
+            // Optional: store full path in Tag for debugging/inspection
+            viewHeaderLabel.Tag = path ?? string.Empty;
+        }
+
+        // Build a WPF context menu for the AvalonEdit control with Cut/Copy/Paste/Save/Close
+        private void SetupAvalonEditorContextMenu(TextEditor editor)
+        {
+            var cm = new System.Windows.Controls.ContextMenu();
+
+            var miCut = new System.Windows.Controls.MenuItem { Header = "Cut" };
+            miCut.Click += (s, e) =>
+            {
+                var cmd = System.Windows.Input.ApplicationCommands.Cut;
+                if (editor.TextArea != null && cmd.CanExecute(null, editor.TextArea))
+                    cmd.Execute(null, editor.TextArea);
+            };
+
+            var miCopy = new System.Windows.Controls.MenuItem { Header = "Copy" };
+            miCopy.Click += (s, e) =>
+            {
+                var cmd = System.Windows.Input.ApplicationCommands.Copy;
+                if (editor.TextArea != null && cmd.CanExecute(null, editor.TextArea))
+                    cmd.Execute(null, editor.TextArea);
+            };
+
+            var miPaste = new System.Windows.Controls.MenuItem { Header = "Paste" };
+            miPaste.Click += (s, e) =>
+            {
+                var cmd = System.Windows.Input.ApplicationCommands.Paste;
+                if (editor.TextArea != null && cmd.CanExecute(null, editor.TextArea))
+                    cmd.Execute(null, editor.TextArea);
+            };
+
+            var miSave = new System.Windows.Controls.MenuItem { Header = "Save" };
+            miSave.Click += (s, e) => saveToolStripMenuItem_Click(this, EventArgs.Empty);
+
+            var miClose = new System.Windows.Controls.MenuItem { Header = "Close" };
+            miClose.Click += (s, e) => CloseCurrentView();
+
+            cm.Items.Add(miCut);
+            cm.Items.Add(miCopy);
+            cm.Items.Add(miPaste);
+            cm.Items.Add(new System.Windows.Controls.Separator());
+            cm.Items.Add(miSave);
+            cm.Items.Add(miClose);
+
+            cm.Opened += (s, e) =>
+            {
+                bool hasSel = editor?.TextArea?.Selection?.IsEmpty == false;
+                miCut.IsEnabled = hasSel && !editor.IsReadOnly;
+                miCopy.IsEnabled = hasSel;
+                miPaste.IsEnabled = !editor.IsReadOnly && System.Windows.Clipboard.ContainsText();
+            };
+
+            editor.ContextMenu = cm;
+        }
     }
 }

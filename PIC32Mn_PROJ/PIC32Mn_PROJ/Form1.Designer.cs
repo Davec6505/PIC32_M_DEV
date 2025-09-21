@@ -19,6 +19,7 @@ namespace PIC32Mn_PROJ
             fileToolStripMenuItem = new ToolStripMenuItem();
             openToolStripMenuItem = new ToolStripMenuItem();
             openRightToolStripMenuItem = new ToolStripMenuItem();
+            toolStripMenuItem1 = new ToolStripMenuItem();
             saveToolStripMenuItem = new ToolStripMenuItem();
             saveAsToolStripMenuItem = new ToolStripMenuItem();
             exitToolStripMenuItem = new ToolStripMenuItem();
@@ -26,15 +27,18 @@ namespace PIC32Mn_PROJ
             mccToolStripMenuItem = new ToolStripMenuItem();
             mCCStandaloneToolStripMenuItem = new ToolStripMenuItem();
             mPLABXToolStripMenuItem = new ToolStripMenuItem();
+            vSCodeToolStripMenuItem = new ToolStripMenuItem();
             createProjectToolStripMenuItem = new ToolStripMenuItem();
             generateToolStripMenuItem = new ToolStripMenuItem();
+            newToolStripMenuItem = new ToolStripMenuItem();
+            cSourceToolStripMenuItem = new ToolStripMenuItem();
+            headerToolStripMenuItem = new ToolStripMenuItem();
             treeView_Project = new TreeView();
             splitContainer1 = new SplitContainer();
             tabControl1 = new TabControl();
             tabPage_Projects = new TabPage();
             treeView_Right = new TreeView();
             tabPage_View = new TabPage();
-            vSCodeToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -50,12 +54,12 @@ namespace PIC32Mn_PROJ
             menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, editToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
-            menuStrip1.Size = new Size(135, 28);
+            menuStrip1.Size = new Size(111, 28);
             menuStrip1.TabIndex = 0;
             // 
             // fileToolStripMenuItem
             // 
-            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { openToolStripMenuItem, openRightToolStripMenuItem, saveToolStripMenuItem, saveAsToolStripMenuItem, exitToolStripMenuItem });
+            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { openToolStripMenuItem, openRightToolStripMenuItem, toolStripMenuItem1, saveToolStripMenuItem, saveAsToolStripMenuItem, exitToolStripMenuItem });
             fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             fileToolStripMenuItem.Size = new Size(46, 24);
             fileToolStripMenuItem.Text = "File";
@@ -63,39 +67,48 @@ namespace PIC32Mn_PROJ
             // openToolStripMenuItem
             // 
             openToolStripMenuItem.Name = "openToolStripMenuItem";
-            openToolStripMenuItem.Size = new Size(167, 26);
+            openToolStripMenuItem.Size = new Size(224, 26);
             openToolStripMenuItem.Text = "Open";
             openToolStripMenuItem.Click += openToolStripMenuItem_Click;
             // 
             // openRightToolStripMenuItem
             // 
             openRightToolStripMenuItem.Name = "openRightToolStripMenuItem";
-            openRightToolStripMenuItem.Size = new Size(167, 26);
+            openRightToolStripMenuItem.Size = new Size(224, 26);
             openRightToolStripMenuItem.Text = "Open Right";
             openRightToolStripMenuItem.Click += openRightToolStripMenuItem_Click;
+            // 
+            // toolStripMenuItem1
+            // 
+            toolStripMenuItem1.Name = "toolStripMenuItem1";
+            toolStripMenuItem1.Size = new Size(224, 26);
+            toolStripMenuItem1.Text = "Close Right";
+            toolStripMenuItem1.Click += closeRightToolStripMenuItem_Click;
             // 
             // saveToolStripMenuItem
             // 
             saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            saveToolStripMenuItem.Size = new Size(167, 26);
+            saveToolStripMenuItem.Size = new Size(224, 26);
             saveToolStripMenuItem.Text = "Save";
             saveToolStripMenuItem.Click += saveToolStripMenuItem_Click;
             // 
             // saveAsToolStripMenuItem
             // 
             saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            saveAsToolStripMenuItem.Size = new Size(167, 26);
+            saveAsToolStripMenuItem.Size = new Size(224, 26);
             saveAsToolStripMenuItem.Text = "Save As";
+            saveAsToolStripMenuItem.Click += saveAsToolStripMenuItem_Click;
             // 
             // exitToolStripMenuItem
             // 
             exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            exitToolStripMenuItem.Size = new Size(167, 26);
+            exitToolStripMenuItem.Size = new Size(224, 26);
             exitToolStripMenuItem.Text = "Exit";
+            exitToolStripMenuItem.Click += exitToolStripMenuItem_Click_1;
             // 
             // editToolStripMenuItem
             // 
-            editToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { mccToolStripMenuItem, createProjectToolStripMenuItem, generateToolStripMenuItem });
+            editToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { mccToolStripMenuItem, createProjectToolStripMenuItem, generateToolStripMenuItem, newToolStripMenuItem });
             editToolStripMenuItem.Name = "editToolStripMenuItem";
             editToolStripMenuItem.Size = new Size(49, 24);
             editToolStripMenuItem.Text = "Edit";
@@ -110,16 +123,23 @@ namespace PIC32Mn_PROJ
             // mCCStandaloneToolStripMenuItem
             // 
             mCCStandaloneToolStripMenuItem.Name = "mCCStandaloneToolStripMenuItem";
-            mCCStandaloneToolStripMenuItem.Size = new Size(224, 26);
+            mCCStandaloneToolStripMenuItem.Size = new Size(204, 26);
             mCCStandaloneToolStripMenuItem.Text = "MCC-Standalone";
             mCCStandaloneToolStripMenuItem.Click += mCCStandaloneToolStripMenuItem_Click;
             // 
             // mPLABXToolStripMenuItem
             // 
             mPLABXToolStripMenuItem.Name = "mPLABXToolStripMenuItem";
-            mPLABXToolStripMenuItem.Size = new Size(224, 26);
+            mPLABXToolStripMenuItem.Size = new Size(204, 26);
             mPLABXToolStripMenuItem.Text = "MPLABX";
             mPLABXToolStripMenuItem.Click += mPLABXToolStripMenuItem_Click;
+            // 
+            // vSCodeToolStripMenuItem
+            // 
+            vSCodeToolStripMenuItem.Name = "vSCodeToolStripMenuItem";
+            vSCodeToolStripMenuItem.Size = new Size(204, 26);
+            vSCodeToolStripMenuItem.Text = "VS Code";
+            vSCodeToolStripMenuItem.Click += vSCodeToolStripMenuItem_Click;
             // 
             // createProjectToolStripMenuItem
             // 
@@ -135,12 +155,33 @@ namespace PIC32Mn_PROJ
             generateToolStripMenuItem.Text = "Generate";
             generateToolStripMenuItem.Click += generateToolStripMenuItem_Click;
             // 
+            // newToolStripMenuItem
+            // 
+            newToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { cSourceToolStripMenuItem, headerToolStripMenuItem });
+            newToolStripMenuItem.Name = "newToolStripMenuItem";
+            newToolStripMenuItem.Size = new Size(224, 26);
+            newToolStripMenuItem.Text = "New";
+            // 
+            // cSourceToolStripMenuItem
+            // 
+            cSourceToolStripMenuItem.Name = "cSourceToolStripMenuItem";
+            cSourceToolStripMenuItem.Size = new Size(153, 26);
+            cSourceToolStripMenuItem.Text = "source .c";
+            cSourceToolStripMenuItem.Click += cSourceToolStripMenuItem_Click;
+            // 
+            // headerToolStripMenuItem
+            // 
+            headerToolStripMenuItem.Name = "headerToolStripMenuItem";
+            headerToolStripMenuItem.Size = new Size(153, 26);
+            headerToolStripMenuItem.Text = "header .h";
+            headerToolStripMenuItem.Click += headerToolStripMenuItem_Click;
+            // 
             // treeView_Project
             // 
             treeView_Project.Dock = DockStyle.Fill;
             treeView_Project.Location = new Point(0, 28);
             treeView_Project.Name = "treeView_Project";
-            treeView_Project.Size = new Size(135, 909);
+            treeView_Project.Size = new Size(111, 909);
             treeView_Project.TabIndex = 2;
             // 
             // splitContainer1
@@ -161,7 +202,7 @@ namespace PIC32Mn_PROJ
             splitContainer1.Panel2.Controls.Add(tabControl1);
             splitContainer1.Panel2MinSize = 1000;
             splitContainer1.Size = new Size(1635, 937);
-            splitContainer1.SplitterDistance = 135;
+            splitContainer1.SplitterDistance = 111;
             splitContainer1.SplitterWidth = 8;
             splitContainer1.TabIndex = 3;
             // 
@@ -174,7 +215,7 @@ namespace PIC32Mn_PROJ
             tabControl1.Location = new Point(0, 0);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(1492, 937);
+            tabControl1.Size = new Size(1516, 937);
             tabControl1.TabIndex = 1;
             // 
             // tabPage_Projects
@@ -184,7 +225,7 @@ namespace PIC32Mn_PROJ
             tabPage_Projects.Location = new Point(4, 29);
             tabPage_Projects.Name = "tabPage_Projects";
             tabPage_Projects.Padding = new Padding(3);
-            tabPage_Projects.Size = new Size(1484, 904);
+            tabPage_Projects.Size = new Size(1508, 904);
             tabPage_Projects.TabIndex = 3;
             tabPage_Projects.Text = "Projects";
             tabPage_Projects.UseVisualStyleBackColor = true;
@@ -195,7 +236,7 @@ namespace PIC32Mn_PROJ
             treeView_Right.HideSelection = false;
             treeView_Right.Location = new Point(3, 3);
             treeView_Right.Name = "treeView_Right";
-            treeView_Right.Size = new Size(1478, 898);
+            treeView_Right.Size = new Size(1502, 898);
             treeView_Right.TabIndex = 1;
             // 
             // tabPage_View
@@ -203,18 +244,11 @@ namespace PIC32Mn_PROJ
             tabPage_View.Font = new Font("Segoe UI", 9F, FontStyle.Italic, GraphicsUnit.Point, 0);
             tabPage_View.Location = new Point(4, 29);
             tabPage_View.Name = "tabPage_View";
-            tabPage_View.Padding = new Padding(3);
-            tabPage_View.Size = new Size(1480, 904);
+            tabPage_View.Padding = new Padding(3, 20, 3, 3);
+            tabPage_View.Size = new Size(1508, 904);
             tabPage_View.TabIndex = 2;
             tabPage_View.Text = "View";
             tabPage_View.UseVisualStyleBackColor = true;
-            // 
-            // vSCodeToolStripMenuItem
-            // 
-            vSCodeToolStripMenuItem.Name = "vSCodeToolStripMenuItem";
-            vSCodeToolStripMenuItem.Size = new Size(224, 26);
-            vSCodeToolStripMenuItem.Text = "VS Code";
-            vSCodeToolStripMenuItem.Click += vSCodeToolStripMenuItem_Click;
             // 
             // Form1
             // 
@@ -260,5 +294,9 @@ namespace PIC32Mn_PROJ
         private ToolStripMenuItem mCCStandaloneToolStripMenuItem;
         private ToolStripMenuItem mPLABXToolStripMenuItem;
         private ToolStripMenuItem vSCodeToolStripMenuItem;
+        private ToolStripMenuItem toolStripMenuItem1;
+        private ToolStripMenuItem newToolStripMenuItem;
+        private ToolStripMenuItem cSourceToolStripMenuItem;
+        private ToolStripMenuItem headerToolStripMenuItem;
     }
 }

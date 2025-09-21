@@ -1,109 +1,153 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media.Animation;
+﻿using System.Diagnostics;
 using System.IO;
-using System.Windows.Media.Media3D;
 
 namespace PIC32Mn_PROJ.classes
 {
     internal class scripts
     {
-        internal void launch(string app,string? project = null)
+        internal void launch(string app, string? project = null)
         {
-            string path = Path.Combine(AppContext.BaseDirectory, "dependancies", "scripts", app+".ps1");
-            var ps1 = new ProcessStartInfo()
-            {
-                FileName = "powershell.exe",
-                Arguments = $"-ExecutionPolicy Bypass -File {path} -Project {project}",
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                CreateNoWindow = true,
-                UseShellExecute = false
-            };
+            string scriptsDir = Path.Combine(AppContext.BaseDirectory, "dependancies", "scripts");
+            bool isWindows = OperatingSystem.IsWindows();
+            bool isLinux = OperatingSystem.IsLinux();
 
-            using (var process =  Process.Start(ps1))
+            string scriptExt = isWindows ? ".ps1" : ".sh";
+            string scriptPath = Path.Combine(scriptsDir, app + scriptExt);
+
+            if (!File.Exists(scriptPath))
             {
-                if (process != null)
+                MessageBox.Show($"Script not found:\n{scriptPath}", "Launcher",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return;
+            }
+
+            ProcessStartInfo psi;
+            if (isWindows)
+            {
+                // Prefer PowerShell 7 if present; fall back to Windows PowerShell
+                psi = new ProcessStartInfo
                 {
-                    process.BeginOutputReadLine();
-                    process.BeginErrorReadLine();
+                    FileName = "pwsh.exe",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    WorkingDirectory = scriptsDir
+                };
+                psi.ArgumentList.Add("-NoProfile");
+                psi.ArgumentList.Add("-ExecutionPolicy");
+                psi.ArgumentList.Add("Bypass");
+                psi.ArgumentList.Add("-File");
+                psi.ArgumentList.Add(scriptPath);
+                if (!string.IsNullOrWhiteSpace(project))
+                {
+                    psi.ArgumentList.Add("-Project");
+                    psi.ArgumentList.Add(project!);
+                }
+            }
+            else if (isLinux)
+            {
+                // Use bash explicitly so the script need not be executable
+                psi = new ProcessStartInfo
+                {
+                    FileName = "/usr/bin/env",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    WorkingDirectory = scriptsDir
+                };
+                psi.ArgumentList.Add("bash");
+                psi.ArgumentList.Add(scriptPath);
+                if (!string.IsNullOrWhiteSpace(project))
+                {
+                    psi.ArgumentList.Add("--project");
+                    psi.ArgumentList.Add(project!);
+                }
+            }
+            else
+            {
+                MessageBox.Show($"Unsupported OS for launch(): {System.Runtime.InteropServices.RuntimeInformation.OSDescription}",
+                    "Launcher",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return;
+            }
 
-                    process.OutputDataReceived += (sender, e) =>
+            try
+            {
+                using (var process = Process.Start(psi))
+                {
+                    if (process == null)
                     {
-                        if (!string.IsNullOrEmpty(e.Data))
-                        {
-                            MessageBox.Show(e.Data);
-                        }
-                    };
+                        MessageBox.Show("Failed to start shell process.", "Launcher",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
+                        return;
+                    }
 
-                    process.ErrorDataReceived += (sender, e) =>
-                    {
-                        if (!string.IsNullOrEmpty(e.Data))
-                        {
-                            MessageBox.Show(e.Data);
-                        }
-                    };
-
+                    string output = process.StandardOutput.ReadToEnd();
+                    string error = process.StandardError.ReadToEnd();
                     process.WaitForExit();
+
+                    if (!string.IsNullOrWhiteSpace(error))
+                    {
+                        MessageBox.Show(error, "Launcher",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
+                    }
+                }
+            }
+            catch (System.ComponentModel.Win32Exception)
+            {
+                if (isWindows)
+                {
+                    // Fallback to Windows PowerShell if pwsh.exe is unavailable
+                    psi.FileName = "powershell.exe";
+                    try
+                    {
+                        using (var process = Process.Start(psi))
+                        {
+                            if (process == null)
+                            {
+                                MessageBox.Show("Failed to start powershell.exe.", "Launcher",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Error);
+                                return;
+                            }
+                            string output = process.StandardOutput.ReadToEnd();
+                            string error = process.StandardError.ReadToEnd();
+                            process.WaitForExit();
+
+                            if (!string.IsNullOrWhiteSpace(error))
+                            {
+                                MessageBox.Show(error, "Launcher",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Error);
+                            }
+                        }
+                    }
+                    catch (Exception ex2)
+                    {
+                        MessageBox.Show($"Failed to start PowerShell:\n{ex2.Message}", "Launcher",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
+                    }
                 }
                 else
                 {
-                    MessageBox.Show($"Can't open a process to start application {app}");
+                    throw;
                 }
             }
-        }
-
-        internal void launchMcc(string project)
-        {
-            var ps1 = new ProcessStartInfo
+            catch (Exception ex)
             {
-                FileName = "powershell.exe",
-                Arguments = $"-ExecutionPolicy Bypass -File {AppContext.BaseDirectory}\\dependancies\\scripts\\startMcc.ps1 -Project {project}",
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                UseShellExecute = false,
-                CreateNoWindow = true
-            };
-
-            using (var process = Process.Start(ps1))
-            {
-                string output = process.StandardOutput.ReadToEnd();
-                string error = process.StandardError.ReadToEnd();
-              //  process.WaitForExit();
-                MessageBox.Show(string.IsNullOrWhiteSpace(output) ?
-                    "MCC loaded sucessfully." : error, "MCC",
+                MessageBox.Show($"Launch failed:\n{ex.Message}", "Launcher",
                     MessageBoxButtons.OK,
-                    MessageBoxIcon.Hand);
-            }
-
-        }
-
-        internal void launchMplabX(string project)
-        {
-            var ps1 = new ProcessStartInfo
-            {
-                FileName = "powershell.exe",
-                Arguments = $"-ExecutionPolicy Bypass -File {AppContext.BaseDirectory}\\dependancies\\scripts\\startMplabX.ps1 -Project {project}",
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                UseShellExecute = false,
-                CreateNoWindow = true
-            };
-            using (var process = Process.Start(ps1))
-            {
-                string output = process.StandardOutput.ReadToEnd();
-                string error = process.StandardError.ReadToEnd();
-               // process.WaitForExit();
-                MessageBox.Show(string.IsNullOrWhiteSpace(output) ?
-                    "MPLAB X loaded sucessfully." : error, "MPLAB X",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Hand);
+                    MessageBoxIcon.Error);
             }
         }
+
 
         internal void alert_changes(string project)
         {
