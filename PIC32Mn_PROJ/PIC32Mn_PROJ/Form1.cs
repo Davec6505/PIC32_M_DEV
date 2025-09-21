@@ -192,6 +192,11 @@ namespace PIC32Mn_PROJ
             this.avalonEditor = avalonEditor;
             avalonEditor.TextChanged += (s, e2) => { saveNeeded = true; };
 
+            // Subscribe to editor service events
+            _editorSvc.Opened += OnEditorOpened;
+            _editorSvc.Saved += OnEditorSaved;
+            _editorSvc.Closed += OnEditorClosed;
+
             // Tree menus and handlers (left tree methods in Form1.ProjectTree.cs)
             SetupTreeViewContextMenu();
             treeView_Project.NodeMouseClick += treeView_Project_NodeMouseClick;
@@ -374,6 +379,24 @@ namespace PIC32Mn_PROJ
             _editorSvc.Close(avalonEditor);
             currentViewFilePath = string.Empty;
             saveNeeded = false;
+            UpdateViewHeader(null);
+        }
+
+        private void OnEditorOpened(object? sender, EventArgs e)
+        {
+            currentViewFilePath = _editorSvc.CurrentPath ?? string.Empty;
+            UpdateViewHeader(currentViewFilePath);
+        }
+
+        private void OnEditorSaved(object? sender, EventArgs e)
+        {
+            var path = _editorSvc.CurrentPath;
+            if (!string.IsNullOrEmpty(path) && !string.IsNullOrEmpty(projectDirPath) && _treeSvc.IsUnderRoot(path, projectDirPath))
+                _treeSvc.AddOrUpdateFileNode(treeView_Project, projectDirPath, path);
+        }
+
+        private void OnEditorClosed(object? sender, EventArgs e)
+        {
             UpdateViewHeader(null);
         }
 
@@ -723,6 +746,14 @@ namespace PIC32Mn_PROJ
                 _settings.Save();
                 _treeSvc.Populate(treeView_Right, projectDirPathRight);
             }
+        }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            base.OnFormClosed(e);
+            _editorSvc.Opened -= OnEditorOpened;
+            _editorSvc.Saved -= OnEditorSaved;
+            _editorSvc.Closed -= OnEditorClosed;
         }
     }
 }
