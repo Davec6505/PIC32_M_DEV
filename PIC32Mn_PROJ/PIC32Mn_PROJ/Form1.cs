@@ -23,6 +23,7 @@ namespace PIC32Mn_PROJ
         private readonly IHighlightingService _highlightingSvc;
         private readonly IShellService _shellSvc;
         private readonly IEditorService _editorSvc;
+        private readonly ITabService _tabService;
 
         // App specific paths
         string rootPath = string.Empty;
@@ -58,10 +59,11 @@ namespace PIC32Mn_PROJ
 
         // Shell
         private RichTextBox psOutput;
-        private TextBox psInput;
+        private TextBox psInput; // legacy field kept but unused
         private bool pendingMakeRefresh;
         private TreeNode? pendingRefreshNode;
         private bool _shellOutputSubscribed;
+        private SplitContainer rightPaneSplit; // top: tabs, bottom: console
 
         // View header
         private System.Windows.Forms.Label viewHeaderLabel;
@@ -73,7 +75,8 @@ namespace PIC32Mn_PROJ
             IFileSystemService fs,
             IHighlightingService highlightingSvc,
             IShellService shellSvc,
-            IEditorService editorSvc)
+            IEditorService editorSvc,
+            ITabService tabService)
         {
             _settings = settings;
             _dialogs = dialogs;
@@ -82,6 +85,7 @@ namespace PIC32Mn_PROJ
             _highlightingSvc = highlightingSvc;
             _shellSvc = shellSvc;
             _editorSvc = editorSvc;
+            _tabService = tabService;
 
             InitializeComponent();
             rootPath = "C:\\Users\\davec\\GIT\\PIC32_M_DEV\\PIC32Mn_PROJ\\PIC32Mn_PROJ\\";
@@ -102,9 +106,14 @@ namespace PIC32Mn_PROJ
             {
                 mirror_projectPath = savedMirror;
                 _treeSvc.Populate(treeView_Right, mirror_projectPath);
+                ShowProjectTab();
+            }
+            else
+            {
+                HideProjectTab();
             }
 
-            // AvalonEdit setup
+            // Minimal AvalonEdit instance retained for features that still depend on it (e.g., New file templates)
             TextEditor avalonEditor = new TextEditor
             {
                 Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.White),
@@ -118,79 +127,13 @@ namespace PIC32Mn_PROJ
             avalonEditor.TextArea.TextView.Margin = new Thickness(0, 2, 0, 0);
             SetupAvalonEditorContextMenu(avalonEditor);
 
-            // Container inside View tab
-            var viewContainer = new System.Windows.Forms.Panel
-            {
-                Dock = DockStyle.Fill,
-                Margin = new Padding(0),
-                Padding = new Padding(0),
-                BackColor = System.Drawing.Color.White
-            };
-            tabPage_View.Padding = new Padding(0);
-            tabPage_View.Controls.Add(viewContainer);
-
-            // ElementHost for editor
-            ElementHost elementHost = new ElementHost
-            {
-                BackColor = System.Drawing.Color.White,
-                Margin = new Padding(0),
-                Padding = new Padding(0),
-                Dock = DockStyle.Fill,
-                Child = avalonEditor
-            };
-
-            viewContainer.SuspendLayout();
-            viewContainer.Controls.Add(elementHost);
-            viewContainer.ResumeLayout(true);
-
-            // Split: editor (top) + console (bottom)
-            var splitView = new SplitContainer
-            {
-                Dock = DockStyle.Fill,
-                Orientation = Orientation.Horizontal,
-                FixedPanel = FixedPanel.Panel2,
-                SplitterWidth = 6
-            };
-            splitView.Margin = new Padding(0);
-            splitView.Panel1.Padding = new Padding(0);
-            splitView.Panel2.Padding = new Padding(0);
-            splitView.Panel1.Controls.Add(elementHost);
-
-            // Console
-            var consolePanel = new Panel { Dock = DockStyle.Fill, BackColor = System.Drawing.Color.White };
-            psOutput = new RichTextBox
-            {
-                Dock = DockStyle.Fill,
-                ReadOnly = true,
-                BorderStyle = BorderStyle.FixedSingle,
-                BackColor = System.Drawing.Color.White,
-                Font = new System.Drawing.Font("Consolas", 9f)
-            };
-            var inputPanel = new Panel { Dock = DockStyle.Bottom, Height = 28 };
-            psInput = new TextBox { Dock = DockStyle.Fill, BorderStyle = BorderStyle.FixedSingle };
-            var btnRun = new Button { Text = "Run", Dock = DockStyle.Right, Width = 60 };
-            btnRun.Click += (s, e2) => SendShellCommand(psInput.Text);
-            psInput.KeyDown += (s, e2) =>
-            {
-                if (e2.KeyCode == Keys.Enter)
-                {
-                    e2.SuppressKeyPress = true;
-                    SendShellCommand(psInput.Text);
-                }
-            };
-            inputPanel.Controls.Add(psInput);
-            inputPanel.Controls.Add(btnRun);
-            consolePanel.Controls.Add(psOutput);
-            consolePanel.Controls.Add(inputPanel);
-            splitView.Panel2.Controls.Add(consolePanel);
-
-            viewContainer.Controls.Add(splitView);
-            viewContainer.Controls.SetChildIndex(splitView, 1);
-
             this.FormClosed += Form1_FormClosed;
 
             this.avalonEditor = avalonEditor;
             avalonEditor.TextChanged += (s, e2) => { saveNeeded = true; };
+
+            // Build right pane split with integrated console
+            BuildRightPaneWithConsole();
 
             // Subscribe to editor service events
             _editorSvc.Opened += OnEditorOpened;
@@ -217,6 +160,91 @@ namespace PIC32Mn_PROJ
             _highlightingSvc.ApplyBaseC(avalonEditor);
         }
 
+        private void BuildRightPaneWithConsole()
+        {
+            // Create the bottom console UI using only a RichTextBox (type directly in it)
+            var consolePanel = new Panel { Dock = DockStyle.Fill, BackColor = System.Drawing.Color.White };
+            psOutput = new RichTextBox
+            {
+                Dock = DockStyle.Fill,
+                ReadOnly = false,
+                BorderStyle = BorderStyle.FixedSingle,
+                BackColor = System.Drawing.Color.White,
+                Font = new System.Drawing.Font("Consolas", 9f),
+                HideSelection = false,
+                DetectUrls = false,
+                AcceptsTab = true,
+                WordWrap = false
+            };
+            // Hook console input behaviors
+            psOutput.KeyDown += Console_KeyDown;
+            psOutput.KeyPress += Console_KeyPress; // allow typing filter
+            psOutput.MouseDown += Console_MouseDown;
+
+            // Context menu for copy/paste
+            var consoleMenu = new ContextMenuStrip();
+            var miCopy = new ToolStripMenuItem("Copy", null, (s, e) => Console_CopySelection());
+            var miPaste = new ToolStripMenuItem("Paste", null, (s, e) => Console_PasteFromClipboard());
+            consoleMenu.Opening += (s, e) =>
+            {
+                miCopy.Enabled = psOutput.SelectionLength > 0;
+                miPaste.Enabled = System.Windows.Forms.Clipboard.ContainsText();
+            };
+            consoleMenu.Items.Add(miCopy);
+            consoleMenu.Items.Add(miPaste);
+            psOutput.ContextMenuStrip = consoleMenu;
+
+            consolePanel.Controls.Add(psOutput);
+
+            // New split in right side: Panel1 = tabs, Panel2 = console
+            rightPaneSplit = new SplitContainer
+            {
+                Dock = DockStyle.Fill,
+                Orientation = Orientation.Horizontal,
+                FixedPanel = FixedPanel.Panel2,
+                SplitterWidth = 6,
+                Panel2Collapsed = true
+            };
+
+            // Move the existing tabControl1 into Panel1
+            splitContainer1.Panel2.Controls.Remove(tabControl1);
+            tabControl1.Dock = DockStyle.Fill;
+            rightPaneSplit.Panel1.Controls.Add(tabControl1);
+            rightPaneSplit.Panel2.Controls.Add(consolePanel);
+
+            // Install new right split into main layout
+            splitContainer1.Panel2.Controls.Add(rightPaneSplit);
+        }
+
+        private void ShowConsole()
+        {
+            if (rightPaneSplit == null) return;
+            rightPaneSplit.Panel2Collapsed = false;
+            // Give bottom about 30% height
+            rightPaneSplit.SplitterDistance = (int)(splitContainer1.Panel2.Height * 0.7);
+            EnsureShellStarted();
+            psOutput?.Focus();
+            // Ensure a prompt is visible when opening
+            Console_ShowPromptIfNeeded();
+        }
+
+        private void HideConsole()
+        {
+            if (rightPaneSplit == null) return;
+            rightPaneSplit.Panel2Collapsed = true;
+        }
+
+        // Options -> Console menu handlers
+        private void openConsoleToolStripMenuItem_Click(object? sender, EventArgs e)
+        {
+            ShowConsole();
+        }
+
+        private void closeConsoleToolStripMenuItem_Click(object? sender, EventArgs e)
+        {
+            HideConsole();
+        }
+
         // Menu handlers
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -237,7 +265,9 @@ namespace PIC32Mn_PROJ
 
         private void closeRightToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            tabControl1.TabPages.Remove(tabPage_Projects);
+            // Hide Project tab when right project is closed
+            HideProjectTab();
+
             projectDirPathRight = string.Empty;
             _settings.MirrorProjectPath = string.Empty;
             _settings.Save();
@@ -246,8 +276,6 @@ namespace PIC32Mn_PROJ
             rightCopyBufferPaths.Clear();
             rightCopyMenuItem.Enabled = false;
             rightDeleteMenuItem.Enabled = false;
-            if (!tabControl1.TabPages.Contains(tabPage_Projects))
-                tabControl1.TabPages.Add(tabPage_Projects);
         }
 
         private async void saveToolStripMenuItem_Click(object sender, EventArgs e)
@@ -327,7 +355,10 @@ namespace PIC32Mn_PROJ
             {
                 currentViewFilePath = _editorSvc.CurrentPath ?? string.Empty;
                 saveNeeded = false;
-                DisplayFileInViewTab(currentViewFilePath);
+                // Open the saved file in its own tab instead of the removed View tab
+                if (!string.IsNullOrEmpty(currentViewFilePath))
+                    _tabService.OpenFile(tabControl1, currentViewFilePath, rootPath);
+
                 if (!string.IsNullOrEmpty(projectDirPath) && _treeSvc.IsUnderRoot(currentViewFilePath, projectDirPath))
                     _treeSvc.AddOrUpdateFileNode(treeView_Project, projectDirPath, currentViewFilePath);
             }
@@ -341,30 +372,9 @@ namespace PIC32Mn_PROJ
 
         private async void DisplayFileInViewTab(string filePath)
         {
-            if (!File.Exists(filePath) || avalonEditor == null) return;
-
-            await _editorSvc.OpenAsync(filePath);
-            avalonEditor.Text = _editorSvc.Text;
-            currentViewFilePath = filePath;
-            UpdateViewHeader(filePath);
-
-            var ext = Path.GetExtension(filePath).ToLowerInvariant();
-            if (ext is ".c" or ".h")
-            {
-                _highlightingSvc.EnsureCustomCRegistered(rootPath);
-                avalonEditor.SyntaxHighlighting = ICSharpCode.AvalonEdit.Highlighting.HighlightingManager.Instance.GetDefinition("C-PIC");
-                return;
-            }
-
-            var def = _highlightingSvc.GetForPath(filePath);
-            if (def != null)
-            {
-                avalonEditor.SyntaxHighlighting = def;
-            }
-            else
-            {
-                avalonEditor.SyntaxHighlighting = null;
-            }
+            // Legacy method retained for compatibility, but delegate to tab service now
+            if (!File.Exists(filePath)) return;
+            _tabService.OpenFile(tabControl1, filePath, rootPath);
         }
 
         private void RefreshAvalonEditor()
@@ -403,7 +413,7 @@ namespace PIC32Mn_PROJ
         private void treeView_Project_AfterSelect(object sender, TreeViewEventArgs e)
         {
             if (e.Node.Tag is FileInfo fileInfo)
-                DisplayFileInViewTab(fileInfo.FullName);
+                _tabService.OpenFile(tabControl1, fileInfo.FullName, rootPath);
         }
 
         // Right tree context menu (keep here)
@@ -745,6 +755,7 @@ namespace PIC32Mn_PROJ
                 _settings.MirrorProjectPath = projectDirPathRight;
                 _settings.Save();
                 _treeSvc.Populate(treeView_Right, projectDirPathRight);
+                ShowProjectTab();
             }
         }
 
@@ -754,6 +765,26 @@ namespace PIC32Mn_PROJ
             _editorSvc.Opened -= OnEditorOpened;
             _editorSvc.Saved -= OnEditorSaved;
             _editorSvc.Closed -= OnEditorClosed;
+        }
+
+        // Project tab visibility helpers
+        private void ShowProjectTab()
+        {
+            if (tabPage_Projects == null || tabControl1 == null) return;
+            if (!tabControl1.TabPages.Contains(tabPage_Projects))
+            {
+                // Insert near the front to keep it discoverable
+                tabControl1.TabPages.Insert(0, tabPage_Projects);
+            }
+        }
+
+        private void HideProjectTab()
+        {
+            if (tabPage_Projects == null || tabControl1 == null) return;
+            if (tabControl1.TabPages.Contains(tabPage_Projects))
+            {
+                tabControl1.TabPages.Remove(tabPage_Projects);
+            }
         }
     }
 }

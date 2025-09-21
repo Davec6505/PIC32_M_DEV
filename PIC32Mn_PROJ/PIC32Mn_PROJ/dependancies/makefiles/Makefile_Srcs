@@ -32,27 +32,29 @@ else
 	MOVE = powershell -Command "if (Test-Path '$(subst /,\,$(1))') { move -Path '$(subst /,\,$(1))' -Destination '$(subst /,\,$(2))' }"
 #	MOVE = if exist "$(subst /,\,$(1))" move "$(subst /,\,$(1))" "$(subst /,\,$(2))"
 endif
+endif
+
 # RM command with dry run and logging support to remove files matching a pattern in a directory
-	RM = Powershell -NoProfile -ExecutionPolicy Bypass -Command \
-	"$$dryRun = $$env:DRY_RUN -eq '1'; \
-	$$logPath = $$env:LOG_PATH; \
-	$$items = gci -Path '$(1)' -Recurse -Filter '$(2)'; \
-	foreach ($$item in $$items) { \
-		if ($$dryRun) { \
-		Write-Host 'Would delete: ' + $$item.FullName -ForegroundColor Red; \
-		if ($$logPath) { Add-Content -Path $$logPath -Value ('Would delete: ' + $$item.FullName) } \
+ifeq ($(OS),Windows_NT)
+	RM = powershell -NoProfile -ExecutionPolicy Bypass -Command \
+	"\$$dryRun = '$(DRY_RUN)' -eq '1'; \
+	\$$logPath = \$$env:LOG_PATH; \
+	\$$items = Get-ChildItem -Path '$(subst /,\,$(1))' -Recurse -Filter '$(2)' -ErrorAction SilentlyContinue; \
+	foreach (\$$item in \$$items) { \
+		if (\$$dryRun) { \
+		Write-Host ('Would delete: ' + \$$item.FullName) -ForegroundColor Red; \
+		if (\$$logPath) { Add-Content -Path \$$logPath -Value ('Would delete: ' + \$$item.FullName) } \
 		} else { \
-		Remove-Item $$item.FullName -Force -ErrorAction SilentlyContinue; \
-		if (Test-Path $$item.FullName) { \
-			Write-Host 'Warning: Could not delete ' + $$item.FullName -ForegroundColor Yellow; \
-			if ($$logPath) { Add-Content -Path $$logPath -Value ('Warning: Could not delete ' + $$item.FullName) } \
+		Remove-Item \$$item.FullName -Force -ErrorAction SilentlyContinue; \
+		if (Test-Path \$$item.FullName) { \
+			Write-Host ('Warning: Could not delete ' + \$$item.FullName) -ForegroundColor Yellow; \
+			if (\$$logPath) { Add-Content -Path \$$logPath -Value ('Warning: Could not delete ' + \$$item.FullName) } \
 		} else { \
-			Write-Host 'Deleted: ' + $$item.FullName -ForegroundColor Green; \
-			if ($$logPath) { Add-Content -Path $$logPath -Value ('Deleted: ' + $$item.FullName) } \
+			Write-Host ('Deleted: ' + \$$item.FullName) -ForegroundColor Green; \
+			if (\$$logPath) { Add-Content -Path \$$logPath -Value ('Deleted: ' + \$$item.FullName) } \
 		} \
 		} \
 	}"
-
 	PATH_SEP = \\
 	NULL_DEVICE = nul
 else
@@ -106,9 +108,9 @@ OUT_DIR  := $(ROOT)/other
 # The source files are expected to be in the srcs directory & sub-directories.
 # The source files are expected to have the .c extension.
 # The object file list is created from the SRCS variable with the .o extension inplaceof the .c extension.
-# Dynamically find all .c files using Make functions (up to 4 levels deep)
+# Dynamically find all .c files using Make functions (up to 6 levels deep for peripheral libraries)
 define get_c_files
-$(wildcard $(1)/*.c) $(wildcard $(1)/*/*.c) $(wildcard $(1)/*/*/*.c) $(wildcard $(1)/*/*/*/*.c)
+$(wildcard $(1)/*.c) $(wildcard $(1)/*/*.c) $(wildcard $(1)/*/*/*.c) $(wildcard $(1)/*/*/*/*.c) $(wildcard $(1)/*/*/*/*/*.c) $(wildcard $(1)/*/*/*/*/*/*.c)
 endef
 SRCS := $(call get_c_files,$(SRC_DIR))
 OBJS := $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
@@ -232,9 +234,9 @@ build_dir:
 
 clean:
 	@echo "Cleaning up object files and binaries ($(detected_OS)) with DRY_RUN=$(DRY_RUN)"
-	@$(call RM,$(BIN_DIR)/,*) 
-	@$(call RM,$(OBJ_DIR)/,*.o) 
-	@$(call RM,$(OUT_DIR)/,*) 
+	@$(call RM,$(BIN_DIR)/,*)
+	@$(call RM,$(OBJ_DIR)/,*.o)
+	@$(call RM,$(OUT_DIR)/,*)
 	@echo "Clean complete."
 
 

@@ -50,8 +50,20 @@ namespace PIC32Mn_PROJ
             leftPasteMenuItem = new ToolStripMenuItem("Paste", null, (s, e) => LeftPasteFromRightClipboard());
             treeContextMenu.Items.Add(leftPasteMenuItem);
 
+            var openMenuItem = new ToolStripMenuItem("Open", null, (s, e) => OpenSelectedNodeInTab());
+            treeContextMenu.Items.Add(openMenuItem);
+
             deleteMenuItem = new ToolStripMenuItem("Delete", null, (s, e) => DeleteSelectedNode());
             treeContextMenu.Items.Add(deleteMenuItem);
+        }
+
+        private void OpenSelectedNodeInTab()
+        {
+            var node = contextNode ?? treeView_Project.SelectedNode;
+            if (node?.Tag is FileInfo fi && File.Exists(fi.FullName))
+            {
+                _tabService.OpenFile(tabControl1, fi.FullName, rootPath);
+            }
         }
 
         private void treeView_Project_NodeMouseClick(object? sender, TreeNodeMouseClickEventArgs e)

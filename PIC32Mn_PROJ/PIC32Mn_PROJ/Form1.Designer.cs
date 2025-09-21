@@ -33,12 +33,14 @@ namespace PIC32Mn_PROJ
             newToolStripMenuItem = new ToolStripMenuItem();
             cSourceToolStripMenuItem = new ToolStripMenuItem();
             headerToolStripMenuItem = new ToolStripMenuItem();
+            optionsToolStripMenuItem = new ToolStripMenuItem();
+            openConsoleToolStripMenuItem = new ToolStripMenuItem();
+            closeConsoleToolStripMenuItem = new ToolStripMenuItem();
             treeView_Project = new TreeView();
             splitContainer1 = new SplitContainer();
             tabControl1 = new TabControl();
             tabPage_Projects = new TabPage();
             treeView_Right = new TreeView();
-            tabPage_View = new TabPage();
             menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -51,7 +53,7 @@ namespace PIC32Mn_PROJ
             // menuStrip1
             // 
             menuStrip1.ImageScalingSize = new Size(20, 20);
-            menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, editToolStripMenuItem });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, editToolStripMenuItem, optionsToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new Size(107, 28);
@@ -176,6 +178,27 @@ namespace PIC32Mn_PROJ
             headerToolStripMenuItem.Text = "header .h";
             headerToolStripMenuItem.Click += headerToolStripMenuItem_Click;
             // 
+            // optionsToolStripMenuItem
+            // 
+            optionsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { openConsoleToolStripMenuItem, closeConsoleToolStripMenuItem });
+            optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
+            optionsToolStripMenuItem.Size = new Size(77, 24);
+            optionsToolStripMenuItem.Text = "Options";
+            // 
+            // openConsoleToolStripMenuItem
+            // 
+            openConsoleToolStripMenuItem.Name = "openConsoleToolStripMenuItem";
+            openConsoleToolStripMenuItem.Size = new Size(197, 26);
+            openConsoleToolStripMenuItem.Text = "Open Console";
+            openConsoleToolStripMenuItem.Click += openConsoleToolStripMenuItem_Click;
+            // 
+            // closeConsoleToolStripMenuItem
+            // 
+            closeConsoleToolStripMenuItem.Name = "closeConsoleToolStripMenuItem";
+            closeConsoleToolStripMenuItem.Size = new Size(197, 26);
+            closeConsoleToolStripMenuItem.Text = "Close Console";
+            closeConsoleToolStripMenuItem.Click += closeConsoleToolStripMenuItem_Click;
+            // 
             // treeView_Project
             // 
             treeView_Project.Dock = DockStyle.Fill;
@@ -209,7 +232,6 @@ namespace PIC32Mn_PROJ
             // tabControl1
             // 
             tabControl1.Controls.Add(tabPage_Projects);
-            tabControl1.Controls.Add(tabPage_View);
             tabControl1.Dock = DockStyle.Fill;
             tabControl1.Font = new Font("Segoe UI", 9F, FontStyle.Italic, GraphicsUnit.Point, 0);
             tabControl1.Location = new Point(0, 0);
@@ -238,17 +260,6 @@ namespace PIC32Mn_PROJ
             treeView_Right.Name = "treeView_Right";
             treeView_Right.Size = new Size(1506, 898);
             treeView_Right.TabIndex = 1;
-            // 
-            // tabPage_View
-            // 
-            tabPage_View.Font = new Font("Segoe UI", 9F, FontStyle.Italic, GraphicsUnit.Point, 0);
-            tabPage_View.Location = new Point(4, 29);
-            tabPage_View.Name = "tabPage_View";
-            tabPage_View.Padding = new Padding(3, 20, 3, 3);
-            tabPage_View.Size = new Size(1508, 904);
-            tabPage_View.TabIndex = 2;
-            tabPage_View.Text = "View";
-            tabPage_View.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
@@ -286,8 +297,6 @@ namespace PIC32Mn_PROJ
         private ToolStripMenuItem createProjectToolStripMenuItem;
         private ToolStripMenuItem generateToolStripMenuItem;
         private TabControl tabControl1;
-        private TabPage tabPage_View;
-
         private ToolStripMenuItem openRightToolStripMenuItem;
         private TabPage tabPage_Projects;
         private TreeView treeView_Right;
@@ -298,5 +307,8 @@ namespace PIC32Mn_PROJ
         private ToolStripMenuItem newToolStripMenuItem;
         private ToolStripMenuItem cSourceToolStripMenuItem;
         private ToolStripMenuItem headerToolStripMenuItem;
+        private ToolStripMenuItem optionsToolStripMenuItem;
+        private ToolStripMenuItem openConsoleToolStripMenuItem;
+        private ToolStripMenuItem closeConsoleToolStripMenuItem;
     }
 }
