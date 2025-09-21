@@ -2,42 +2,27 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using PIC32Mn_PROJ.Services.Abstractions;
 
 namespace PIC32Mn_PROJ
 {
     public partial class Form1 : Form
     {
-        // Populate a tree recursively
+        // Populate any tree with root
         private void PopulateTreeView(TreeView tree, string rootFolderPath)
         {
-            tree.BeginUpdate();
-            try
-            {
-                tree.Nodes.Clear();
-                var rootDirectoryInfo = new DirectoryInfo(rootFolderPath);
-                var rootNode = new TreeNode(rootDirectoryInfo.Name) { Tag = rootDirectoryInfo };
-                tree.Nodes.Add(rootNode);
-                AddDirectoriesAndFiles(rootDirectoryInfo, rootNode);
-                rootNode.Expand();
-            }
-            finally
-            {
-                tree.EndUpdate();
-            }
+            _treeSvc.Populate(tree, rootFolderPath);
         }
 
+        // LEFT tree root populate
         private void PopulateTreeViewWithFoldersAndFiles(string rootFolderPath)
         {
-            treeView_Project.Nodes.Clear();
-            var rootDirectoryInfo = new DirectoryInfo(rootFolderPath);
-            var rootNode = new TreeNode(rootDirectoryInfo.Name) { Tag = rootDirectoryInfo };
-            treeView_Project.Nodes.Add(rootNode);
-            AddDirectoriesAndFiles(rootDirectoryInfo, rootNode);
-            rootNode.Expand();
+            _treeSvc.PopulateLeft(treeView_Project, rootFolderPath);
         }
 
         private void AddDirectoriesAndFiles(DirectoryInfo directoryInfo, TreeNode parentNode)
         {
+            // Kept for compatibility if called elsewhere, but prefer service
             foreach (var directory in directoryInfo.GetDirectories())
             {
                 var dirNode = new TreeNode(directory.Name) { Tag = directory };
@@ -50,6 +35,12 @@ namespace PIC32Mn_PROJ
                 var fileNode = new TreeNode(file.Name) { Tag = file };
                 parentNode.Nodes.Add(fileNode);
             }
+        }
+
+        // Incrementally add/update a file node under the project tree without collapsing the whole tree
+        private void AddOrUpdateFileNode(TreeView tree, string rootFolderPath, string filePath)
+        {
+            _treeSvc.AddOrUpdateFileNode(tree, rootFolderPath, filePath);
         }
 
         private void SetupTreeViewContextMenu()
@@ -102,7 +93,7 @@ namespace PIC32Mn_PROJ
             {
                 if (node.Tag is FileInfo fi)
                 {
-                    if (!IsUnderProjectRoot(fi.FullName))
+                    if (!_treeSvc.IsUnderRoot(fi.FullName, projectDirPath))
                     {
                         MessageBox.Show("Blocked: outside project root.", "Delete", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         return;
@@ -130,7 +121,7 @@ namespace PIC32Mn_PROJ
                 }
                 else if (node.Tag is DirectoryInfo di)
                 {
-                    if (!IsUnderProjectRoot(di.FullName))
+                    if (!_treeSvc.IsUnderRoot(di.FullName, projectDirPath))
                     {
                         MessageBox.Show("Blocked: outside project root.", "Delete", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         return;
@@ -155,19 +146,15 @@ namespace PIC32Mn_PROJ
 
         private bool IsUnderProjectRoot(string path)
         {
-            if (string.IsNullOrEmpty(projectDirPath)) return false;
-            var full = Path.GetFullPath(path).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-            var root = Path.GetFullPath(projectDirPath).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-            return full.StartsWith(root, StringComparison.OrdinalIgnoreCase);
+            return _treeSvc.IsUnderRoot(path, projectDirPath);
         }
 
-        // Drag and Drop handlers
+        // DnD
         private void TreeView_Right_ItemDrag(object? sender, ItemDragEventArgs e)
         {
             if (e.Item is not TreeNode node) return;
-            var path = GetNodePath(node);
+            var path = _treeSvc.GetNodePath(node);
             if (string.IsNullOrEmpty(path)) return;
-
             var data = new DataObject();
             data.SetData(DataFormats.FileDrop, new[] { path });
             data.SetData("SourceRootPath", projectDirPathRight ?? string.Empty);
@@ -178,9 +165,8 @@ namespace PIC32Mn_PROJ
         {
             if (e.Item is TreeNode node)
             {
-                var path = GetNodePath(node);
+                var path = _treeSvc.GetNodePath(node);
                 if (string.IsNullOrEmpty(path)) return;
-
                 var data = new DataObject();
                 data.SetData(DataFormats.FileDrop, new[] { path });
                 data.SetData("SourceRootPath", projectDirPath ?? string.Empty);
@@ -190,10 +176,7 @@ namespace PIC32Mn_PROJ
 
         private void TreeView_Right_DragEnter(object? sender, DragEventArgs e)
         {
-            if (e.Data != null && e.Data.GetDataPresent(DataFormats.FileDrop))
-                e.Effect = DragDropEffects.Copy;
-            else
-                e.Effect = DragDropEffects.None;
+            e.Effect = (e.Data != null && e.Data.GetDataPresent(DataFormats.FileDrop)) ? DragDropEffects.Copy : DragDropEffects.None;
         }
 
         private void TreeView_Right_DragOver(object? sender, DragEventArgs e)
@@ -203,28 +186,19 @@ namespace PIC32Mn_PROJ
 
         private void TreeView_SetCopyEffectIfValid(TreeView tv, DragEventArgs e)
         {
-            if (!(e.Data?.GetDataPresent(DataFormats.FileDrop) ?? false))
-            {
-                e.Effect = DragDropEffects.None;
-                return;
-            }
-
-            var targetNode = tv.GetNodeAt(tv.PointToClient(new Point(e.X, e.Y)));
-            e.Effect = DragDropEffects.Copy; // valid for file or folder
+            if (!(e.Data?.GetDataPresent(DataFormats.FileDrop) ?? false)) { e.Effect = DragDropEffects.None; return; }
+            e.Effect = DragDropEffects.Copy;
         }
 
         private void TreeView_Right_DragDrop(object? sender, DragEventArgs e)
         {
             if (!(e.Data?.GetDataPresent(DataFormats.FileDrop) ?? false)) return;
             var files = (string[])e.Data!.GetData(DataFormats.FileDrop)!;
-
             var tv = treeView_Right;
             var clientPoint = tv.PointToClient(new Point(e.X, e.Y));
             var targetNode = tv.GetNodeAt(clientPoint);
-
-            var targetDir = GetDropTargetDirectory(targetNode, projectDirPathRight);
+            var targetDir = _treeSvc.GetDropTargetDirectory(targetNode, projectDirPathRight);
             if (string.IsNullOrEmpty(targetDir) || !Directory.Exists(targetDir)) return;
-
             foreach (var srcPath in files)
             {
                 try
@@ -233,7 +207,7 @@ namespace PIC32Mn_PROJ
                     {
                         var srcDir = new DirectoryInfo(srcPath);
                         var destDir = Path.Combine(targetDir, srcDir.Name);
-                        CopyDirectory(srcDir.FullName, destDir);
+                        _fs.CopyDirectory(srcDir.FullName, destDir);
                     }
                     else if (File.Exists(srcPath))
                     {
@@ -248,25 +222,18 @@ namespace PIC32Mn_PROJ
                     MessageBox.Show($"Copy failed:\n{ex.Message}", "Copy", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-
             if (!string.IsNullOrEmpty(projectDirPathRight))
-                PopulateTreeView(treeView_Right, projectDirPathRight);
+                _treeSvc.Populate(treeView_Right, projectDirPathRight);
         }
 
         private void TreeView_Project_DragEnter(object? sender, DragEventArgs e)
         {
-            e.Effect = (e.Data != null && e.Data.GetDataPresent(DataFormats.FileDrop))
-                ? DragDropEffects.Copy
-                : DragDropEffects.None;
+            e.Effect = (e.Data != null && e.Data.GetDataPresent(DataFormats.FileDrop)) ? DragDropEffects.Copy : DragDropEffects.None;
         }
 
         private void TreeView_Project_DragOver(object? sender, DragEventArgs e)
         {
-            if (!(e.Data?.GetDataPresent(DataFormats.FileDrop) ?? false))
-            {
-                e.Effect = DragDropEffects.None;
-                return;
-            }
+            if (!(e.Data?.GetDataPresent(DataFormats.FileDrop) ?? false)) { e.Effect = DragDropEffects.None; return; }
             e.Effect = DragDropEffects.Copy;
         }
 
@@ -274,16 +241,12 @@ namespace PIC32Mn_PROJ
         {
             if (!(e.Data?.GetDataPresent(DataFormats.FileDrop) ?? false)) return;
             var files = (string[])e.Data.GetData(DataFormats.FileDrop)!;
-
             var tv = treeView_Project;
             var clientPoint = tv.PointToClient(new Point(e.X, e.Y));
             var targetNode = tv.GetNodeAt(clientPoint);
-
-            var targetDir = GetDropTargetDirectory(targetNode, projectDirPath);
+            var targetDir = _treeSvc.GetDropTargetDirectory(targetNode, projectDirPath);
             if (string.IsNullOrEmpty(targetDir) || !Directory.Exists(targetDir)) return;
-
-            var policy = OverwritePolicy.Ask;
-
+            var policy = Services.Abstractions.OverwritePolicy.Ask;
             try
             {
                 foreach (var srcPath in files)
@@ -292,35 +255,29 @@ namespace PIC32Mn_PROJ
                     {
                         var srcDir = new DirectoryInfo(srcPath);
                         var destDir = Path.Combine(targetDir, srcDir.Name);
-                        CopyDirectoryWithPrompt(srcDir.FullName, destDir, ref policy);
+                        _fs.CopyDirectoryWithPrompt(srcDir.FullName, destDir, ref policy);
                     }
                     else if (File.Exists(srcPath))
                     {
                         var fileName = Path.GetFileName(srcPath);
                         var destFile = Path.Combine(targetDir, fileName);
-                        TryCopyFileWithPrompt(srcPath, destFile, ref policy);
+                        _fs.TryCopyFileWithPrompt(srcPath, destFile, ref policy);
                     }
                 }
             }
-            catch (OperationCanceledException)
-            {
-                // user cancelled
-            }
+            catch (OperationCanceledException) { }
             catch (Exception ex)
             {
                 MessageBox.Show($"Copy failed:\n{ex.Message}", "Copy", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
             var dirNodeToRefresh = GetDirectoryNodeForDrop(targetNode);
             if (dirNodeToRefresh != null)
-                RepopulateDirectoryNode(dirNodeToRefresh);
+                _treeSvc.RepopulateDirectoryNode(dirNodeToRefresh);
         }
 
         private static string GetDropTargetDirectory(TreeNode? targetNode, string rootPath)
         {
-            if (targetNode == null || targetNode.Tag == null)
-                return rootPath;
-
+            if (targetNode == null || targetNode.Tag == null) return rootPath;
             return targetNode.Tag switch
             {
                 DirectoryInfo di => di.FullName,
@@ -329,128 +286,23 @@ namespace PIC32Mn_PROJ
             };
         }
 
+        private TreeNode? GetDirectoryNodeForDrop(TreeNode? node)
+        {
+            if (node == null) return null;
+            if (node.Tag is DirectoryInfo) return node;
+            if (node.Tag is FileInfo) return node.Parent;
+            return null;
+        }
+
         private string GetNodePath(TreeNode node)
         {
-            if (node?.Tag is FileSystemInfo fsi)
-                return fsi.FullName;
+            if (node?.Tag is FileSystemInfo fsi) return fsi.FullName;
             return string.Empty;
         }
 
         private void RepopulateDirectoryNode(TreeNode dirNode)
         {
-            if (dirNode == null || dirNode.Tag is not DirectoryInfo di) return;
-
-            dirNode.Nodes.Clear();
-            AddDirectoriesAndFiles(di, dirNode);
-            dirNode.Expand();
-        }
-
-        private enum OverwritePolicy
-        {
-            Ask,
-            YesToAll,
-            NoToAll
-        }
-
-        private static void CopyDirectory(string sourceDir, string destDir)
-        {
-            var src = new DirectoryInfo(sourceDir);
-            if (!src.Exists) return;
-
-            Directory.CreateDirectory(destDir);
-
-            foreach (var file in src.GetFiles("*", SearchOption.TopDirectoryOnly))
-            {
-                var target = Path.Combine(destDir, file.Name);
-                file.CopyTo(target, overwrite: true);
-                File.SetAttributes(target, FileAttributes.Normal);
-            }
-
-            foreach (var dir in src.GetDirectories("*", SearchOption.TopDirectoryOnly))
-            {
-                CopyDirectory(dir.FullName, Path.Combine(destDir, dir.Name));
-            }
-        }
-
-        private static void CopyDirectoryWithPrompt(string sourceDir, string destDir, ref OverwritePolicy policy)
-        {
-            var src = new DirectoryInfo(sourceDir);
-            if (!src.Exists) return;
-
-            Directory.CreateDirectory(destDir);
-
-            foreach (var file in src.GetFiles("*", SearchOption.TopDirectoryOnly))
-            {
-                var target = Path.Combine(destDir, file.Name);
-                TryCopyFileWithPrompt(file.FullName, target, ref policy);
-            }
-
-            foreach (var dir in src.GetDirectories("*", SearchOption.TopDirectoryOnly))
-            {
-                var subDest = Path.Combine(destDir, dir.Name);
-                CopyDirectoryWithPrompt(dir.FullName, subDest, ref policy);
-            }
-        }
-
-        private static bool TryCopyFileWithPrompt(string srcFile, string destFile, ref OverwritePolicy policy)
-        {
-            Directory.CreateDirectory(Path.GetDirectoryName(destFile)!);
-
-            if (!File.Exists(destFile))
-            {
-                File.Copy(srcFile, destFile, overwrite: true);
-                File.SetAttributes(destFile, FileAttributes.Normal);
-                return true;
-            }
-
-            switch (policy)
-            {
-                case OverwritePolicy.YesToAll:
-                    File.Copy(srcFile, destFile, overwrite: true);
-                    File.SetAttributes(destFile, FileAttributes.Normal);
-                    return true;
-                case OverwritePolicy.NoToAll:
-                    return false;
-                case OverwritePolicy.Ask:
-                default:
-                    var res = MessageBox.Show(
-                        $"The file already exists:\n{destFile}\nDo you want to replace it?",
-                        "Copy and Replace",
-                        MessageBoxButtons.YesNoCancel,
-                        MessageBoxIcon.Question,
-                        MessageBoxDefaultButton.Button2);
-
-                    if (res == DialogResult.Cancel)
-                        throw new OperationCanceledException("User cancelled copy.");
-
-                    if (res == DialogResult.Yes)
-                    {
-                        var applyAll = MessageBox.Show(
-                            "Apply this choice (Replace) to all remaining existing files?",
-                            "Apply to All",
-                            MessageBoxButtons.YesNo,
-                            MessageBoxIcon.Question,
-                            MessageBoxDefaultButton.Button2);
-                        if (applyAll == DialogResult.Yes)
-                            policy = OverwritePolicy.YesToAll;
-
-                        File.Copy(srcFile, destFile, overwrite: true);
-                        File.SetAttributes(destFile, FileAttributes.Normal);
-                        return true;
-                    }
-                    else
-                    {
-                        var applyAll = MessageBox.Show(
-                            "Apply this choice (Skip) to all remaining existing files?",
-                            "Apply to All",
-                            MessageBoxButtons.YesNo,
-                            MessageBoxIcon.Question,
-                            MessageBoxDefaultButton.Button2);
-                        if (applyAll == DialogResult.Yes)
-                            policy = OverwritePolicy.NoToAll;
-                        return false;
-                    }
-            }
+            _treeSvc.RepopulateDirectoryNode(dirNode);
         }
     }
 }

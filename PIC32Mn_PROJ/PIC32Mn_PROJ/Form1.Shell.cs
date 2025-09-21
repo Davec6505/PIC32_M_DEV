@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
+using PIC32Mn_PROJ.Services.Abstractions;
 
 namespace PIC32Mn_PROJ
 {
@@ -26,37 +27,14 @@ namespace PIC32Mn_PROJ
         // Start a PowerShell process with left-tree working directory
         private void EnsureShellStarted()
         {
-            if (psProcess != null && !psProcess.HasExited) return;
-
-            var exe = GetAvailablePowerShell();
+            if (!_shellOutputSubscribed)
+            {
+                _shellSvc.Output += AppendConsoleLine;
+                _shellOutputSubscribed = true;
+            }
+            if (_shellSvc.IsRunning) return;
             var cwd = GetLeftWorkingDirectory();
-            var psi = new ProcessStartInfo
-            {
-                FileName = exe,
-                Arguments = "-NoLogo -NoExit",
-                UseShellExecute = false,
-                RedirectStandardInput = true,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                CreateNoWindow = true,
-                WorkingDirectory = cwd
-            };
-
-            psProcess = new Process { StartInfo = psi, EnableRaisingEvents = true };
-            psProcess.OutputDataReceived += (s, e) => { if (e.Data != null) OnShellOutput(e.Data); };
-            psProcess.ErrorDataReceived  += (s, e) => { if (e.Data != null) OnShellOutput(e.Data); };
-            psProcess.Exited += (s, e) => AppendConsoleLine("[process exited]");
-
-            if (psProcess.Start())
-            {
-                psProcess.BeginOutputReadLine();
-                psProcess.BeginErrorReadLine();
-                AppendConsoleLine($"Started {exe} (cwd: {cwd})");
-            }
-            else
-            {
-                AppendConsoleLine("Failed to start PowerShell.");
-            }
+            _shellSvc.Start(cwd);
         }
 
         // Resolve working directory from left tree selection or project root
@@ -151,23 +129,20 @@ namespace PIC32Mn_PROJ
             {
                 var trimmed = text.Trim();
                 var cwd = GetLeftWorkingDirectory();
-                var psLiteral = cwd.Replace("'", "''");
-
                 AppendConsoleLine($"> {text}");
-                psProcess!.StandardInput.WriteLine($"Set-Location -LiteralPath '{psLiteral}'");
+                _shellSvc.Send($"Set-Location -LiteralPath '{cwd.Replace("'", "''")}'");
 
                 if (string.Equals(trimmed, "make build_dir", StringComparison.OrdinalIgnoreCase))
                 {
                     pendingRefreshNode = GetSelectedDirectoryNode();
                     pendingMakeRefresh = true;
-                    psProcess.StandardInput.WriteLine("make build_dir; Write-Host __MAKE_DONE__");
+                    _shellSvc.Send("make build_dir; Write-Host __MAKE_DONE__");
                 }
                 else
                 {
-                    psProcess.StandardInput.WriteLine(text);
+                    _shellSvc.Send(text);
                 }
 
-                psProcess.StandardInput.Flush();
                 psInput.Clear();
             }
             catch (Exception ex)
@@ -180,13 +155,12 @@ namespace PIC32Mn_PROJ
         {
             try
             {
-                if (psProcess != null && !psProcess.HasExited)
+                _shellSvc.Stop();
+                if (_shellOutputSubscribed)
                 {
-                    psProcess.StandardInput.WriteLine("exit");
-                    if (!psProcess.WaitForExit(1500))
-                        psProcess.Kill(entireProcessTree: true);
+                    _shellSvc.Output -= AppendConsoleLine;
+                    _shellOutputSubscribed = false;
                 }
-                psProcess?.Dispose();
             }
             catch { /* ignore */ }
         }

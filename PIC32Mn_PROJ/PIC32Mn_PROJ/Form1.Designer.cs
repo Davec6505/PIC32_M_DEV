@@ -54,7 +54,7 @@ namespace PIC32Mn_PROJ
             menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, editToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
-            menuStrip1.Size = new Size(111, 28);
+            menuStrip1.Size = new Size(107, 28);
             menuStrip1.TabIndex = 0;
             // 
             // fileToolStripMenuItem
@@ -181,7 +181,7 @@ namespace PIC32Mn_PROJ
             treeView_Project.Dock = DockStyle.Fill;
             treeView_Project.Location = new Point(0, 28);
             treeView_Project.Name = "treeView_Project";
-            treeView_Project.Size = new Size(111, 909);
+            treeView_Project.Size = new Size(107, 909);
             treeView_Project.TabIndex = 2;
             // 
             // splitContainer1
@@ -202,7 +202,7 @@ namespace PIC32Mn_PROJ
             splitContainer1.Panel2.Controls.Add(tabControl1);
             splitContainer1.Panel2MinSize = 1000;
             splitContainer1.Size = new Size(1635, 937);
-            splitContainer1.SplitterDistance = 111;
+            splitContainer1.SplitterDistance = 107;
             splitContainer1.SplitterWidth = 8;
             splitContainer1.TabIndex = 3;
             // 
@@ -215,7 +215,7 @@ namespace PIC32Mn_PROJ
             tabControl1.Location = new Point(0, 0);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(1516, 937);
+            tabControl1.Size = new Size(1520, 937);
             tabControl1.TabIndex = 1;
             // 
             // tabPage_Projects
@@ -225,7 +225,7 @@ namespace PIC32Mn_PROJ
             tabPage_Projects.Location = new Point(4, 29);
             tabPage_Projects.Name = "tabPage_Projects";
             tabPage_Projects.Padding = new Padding(3);
-            tabPage_Projects.Size = new Size(1508, 904);
+            tabPage_Projects.Size = new Size(1512, 904);
             tabPage_Projects.TabIndex = 3;
             tabPage_Projects.Text = "Projects";
             tabPage_Projects.UseVisualStyleBackColor = true;
@@ -236,7 +236,7 @@ namespace PIC32Mn_PROJ
             treeView_Right.HideSelection = false;
             treeView_Right.Location = new Point(3, 3);
             treeView_Right.Name = "treeView_Right";
-            treeView_Right.Size = new Size(1502, 898);
+            treeView_Right.Size = new Size(1506, 898);
             treeView_Right.TabIndex = 1;
             // 
             // tabPage_View

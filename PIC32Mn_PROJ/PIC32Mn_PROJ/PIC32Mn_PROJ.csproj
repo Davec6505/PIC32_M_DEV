@@ -36,13 +36,13 @@
 
   <ItemGroup>
     <Folder Include="dependancies\datasheets\" />
-    <Folder Include="interfaces\" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AvalonEdit" Version="6.3.1.120" />
     <PackageReference Include="Microsoft-WindowsAPICodePack-Core" Version="1.1.5" />
     <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.5" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.9" />
     <PackageReference Include="Mono.TextTemplating" Version="3.0.0" />
   </ItemGroup>
 
