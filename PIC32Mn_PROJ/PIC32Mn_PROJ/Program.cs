@@ -26,6 +26,8 @@ namespace PIC32Mn_PROJ
                 .AddSingleton<IShellService, ShellService>()
                 .AddSingleton<IEditorService, EditorService>()
                 .AddSingleton<ITabService, TabService>()
+                .AddSingleton<IGitService, GitService>()
+                .AddSingleton<IHotkeyService, HotkeyService>()
                 // Form
                 .AddSingleton<Form1>()
                 .BuildServiceProvider();

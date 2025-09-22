@@ -9,6 +9,7 @@ using System.Text;
 using System.Windows; // WPF base types
 using System.Windows.Forms; // WinForms
 using System.Windows.Forms.Integration; // ElementHost
+using MessageBox = System.Windows.Forms.MessageBox; // disambiguate
 using DataFormats = System.Windows.Forms.DataFormats;
 
 namespace PIC32Mn_PROJ
@@ -24,6 +25,8 @@ namespace PIC32Mn_PROJ
         private readonly IShellService _shellSvc;
         private readonly IEditorService _editorSvc;
         private readonly ITabService _tabService;
+        private readonly IGitService _gitSvc;
+        private readonly IHotkeyService _hotkeysSvc;
 
         // App specific paths
         string rootPath = string.Empty;
@@ -68,6 +71,21 @@ namespace PIC32Mn_PROJ
         // View header
         private System.Windows.Forms.Label viewHeaderLabel;
 
+        // Git tab state
+        private string _gitRepoRoot = string.Empty;
+        private string _gitCurrentBranch = string.Empty;
+
+        // Action identifiers used with IHotkeyService
+        private const string HK_Save = "Save";
+        private const string HK_ToggleConsole = "ToggleConsole";
+        private const string HK_OpenGitTab = "OpenGitTab";
+        private const string HK_CloseGitTab = "CloseGitTab";
+        private const string HK_Stage = "Stage";
+        private const string HK_Commit = "Commit";
+        private const string HK_Fetch = "Fetch";
+        private const string HK_Pull = "Pull";
+        private const string HK_Push = "Push";
+
         public Form1(
             ISettingsService settings,
             IDialogService dialogs,
@@ -76,7 +94,9 @@ namespace PIC32Mn_PROJ
             IHighlightingService highlightingSvc,
             IShellService shellSvc,
             IEditorService editorSvc,
-            ITabService tabService)
+            ITabService tabService,
+            IGitService gitService,
+            IHotkeyService hotkeys)
         {
             _settings = settings;
             _dialogs = dialogs;
@@ -86,6 +106,8 @@ namespace PIC32Mn_PROJ
             _shellSvc = shellSvc;
             _editorSvc = editorSvc;
             _tabService = tabService;
+            _gitSvc = gitService;
+            _hotkeysSvc = hotkeys;
 
             InitializeComponent();
             rootPath = "C:\\Users\\davec\\GIT\\PIC32_M_DEV\\PIC32Mn_PROJ\\PIC32Mn_PROJ\\";
@@ -94,6 +116,12 @@ namespace PIC32Mn_PROJ
 
         public void Form1_Load(object sender, EventArgs e)
         {
+            // Ensure form sees shortcuts before child controls
+            this.KeyPreview = true;
+            // Add a global message filter to catch keys from hosted controls (e.g., WPF)
+            _hotkeyFilter = new GlobalHotkeyFilter(this);
+            System.Windows.Forms.Application.AddMessageFilter(_hotkeyFilter);
+
             // Restore paths via settings service
             var savedPath = _settings.ProjectPath;
             if (!string.IsNullOrEmpty(savedPath))
@@ -158,6 +186,69 @@ namespace PIC32Mn_PROJ
             treeView_Right.KeyDown += treeView_Right_KeyDown;
 
             _highlightingSvc.ApplyBaseC(avalonEditor);
+
+            // Add Git menu items now that _gitSvc is available
+            InitializeGitMenu();
+
+            // Add context menu to Git tab to allow closing it
+            if (tabPage_Git != null)
+            {
+                var cmGit = new ContextMenuStrip();
+                cmGit.Items.Add(new ToolStripMenuItem("Close Git Tab", null, (s, ea) => Git_CloseTab()));
+                tabPage_Git.ContextMenuStrip = cmGit;
+            }
+
+            // Wire Git tab handlers and refresh
+            WireGitTabEvents();
+            _ = Git_RefreshAllAsync();
+        }
+
+        // Global message filter to catch hotkeys even when focus is in hosted controls
+        private GlobalHotkeyFilter? _hotkeyFilter;
+        private sealed class GlobalHotkeyFilter : IMessageFilter
+        {
+            private readonly Form1 _owner;
+            public GlobalHotkeyFilter(Form1 owner) => _owner = owner;
+            private const int WM_KEYDOWN = 0x0100;
+            private const int WM_SYSKEYDOWN = 0x0104;
+            public bool PreFilterMessage(ref Message m)
+            {
+                if (m.Msg == WM_KEYDOWN || m.Msg == WM_SYSKEYDOWN)
+                {
+                    var key = (Keys)m.WParam.ToInt32();
+                    // Combine with current modifiers
+                    var keyData = key | Control.ModifierKeys;
+                    if (_owner.HandleHotkey(keyData))
+                        return true; // consume
+                }
+                return false;
+            }
+        }
+
+        // Central hotkey handler used by both ProcessCmdKey and message filter
+        private bool HandleHotkey(Keys keyData)
+        {
+            try
+            {
+                if (keyData == _hotkeysSvc.Get(HK_Save)) { saveToolStripMenuItem_Click(this, EventArgs.Empty); return true; }
+                if (keyData == _hotkeysSvc.Get(HK_ToggleConsole)) { ToggleConsole(); return true; }
+                if (keyData == _hotkeysSvc.Get(HK_OpenGitTab)) { Git_ShowTab(); return true; }
+                if (keyData == _hotkeysSvc.Get(HK_CloseGitTab)) { Git_CloseTab(); return true; }
+                if (keyData == _hotkeysSvc.Get(HK_Stage)) { _ = Git_StageSelectedAsync(); return true; }
+                if (keyData == _hotkeysSvc.Get(HK_Commit)) { _ = Git_ButtonCommitAsync(); return true; }
+                if (keyData == _hotkeysSvc.Get(HK_Fetch)) { _ = Git_ButtonFetchAsync(); return true; }
+                if (keyData == _hotkeysSvc.Get(HK_Pull)) { _ = Git_ButtonPullAsync(); return true; }
+                if (keyData == _hotkeysSvc.Get(HK_Push)) { _ = Git_ButtonPushAsync(); return true; }
+            }
+            catch { }
+            return false;
+        }
+
+        // Robust global shortcut handling (works even with hosted controls)
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (HandleHotkey(keyData)) return true;
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         private void BuildRightPaneWithConsole()
@@ -232,6 +323,244 @@ namespace PIC32Mn_PROJ
         {
             if (rightPaneSplit == null) return;
             rightPaneSplit.Panel2Collapsed = true;
+        }
+
+        private void ToggleConsole()
+        {
+            if (rightPaneSplit == null) return;
+            if (rightPaneSplit.Panel2Collapsed)
+                ShowConsole();
+            else
+                HideConsole();
+        }
+
+        private void WireGitTabEvents()
+        {
+            if (btnGitRefresh != null) btnGitRefresh.Click += async (s, e) => await Git_RefreshAllAsync();
+            if (btnGitPull != null) btnGitPull.Click += async (s, e) => await Git_ButtonPullAsync();
+            if (btnGitPush != null) btnGitPush.Click += async (s, e) => await Git_ButtonPushAsync();
+            if (btnGitFetch != null) btnGitFetch.Click += async (s, e) => await Git_ButtonFetchAsync();
+            if (btnGitCheckout != null) btnGitCheckout.Click += async (s, e) => await Git_ButtonCheckoutAsync();
+            if (btnGitNewBranch != null) btnGitNewBranch.Click += async (s, e) => await Git_ButtonNewBranchAsync();
+            if (btnGitStage != null) btnGitStage.Click += async (s, e) => await Git_StageSelectedAsync();
+            if (btnGitUnstage != null) btnGitUnstage.Click += async (s, e) => await Git_UnstageSelectedAsync();
+            if (btnGitCommit != null) btnGitCommit.Click += async (s, e) => await Git_ButtonCommitAsync();
+        }
+
+        private void SetGitControlsEnabled(bool enabled)
+        {
+            var controls = new Control[]
+            {
+                comboGitBranches, btnGitCheckout, btnGitNewBranch, btnGitFetch, btnGitPull, btnGitPush,
+                btnGitRefresh, listViewGitStatus, btnGitStage, btnGitUnstage, txtGitCommit, btnGitCommit
+            };
+            foreach (var c in controls)
+            {
+                if (c != null) c.Enabled = enabled;
+            }
+        }
+
+        private async Task Git_RefreshAllAsync()
+        {
+            // Discover repo
+            _gitRepoRoot = string.Empty;
+            var start = string.IsNullOrEmpty(projectDirPath) ? Environment.CurrentDirectory : projectDirPath;
+            if (_gitSvc.TryDiscoverRepo(start, out var info) && info != null)
+            {
+                _gitRepoRoot = info.Root;
+                _gitCurrentBranch = info.CurrentBranch;
+                SetGitControlsEnabled(true);
+                await Git_LoadBranchesAsync();
+                await Git_LoadStatusAsync();
+            }
+            else
+            {
+                SetGitControlsEnabled(false);
+                MessageBox.Show("No git repository found under the current project path.", "Git", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private async Task Git_LoadBranchesAsync()
+        {
+            if (string.IsNullOrEmpty(_gitRepoRoot) || comboGitBranches == null) return;
+            try
+            {
+                comboGitBranches.Items.Clear();
+                var branches = await _gitSvc.GetBranchesAsync(_gitRepoRoot);
+                foreach (var b in branches) comboGitBranches.Items.Add(b);
+                if (!string.IsNullOrEmpty(_gitCurrentBranch))
+                {
+                    for (int i = 0; i < comboGitBranches.Items.Count; i++)
+                    {
+                        if (string.Equals(comboGitBranches.Items[i]?.ToString(), _gitCurrentBranch, StringComparison.OrdinalIgnoreCase))
+                        {
+                            comboGitBranches.SelectedIndex = i;
+                            break;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to load branches:\n{ex.Message}", "Git", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private async Task Git_LoadStatusAsync()
+        {
+            if (string.IsNullOrEmpty(_gitRepoRoot) || listViewGitStatus == null) return;
+            try
+            {
+                listViewGitStatus.BeginUpdate();
+                listViewGitStatus.Items.Clear();
+                var items = await _gitSvc.GetStatusAsync(_gitRepoRoot);
+                foreach (var it in items)
+                {
+                    var lvi = new ListViewItem(new[] { it.Status, it.Path }) { Tag = it.Path };
+                    listViewGitStatus.Items.Add(lvi);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to load status:\n{ex.Message}", "Git", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                listViewGitStatus.EndUpdate();
+            }
+        }
+
+        private async Task Git_ButtonPullAsync()
+        {
+            if (string.IsNullOrEmpty(_gitRepoRoot)) { await Git_RefreshAllAsync(); if (string.IsNullOrEmpty(_gitRepoRoot)) return; }
+            var output = await _gitSvc.PullAsync(_gitRepoRoot);
+            MessageBox.Show(output, "git pull", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            await Git_LoadStatusAsync();
+        }
+
+        private async Task Git_ButtonPushAsync()
+        {
+            if (string.IsNullOrEmpty(_gitRepoRoot)) { await Git_RefreshAllAsync(); if (string.IsNullOrEmpty(_gitRepoRoot)) return; }
+            var output = await _gitSvc.PushAsync(_gitRepoRoot);
+            MessageBox.Show(output, "git push", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            await Git_LoadStatusAsync();
+        }
+
+        private async Task Git_ButtonFetchAsync()
+        {
+            if (string.IsNullOrEmpty(_gitRepoRoot)) { await Git_RefreshAllAsync(); if (string.IsNullOrEmpty(_gitRepoRoot)) return; }
+            var output = await _gitSvc.FetchAsync(_gitRepoRoot);
+            MessageBox.Show(output, "git fetch", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            await Git_LoadStatusAsync();
+        }
+
+        private async Task Git_ButtonCheckoutAsync()
+        {
+            if (string.IsNullOrEmpty(_gitRepoRoot) || comboGitBranches == null) return;
+            var target = comboGitBranches.SelectedItem?.ToString();
+            if (string.IsNullOrEmpty(target)) { MessageBox.Show("Select a branch to checkout."); return; }
+            try
+            {
+                await _gitSvc.SwitchBranchAsync(_gitRepoRoot, target, createIfMissing: false);
+                _gitCurrentBranch = target;
+                MessageBox.Show($"Checked out '{target}'.", "Git", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                await Git_LoadStatusAsync();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Checkout failed:\n{ex.Message}", "Git", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private async Task Git_ButtonNewBranchAsync()
+        {
+            if (string.IsNullOrEmpty(_gitRepoRoot)) return;
+            string name = Microsoft.VisualBasic.Interaction.InputBox("Enter new branch name:", "New Branch", "feature/");
+            if (string.IsNullOrWhiteSpace(name)) return;
+            try
+            {
+                await _gitSvc.SwitchBranchAsync(_gitRepoRoot, name, createIfMissing: true);
+                _gitCurrentBranch = name;
+                await Git_LoadBranchesAsync();
+                MessageBox.Show($"Created and switched to '{name}'.", "Git", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                await Git_LoadStatusAsync();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Create branch failed:\n{ex.Message}", "Git", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private async Task Git_StageSelectedAsync()
+        {
+            if (string.IsNullOrEmpty(_gitRepoRoot) || listViewGitStatus == null) return;
+            if (listViewGitStatus.SelectedItems.Count == 0) { MessageBox.Show("Select files in the status list to stage."); return; }
+            try
+            {
+                var paths = new List<string>();
+                foreach (ListViewItem sel in listViewGitStatus.SelectedItems)
+                {
+                    var rel = sel.Tag?.ToString() ?? string.Empty;
+                    var full = string.IsNullOrEmpty(rel) ? string.Empty : Path.Combine(_gitRepoRoot, rel);
+                    if (!string.IsNullOrEmpty(full)) paths.Add(full);
+                }
+                if (paths.Count > 0)
+                {
+                    await _gitSvc.StageAsync(_gitRepoRoot, paths);
+                    await Git_LoadStatusAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Stage failed:\n{ex.Message}", "Git", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private async Task Git_UnstageSelectedAsync()
+        {
+            if (string.IsNullOrEmpty(_gitRepoRoot) || listViewGitStatus == null) return;
+            if (listViewGitStatus.SelectedItems.Count == 0) { MessageBox.Show("Select files in the status list to unstage."); return; }
+            try
+            {
+                var paths = new List<string>();
+                foreach (ListViewItem sel in listViewGitStatus.SelectedItems)
+                {
+                    var rel = sel.Tag?.ToString() ?? string.Empty;
+                    var full = string.IsNullOrEmpty(rel) ? string.Empty : Path.Combine(_gitRepoRoot, rel);
+                    if (!string.IsNullOrEmpty(full)) paths.Add(full);
+                }
+                if (paths.Count > 0)
+                {
+                    await _gitSvc.UnstageAsync(_gitRepoRoot, paths);
+                    await Git_LoadStatusAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Unstage failed:\n{ex.Message}", "Git", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private async Task Git_ButtonCommitAsync()
+        {
+            if (string.IsNullOrEmpty(_gitRepoRoot) || txtGitCommit == null) return;
+            var message = txtGitCommit.Text?.Trim();
+            if (string.IsNullOrEmpty(message)) { MessageBox.Show("Enter a commit message."); return; }
+            try
+            {
+                // For author info, prompt using CommitDialog for now
+                using var dlg = new CommitDialog();
+                dlg.Controls["txtMessage"].Text = message; // prefill message area if accessible
+                if (dlg.ShowDialog(this) != DialogResult.OK) return;
+                await _gitSvc.CommitAsync(_gitRepoRoot, dlg.Message, dlg.AuthorName, dlg.AuthorEmail);
+                txtGitCommit.Clear();
+                MessageBox.Show("Commit complete.", "Git", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                await Git_LoadStatusAsync();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Commit failed:\n{ex.Message}", "Git", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         // Options -> Console menu handlers
@@ -762,20 +1091,239 @@ namespace PIC32Mn_PROJ
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
             base.OnFormClosed(e);
+            if (_hotkeyFilter != null) System.Windows.Forms.Application.RemoveMessageFilter(_hotkeyFilter);
             _editorSvc.Opened -= OnEditorOpened;
             _editorSvc.Saved -= OnEditorSaved;
             _editorSvc.Closed -= OnEditorClosed;
         }
 
-        // Project tab visibility helpers
+        // Options -> Hotkeys dialog
+        private void hotkeysToolStripMenuItem_Click(object? sender, EventArgs e)
+        {
+            using var dlg = new Form
+            {
+                Text = "Hotkeys",
+                StartPosition = FormStartPosition.CenterParent,
+                Size = new System.Drawing.Size(560, 480),
+                MinimizeBox = false,
+                MaximizeBox = false,
+                ShowIcon = false,
+                ShowInTaskbar = false
+            };
+
+            var list = new ListView
+            {
+                Dock = DockStyle.Fill,
+                View = View.Details,
+                FullRowSelect = true,
+                HideSelection = false
+            };
+            list.Columns.Add("Action", 260);
+            list.Columns.Add("Keys", 240);
+
+            void Populate()
+            {
+                list.BeginUpdate();
+                list.Items.Clear();
+                foreach (var kv in _hotkeysSvc.GetAll())
+                    list.Items.Add(new ListViewItem(new[] { kv.Key, kv.Value.ToString() }));
+                list.EndUpdate();
+            }
+
+            // Bottom bar with actions
+            var panelBottom = new Panel { Dock = DockStyle.Bottom, Height = 52 };
+
+            var btnReset = new Button { Text = "Reset Defaults", Left = 10, Top = 12, Width = 140 };
+            var btnChange = new Button { Text = "Change...", Left = 160, Top = 12, Width = 110, Enabled = false };
+            var btnRemove = new Button { Text = "Remove", Left = 280, Top = 12, Width = 100, Enabled = false };
+            var btnClose = new Button { Text = "Close", Width = 100, Top = 12, Anchor = AnchorStyles.Top | AnchorStyles.Right };
+
+            panelBottom.Controls.AddRange(new Control[] { btnReset, btnChange, btnRemove, btnClose });
+            panelBottom.Resize += (s, ea) => { btnClose.Left = panelBottom.ClientSize.Width - btnClose.Width - 10; };
+            btnClose.Left = panelBottom.ClientSize.Width - btnClose.Width - 10;
+            btnClose.DialogResult = DialogResult.OK;
+            dlg.AcceptButton = btnClose;
+
+            dlg.Controls.Add(list);
+            dlg.Controls.Add(panelBottom);
+
+            void UpdateButtons()
+            {
+                bool hasSel = list.SelectedItems.Count == 1;
+                btnChange.Enabled = hasSel;
+                btnRemove.Enabled = hasSel;
+            }
+
+            list.SelectedIndexChanged += (s, ea) => UpdateButtons();
+            list.DoubleClick += (s, ea) => { if (btnChange.Enabled) ChangeSelected(); };
+
+            btnReset.Click += (s, ea) =>
+            {
+                _hotkeysSvc.ResetDefaults();
+                Populate();
+                InitializeGitMenu(); // refresh menu accelerators
+            };
+
+            btnRemove.Click += (s, ea) =>
+            {
+                if (list.SelectedItems.Count != 1) return;
+                var actionId = list.SelectedItems[0].SubItems[0].Text;
+                _hotkeysSvc.Set(actionId, Keys.None); // unbind
+                Populate();
+                InitializeGitMenu();
+            };
+
+            btnChange.Click += (s, ea) => ChangeSelected();
+
+            void ChangeSelected()
+            {
+                if (list.SelectedItems.Count != 1) return;
+                var actionId = list.SelectedItems[0].SubItems[0].Text;
+
+                using var cap = CreateCaptureDialog(list.SelectedItems[0].SubItems[1].Text);
+                if (cap.ShowDialog(dlg) == DialogResult.OK)
+                {
+                    var picked = cap.Tag is Keys k ? k : Keys.None;
+                    _hotkeysSvc.Set(actionId, picked);
+                    Populate();
+                    InitializeGitMenu();
+                }
+            }
+
+            Populate();
+            UpdateButtons();
+            dlg.ShowDialog(this);
+
+            // Reflect any changes into the Git menu again (safety)
+            InitializeGitMenu();
+
+            // Local helper: dialog to capture a new shortcut
+            Form CreateCaptureDialog(string currentText)
+            {
+                var f = new Form
+                {
+                    Text = "Press new shortcut...",
+                    StartPosition = FormStartPosition.CenterParent,
+                    Size = new System.Drawing.Size(420, 160),
+                    MinimizeBox = false,
+                    MaximizeBox = false,
+                    ShowIcon = false,
+                    ShowInTaskbar = false,
+                    KeyPreview = true
+                };
+
+                var lbl = new Label
+                {
+                    Text = "Press the desired key combination (e.g., Ctrl+Shift+S).\nPress Clear to unbind.",
+                    Dock = DockStyle.Top,
+                    Height = 44
+                };
+
+                var txt = new TextBox
+                {
+                    ReadOnly = true,
+                    Dock = DockStyle.Top,
+                    Height = 28,
+                    Text = currentText
+                };
+
+                var bottom = new Panel { Dock = DockStyle.Bottom, Height = 44 };
+                var btnClear = new Button { Text = "Clear", Left = 10, Top = 8, Width = 90 };
+                var btnOk = new Button { Text = "OK", Width = 100, Top = 8, Anchor = AnchorStyles.Top | AnchorStyles.Right, Enabled = true };
+                var btnCancel = new Button { Text = "Cancel", Width = 100, Top = 8, Anchor = AnchorStyles.Top | AnchorStyles.Right, DialogResult = DialogResult.Cancel };
+
+                bottom.Controls.Add(btnClear);
+                bottom.Controls.Add(btnOk);
+                bottom.Controls.Add(btnCancel);
+                bottom.Resize += (s, ea) =>
+                {
+                    btnCancel.Left = bottom.ClientSize.Width - btnCancel.Width - 10;
+                    btnOk.Left = btnCancel.Left - btnOk.Width - 8;
+                };
+                btnCancel.Left = bottom.ClientSize.Width - btnCancel.Width - 10;
+                btnOk.Left = btnCancel.Left - btnOk.Width - 8;
+
+                f.Controls.Add(bottom);
+                f.Controls.Add(txt);
+                f.Controls.Add(lbl);
+
+                // Stored result in Tag
+                f.Tag = Keys.None;
+
+                // Clear: unbind
+                btnClear.Click += (s, ea) =>
+                {
+                    f.Tag = Keys.None;
+                    txt.Text = "None";
+                };
+
+                // OK: accept whatever is in Tag
+                btnOk.DialogResult = DialogResult.OK;
+                f.AcceptButton = btnOk;
+                f.CancelButton = btnCancel;
+
+                // Capture key combo
+                f.KeyDown += (s, ke) =>
+                {
+                    // Ignore pure modifiers (wait for a key)
+                    if (ke.KeyCode is Keys.Menu or Keys.ShiftKey or Keys.ControlKey)
+                    {
+                        // Show current modifier state in preview
+                        var k = (ke.Modifiers);
+                        txt.Text = k == Keys.None ? "" : k.ToString();
+                        ke.SuppressKeyPress = true;
+                        return;
+                    }
+
+                    var combo = ke.KeyData;
+
+                    // Normalize: avoid duplicate Shift/Control in text (KeyData already includes modifiers)
+                    f.Tag = combo;
+                    txt.Text = combo.ToString();
+                    ke.SuppressKeyPress = true;
+                };
+
+                return f;
+            }
+        }
+      
+        // --- Helpers added to remove build-time missing method errors ---
+        private void InitializeGitMenu()
+        {
+            if (gitToolStripMenuItem == null) return;
+            gitToolStripMenuItem.DropDownItems.Clear();
+
+            ToolStripMenuItem AddItem(string text, Keys keys, EventHandler onClick)
+            {
+                var mi = new ToolStripMenuItem(text);
+                if (keys != Keys.None)
+                {
+                    mi.ShortcutKeys = keys;
+                    mi.ShowShortcutKeys = true;
+                }
+                mi.Click += onClick;
+                gitToolStripMenuItem.DropDownItems.Add(mi);
+                return mi;
+            }
+
+            AddItem("Open Git Tab", _hotkeysSvc.Get(HK_OpenGitTab), (s, e) => Git_ShowTab());
+            AddItem("Close Git Tab", _hotkeysSvc.Get(HK_CloseGitTab), (s, e) => Git_CloseTab());
+            gitToolStripMenuItem.DropDownItems.Add(new ToolStripSeparator());
+            AddItem("Refresh", Keys.None, async (s, e) => await Git_RefreshAllAsync());
+            AddItem("Fetch", _hotkeysSvc.Get(HK_Fetch), async (s, e) => await Git_ButtonFetchAsync());
+            AddItem("Pull", _hotkeysSvc.Get(HK_Pull), async (s, e) => await Git_ButtonPullAsync());
+            AddItem("Push", _hotkeysSvc.Get(HK_Push), async (s, e) => await Git_ButtonPushAsync());
+            gitToolStripMenuItem.DropDownItems.Add(new ToolStripSeparator());
+            AddItem("Stage Selected", _hotkeysSvc.Get(HK_Stage), async (s, e) => await Git_StageSelectedAsync());
+            AddItem("Unstage Selected", Keys.None, async (s, e) => await Git_UnstageSelectedAsync());
+            AddItem("Commit", _hotkeysSvc.Get(HK_Commit), async (s, e) => await Git_ButtonCommitAsync());
+        }
+
         private void ShowProjectTab()
         {
             if (tabPage_Projects == null || tabControl1 == null) return;
             if (!tabControl1.TabPages.Contains(tabPage_Projects))
-            {
-                // Insert near the front to keep it discoverable
-                tabControl1.TabPages.Insert(0, tabPage_Projects);
-            }
+                tabControl1.TabPages.Add(tabPage_Projects);
         }
 
         private void HideProjectTab()
@@ -783,7 +1331,30 @@ namespace PIC32Mn_PROJ
             if (tabPage_Projects == null || tabControl1 == null) return;
             if (tabControl1.TabPages.Contains(tabPage_Projects))
             {
+                bool wasSelected = tabControl1.SelectedTab == tabPage_Projects;
                 tabControl1.TabPages.Remove(tabPage_Projects);
+                if (wasSelected && tabControl1.TabPages.Count > 0)
+                    tabControl1.SelectedIndex = 0;
+            }
+        }
+
+        private void Git_ShowTab()
+        {
+            if (tabPage_Git == null || tabControl1 == null) return;
+            if (!tabControl1.TabPages.Contains(tabPage_Git))
+                tabControl1.TabPages.Add(tabPage_Git);
+            tabControl1.SelectedTab = tabPage_Git;
+        }
+
+        private void Git_CloseTab()
+        {
+            if (tabPage_Git == null || tabControl1 == null) return;
+            if (tabControl1.TabPages.Contains(tabPage_Git))
+            {
+                bool wasSelected = tabControl1.SelectedTab == tabPage_Git;
+                tabControl1.TabPages.Remove(tabPage_Git);
+                if (wasSelected && tabControl1.TabPages.Count > 0)
+                    tabControl1.SelectedIndex = 0;
             }
         }
     }

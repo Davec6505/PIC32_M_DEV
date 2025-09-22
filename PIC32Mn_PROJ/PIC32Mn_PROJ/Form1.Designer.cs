@@ -36,11 +36,13 @@ namespace PIC32Mn_PROJ
             optionsToolStripMenuItem = new ToolStripMenuItem();
             openConsoleToolStripMenuItem = new ToolStripMenuItem();
             closeConsoleToolStripMenuItem = new ToolStripMenuItem();
+            hotkeysToolStripMenuItem = new ToolStripMenuItem();
             treeView_Project = new TreeView();
             splitContainer1 = new SplitContainer();
             tabControl1 = new TabControl();
             tabPage_Projects = new TabPage();
             treeView_Right = new TreeView();
+            gitToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -53,10 +55,10 @@ namespace PIC32Mn_PROJ
             // menuStrip1
             // 
             menuStrip1.ImageScalingSize = new Size(20, 20);
-            menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, editToolStripMenuItem, optionsToolStripMenuItem });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, editToolStripMenuItem, optionsToolStripMenuItem, gitToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
-            menuStrip1.Size = new Size(107, 28);
+            menuStrip1.Size = new Size(268, 28);
             menuStrip1.TabIndex = 0;
             // 
             // fileToolStripMenuItem
@@ -69,42 +71,42 @@ namespace PIC32Mn_PROJ
             // openToolStripMenuItem
             // 
             openToolStripMenuItem.Name = "openToolStripMenuItem";
-            openToolStripMenuItem.Size = new Size(224, 26);
+            openToolStripMenuItem.Size = new Size(167, 26);
             openToolStripMenuItem.Text = "Open";
             openToolStripMenuItem.Click += openToolStripMenuItem_Click;
             // 
             // openRightToolStripMenuItem
             // 
             openRightToolStripMenuItem.Name = "openRightToolStripMenuItem";
-            openRightToolStripMenuItem.Size = new Size(224, 26);
+            openRightToolStripMenuItem.Size = new Size(167, 26);
             openRightToolStripMenuItem.Text = "Open Right";
             openRightToolStripMenuItem.Click += openRightToolStripMenuItem_Click;
             // 
             // toolStripMenuItem1
             // 
             toolStripMenuItem1.Name = "toolStripMenuItem1";
-            toolStripMenuItem1.Size = new Size(224, 26);
+            toolStripMenuItem1.Size = new Size(167, 26);
             toolStripMenuItem1.Text = "Close Right";
             toolStripMenuItem1.Click += closeRightToolStripMenuItem_Click;
             // 
             // saveToolStripMenuItem
             // 
             saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            saveToolStripMenuItem.Size = new Size(224, 26);
+            saveToolStripMenuItem.Size = new Size(167, 26);
             saveToolStripMenuItem.Text = "Save";
             saveToolStripMenuItem.Click += saveToolStripMenuItem_Click;
             // 
             // saveAsToolStripMenuItem
             // 
             saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            saveAsToolStripMenuItem.Size = new Size(224, 26);
+            saveAsToolStripMenuItem.Size = new Size(167, 26);
             saveAsToolStripMenuItem.Text = "Save As";
             saveAsToolStripMenuItem.Click += saveAsToolStripMenuItem_Click;
             // 
             // exitToolStripMenuItem
             // 
             exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            exitToolStripMenuItem.Size = new Size(224, 26);
+            exitToolStripMenuItem.Size = new Size(167, 26);
             exitToolStripMenuItem.Text = "Exit";
             exitToolStripMenuItem.Click += exitToolStripMenuItem_Click_1;
             // 
@@ -119,7 +121,7 @@ namespace PIC32Mn_PROJ
             // 
             mccToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { mCCStandaloneToolStripMenuItem, mPLABXToolStripMenuItem, vSCodeToolStripMenuItem });
             mccToolStripMenuItem.Name = "mccToolStripMenuItem";
-            mccToolStripMenuItem.Size = new Size(224, 26);
+            mccToolStripMenuItem.Size = new Size(185, 26);
             mccToolStripMenuItem.Text = "Mirror Project";
             // 
             // mCCStandaloneToolStripMenuItem
@@ -146,14 +148,14 @@ namespace PIC32Mn_PROJ
             // createProjectToolStripMenuItem
             // 
             createProjectToolStripMenuItem.Name = "createProjectToolStripMenuItem";
-            createProjectToolStripMenuItem.Size = new Size(224, 26);
+            createProjectToolStripMenuItem.Size = new Size(185, 26);
             createProjectToolStripMenuItem.Text = "Create Project";
             createProjectToolStripMenuItem.Click += createProjectToolStripMenuItem_Click;
             // 
             // generateToolStripMenuItem
             // 
             generateToolStripMenuItem.Name = "generateToolStripMenuItem";
-            generateToolStripMenuItem.Size = new Size(224, 26);
+            generateToolStripMenuItem.Size = new Size(185, 26);
             generateToolStripMenuItem.Text = "Generate";
             generateToolStripMenuItem.Click += generateToolStripMenuItem_Click;
             // 
@@ -161,7 +163,7 @@ namespace PIC32Mn_PROJ
             // 
             newToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { cSourceToolStripMenuItem, headerToolStripMenuItem });
             newToolStripMenuItem.Name = "newToolStripMenuItem";
-            newToolStripMenuItem.Size = new Size(224, 26);
+            newToolStripMenuItem.Size = new Size(185, 26);
             newToolStripMenuItem.Text = "New";
             // 
             // cSourceToolStripMenuItem
@@ -180,31 +182,38 @@ namespace PIC32Mn_PROJ
             // 
             // optionsToolStripMenuItem
             // 
-            optionsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { openConsoleToolStripMenuItem, closeConsoleToolStripMenuItem });
+            optionsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { openConsoleToolStripMenuItem, closeConsoleToolStripMenuItem, hotkeysToolStripMenuItem });
             optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            optionsToolStripMenuItem.Size = new Size(77, 24);
+            optionsToolStripMenuItem.Size = new Size(75, 24);
             optionsToolStripMenuItem.Text = "Options";
             // 
             // openConsoleToolStripMenuItem
             // 
             openConsoleToolStripMenuItem.Name = "openConsoleToolStripMenuItem";
-            openConsoleToolStripMenuItem.Size = new Size(197, 26);
+            openConsoleToolStripMenuItem.Size = new Size(185, 26);
             openConsoleToolStripMenuItem.Text = "Open Console";
             openConsoleToolStripMenuItem.Click += openConsoleToolStripMenuItem_Click;
             // 
             // closeConsoleToolStripMenuItem
             // 
             closeConsoleToolStripMenuItem.Name = "closeConsoleToolStripMenuItem";
-            closeConsoleToolStripMenuItem.Size = new Size(197, 26);
+            closeConsoleToolStripMenuItem.Size = new Size(185, 26);
             closeConsoleToolStripMenuItem.Text = "Close Console";
             closeConsoleToolStripMenuItem.Click += closeConsoleToolStripMenuItem_Click;
+            // 
+            // hotkeysToolStripMenuItem
+            // 
+            hotkeysToolStripMenuItem.Name = "hotkeysToolStripMenuItem";
+            hotkeysToolStripMenuItem.Size = new Size(185, 26);
+            hotkeysToolStripMenuItem.Text = "Hotkeys...";
+            hotkeysToolStripMenuItem.Click += hotkeysToolStripMenuItem_Click;
             // 
             // treeView_Project
             // 
             treeView_Project.Dock = DockStyle.Fill;
             treeView_Project.Location = new Point(0, 28);
             treeView_Project.Name = "treeView_Project";
-            treeView_Project.Size = new Size(107, 909);
+            treeView_Project.Size = new Size(268, 909);
             treeView_Project.TabIndex = 2;
             // 
             // splitContainer1
@@ -225,7 +234,7 @@ namespace PIC32Mn_PROJ
             splitContainer1.Panel2.Controls.Add(tabControl1);
             splitContainer1.Panel2MinSize = 1000;
             splitContainer1.Size = new Size(1635, 937);
-            splitContainer1.SplitterDistance = 107;
+            splitContainer1.SplitterDistance = 268;
             splitContainer1.SplitterWidth = 8;
             splitContainer1.TabIndex = 3;
             // 
@@ -237,7 +246,7 @@ namespace PIC32Mn_PROJ
             tabControl1.Location = new Point(0, 0);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(1520, 937);
+            tabControl1.Size = new Size(1359, 937);
             tabControl1.TabIndex = 1;
             // 
             // tabPage_Projects
@@ -247,7 +256,7 @@ namespace PIC32Mn_PROJ
             tabPage_Projects.Location = new Point(4, 29);
             tabPage_Projects.Name = "tabPage_Projects";
             tabPage_Projects.Padding = new Padding(3);
-            tabPage_Projects.Size = new Size(1512, 904);
+            tabPage_Projects.Size = new Size(1351, 904);
             tabPage_Projects.TabIndex = 3;
             tabPage_Projects.Text = "Projects";
             tabPage_Projects.UseVisualStyleBackColor = true;
@@ -258,8 +267,14 @@ namespace PIC32Mn_PROJ
             treeView_Right.HideSelection = false;
             treeView_Right.Location = new Point(3, 3);
             treeView_Right.Name = "treeView_Right";
-            treeView_Right.Size = new Size(1506, 898);
+            treeView_Right.Size = new Size(1345, 898);
             treeView_Right.TabIndex = 1;
+            // 
+            // gitToolStripMenuItem
+            // 
+            gitToolStripMenuItem.Name = "gitToolStripMenuItem";
+            gitToolStripMenuItem.Size = new Size(42, 24);
+            gitToolStripMenuItem.Text = "Git";
             // 
             // Form1
             // 
@@ -280,6 +295,7 @@ namespace PIC32Mn_PROJ
             splitContainer1.ResumeLayout(false);
             tabControl1.ResumeLayout(false);
             tabPage_Projects.ResumeLayout(false);
+            InitializeGitTabDesigner();
             ResumeLayout(false);
         }
         #endregion
@@ -310,5 +326,136 @@ namespace PIC32Mn_PROJ
         private ToolStripMenuItem optionsToolStripMenuItem;
         private ToolStripMenuItem openConsoleToolStripMenuItem;
         private ToolStripMenuItem closeConsoleToolStripMenuItem;
+        private ToolStripMenuItem gitToolStripMenuItem;
+        private TabPage tabPage_Git;
+        private ComboBox comboGitBranches;
+        private Button btnGitCheckout;
+        private Button btnGitNewBranch;
+        private Button btnGitFetch;
+        private Button btnGitPull;
+        private Button btnGitPush;
+        private Button btnGitRefresh;
+        private ListView listViewGitStatus;
+        private ColumnHeader colStatus;
+        private ColumnHeader colPath;
+        private Button btnGitStage;
+        private Button btnGitUnstage;
+        private TextBox txtGitCommit;
+        private Button btnGitCommit;
+        private ToolStripMenuItem hotkeysToolStripMenuItem;
+        
+        private void InitializeGitTabDesigner()
+        {
+            tabPage_Git = new TabPage();
+            tabPage_Git.Text = "Git";
+            tabPage_Git.UseVisualStyleBackColor = true;
+
+            // Root layout for Git tab: 3 rows (toolbar, status list, commit row)
+            var layout = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                ColumnCount = 1,
+                RowCount = 3,
+                Padding = new Padding(6)
+            };
+            layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+
+            // Top toolbar
+            var topBar = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                FlowDirection = FlowDirection.LeftToRight,
+                WrapContents = false,
+                AutoSize = true,
+                AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                Margin = new Padding(0, 0, 0, 6)
+            };
+
+            comboGitBranches = new ComboBox
+            {
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                Width = 240
+            };
+
+            btnGitCheckout = new Button { Text = "Checkout" };
+            btnGitNewBranch = new Button { Text = "New Branch" };
+            btnGitFetch = new Button { Text = "Fetch" };
+            btnGitPull = new Button { Text = "Pull" };
+            btnGitPush = new Button { Text = "Push" };
+            btnGitRefresh = new Button { Text = "Refresh" };
+
+            topBar.Controls.Add(comboGitBranches);
+            topBar.Controls.Add(btnGitCheckout);
+            topBar.Controls.Add(btnGitNewBranch);
+            topBar.Controls.Add(btnGitFetch);
+            topBar.Controls.Add(btnGitPull);
+            topBar.Controls.Add(btnGitPush);
+            topBar.Controls.Add(btnGitRefresh);
+
+            // Status list
+            listViewGitStatus = new ListView
+            {
+                Dock = DockStyle.Fill,
+                View = View.Details,
+                FullRowSelect = true,
+                HideSelection = false
+            };
+            colStatus = new ColumnHeader { Text = "Status", Width = 140 };
+            colPath = new ColumnHeader { Text = "Path", Width = 400 };
+            listViewGitStatus.Columns.AddRange(new ColumnHeader[] { colStatus, colPath });
+
+            // Bottom commit row
+            var bottomBar = new TableLayoutPanel
+            {
+                Dock = DockStyle.Top,
+                ColumnCount = 5,
+                AutoSize = true,
+                AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                Margin = new Padding(0, 6, 0, 0)
+            };
+            bottomBar.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize)); // Stage
+            bottomBar.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize)); // Unstage
+            bottomBar.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F)); // Commit textbox
+            bottomBar.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize)); // Commit button
+            bottomBar.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 0)); // spacer (future)
+
+            btnGitStage = new Button { Text = "Stage", Margin = new Padding(0, 0, 6, 0) };
+            btnGitUnstage = new Button { Text = "Unstage", Margin = new Padding(0, 0, 6, 0) };
+            txtGitCommit = new TextBox { Anchor = AnchorStyles.Left | AnchorStyles.Right, Margin = new Padding(0, 0, 6, 0) };
+            btnGitCommit = new Button { Text = "Commit" };
+
+            bottomBar.Controls.Add(btnGitStage, 0, 0);
+            bottomBar.Controls.Add(btnGitUnstage, 1, 0);
+            bottomBar.Controls.Add(txtGitCommit, 2, 0);
+            bottomBar.Controls.Add(btnGitCommit, 3, 0);
+
+            // Assemble layout
+            layout.Controls.Add(topBar, 0, 0);
+            layout.Controls.Add(listViewGitStatus, 0, 1);
+            layout.Controls.Add(bottomBar, 0, 2);
+
+            tabPage_Git.Controls.Add(layout);
+
+            // Add to tabs
+            tabControl1.Controls.Add(tabPage_Git);
+
+            // Adjust columns when the list or tab resizes
+            tabPage_Git.Resize += (s, e) => UpdateGitListColumns();
+            listViewGitStatus.Resize += (s, e) => UpdateGitListColumns();
+            UpdateGitListColumns();
+        }
+
+        private void UpdateGitListColumns()
+        {
+            if (listViewGitStatus == null || colStatus == null || colPath == null) return;
+            int total = listViewGitStatus.ClientSize.Width;
+            int statusWidth = 140;
+            int scrollbar = SystemInformation.VerticalScrollBarWidth;
+            int padding = 8;
+            colStatus.Width = statusWidth;
+            colPath.Width = System.Math.Max(100, total - statusWidth - scrollbar - padding);
+        }
     }
 }
