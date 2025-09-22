@@ -75,7 +75,7 @@ namespace PIC32Mn_PROJ
         private string _gitRepoRoot = string.Empty;
         private string _gitCurrentBranch = string.Empty;
 
-        // Action identifiers used with IHotkeyService
+        // Action identifiers used by IHotkeyService
         private const string HK_Save = "Save";
         private const string HK_ToggleConsole = "ToggleConsole";
         private const string HK_OpenGitTab = "OpenGitTab";
@@ -414,15 +414,25 @@ namespace PIC32Mn_PROJ
                 listViewGitStatus.BeginUpdate();
                 listViewGitStatus.Items.Clear();
                 var items = await _gitSvc.GetStatusAsync(_gitRepoRoot);
-                foreach (var it in items)
+                if (items.Count == 0)
                 {
-                    var lvi = new ListViewItem(new[] { it.Status, it.Path }) { Tag = it.Path };
-                    listViewGitStatus.Items.Add(lvi);
+                    listViewGitStatus.Items.Add(
+                        new ListViewItem(new[] { "Clean", "(working tree clean)" })
+                        { ForeColor = System.Drawing.Color.DarkGreen });
+                }
+                else
+                {
+                    foreach (var it in items)
+                    {
+                        var lvi = new ListViewItem(new[] { it.Status, it.Path }) { Tag = it.Path };
+                        listViewGitStatus.Items.Add(lvi);
+                    }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to load status:\n{ex.Message}", "Git", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Failed to load status:\n{ex.Message}", "Git",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
@@ -549,8 +559,7 @@ namespace PIC32Mn_PROJ
             try
             {
                 // For author info, prompt using CommitDialog for now
-                using var dlg = new CommitDialog();
-                dlg.Controls["txtMessage"].Text = message; // prefill message area if accessible
+                using var dlg = new CommitDialog(message);
                 if (dlg.ShowDialog(this) != DialogResult.OK) return;
                 await _gitSvc.CommitAsync(_gitRepoRoot, dlg.Message, dlg.AuthorName, dlg.AuthorEmail);
                 txtGitCommit.Clear();

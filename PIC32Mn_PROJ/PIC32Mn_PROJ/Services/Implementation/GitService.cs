@@ -88,6 +88,23 @@ namespace PIC32Mn_PROJ.Services.Implementation
             }, ct);
         }
 
+        public Task CommitAllAsync(string repoRoot, string message, string authorName, string authorEmail, CancellationToken ct = default)
+        {
+            return Task.Run(() =>
+            {
+                using var repo = new Repository(repoRoot);
+                // Stage everything (including deletions/renames)
+                Commands.Stage(repo, "*");
+                // Optionally guard against empty commit
+                var hasStaged = repo.RetrieveStatus(new StatusOptions { IncludeUntracked = false })
+                    .Any(e => (e.State & (FileStatus.NewInIndex | FileStatus.ModifiedInIndex | FileStatus.DeletedFromIndex | FileStatus.RenamedInIndex)) != 0);
+                if (!hasStaged) throw new LibGit2Sharp.EmptyCommitException("No staged changes to commit.");
+
+                var sig = new Signature(authorName, authorEmail, DateTimeOffset.Now);
+                repo.Commit(message, sig, sig, new CommitOptions { AllowEmptyCommit = false });
+            }, ct);
+        }
+
         public Task SwitchBranchAsync(string repoRoot, string branchName, bool createIfMissing = false, CancellationToken ct = default)
         {
             if (string.IsNullOrWhiteSpace(branchName)) throw new ArgumentException("Branch name is required.", nameof(branchName));

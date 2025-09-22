@@ -16,7 +16,8 @@ namespace PIC32Mn_PROJ
         public string AuthorName => txtName.Text.Trim();
         public string AuthorEmail => txtEmail.Text.Trim();
 
-        public CommitDialog()
+        // Allow setting an initial message, keeping parameterless call sites working via default value
+        public CommitDialog(string initialMessage = "")
         {
             Text = "Commit";
             StartPosition = FormStartPosition.CenterParent;
@@ -26,7 +27,7 @@ namespace PIC32Mn_PROJ
             ClientSize = new Size(520, 360);
 
             var lblMsg = new Label { Text = "Message:", AutoSize = true, Location = new Point(12, 12) };
-            txtMessage = new TextBox { Multiline = true, ScrollBars = ScrollBars.Vertical, Location = new Point(12, 34), Size = new Size(496, 220) };
+            txtMessage = new TextBox { Multiline = true, ScrollBars = ScrollBars.Vertical, Location = new Point(12, 34), Size = new Size(496, 220), Name = "txtMessage" };
 
             var lblName = new Label { Text = "Author Name:", AutoSize = true, Location = new Point(12, 264) };
             txtName = new TextBox { Location = new Point(120, 260), Size = new Size(200, 27) };
@@ -48,6 +49,9 @@ namespace PIC32Mn_PROJ
             Controls.Add(txtEmail);
             Controls.Add(btnOk);
             Controls.Add(btnCancel);
+
+            // Initialize with any provided message
+            txtMessage.Text = initialMessage ?? string.Empty;
         }
     }
 }
