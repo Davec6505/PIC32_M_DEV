@@ -12,6 +12,8 @@ namespace PIC32Mn_PROJ.Services.Abstractions
         Task StageAsync(string repoRoot, IEnumerable<string> paths, CancellationToken ct = default);
         Task UnstageAsync(string repoRoot, IEnumerable<string> paths, CancellationToken ct = default);
         Task CommitAsync(string repoRoot, string message, string authorName, string authorEmail, CancellationToken ct = default);
+        // Stage all and commit convenience
+        Task CommitAllAsync(string repoRoot, string message, string authorName, string authorEmail, CancellationToken ct = default);
 
         Task SwitchBranchAsync(string repoRoot, string branchName, bool createIfMissing = false, CancellationToken ct = default);
         Task<IReadOnlyList<CommitInfo>> GetLogAsync(string repoRoot, int maxCount = 50, CancellationToken ct = default);

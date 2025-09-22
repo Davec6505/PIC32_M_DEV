@@ -90,17 +90,27 @@ namespace PIC32Mn_PROJ.Services.Implementation
 
         public Task CommitAllAsync(string repoRoot, string message, string authorName, string authorEmail, CancellationToken ct = default)
         {
+            if (string.IsNullOrWhiteSpace(message)) throw new ArgumentException("Commit message required.", nameof(message));
+
             return Task.Run(() =>
             {
                 using var repo = new Repository(repoRoot);
+
+                // Fallback to git config if missing
+                var name = string.IsNullOrWhiteSpace(authorName) ? repo.Config.Get<string>("user.name")?.Value : authorName;
+                var email = string.IsNullOrWhiteSpace(authorEmail) ? repo.Config.Get<string>("user.email")?.Value : authorEmail;
+
+                if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("Author name required.", nameof(authorName));
+                if (string.IsNullOrWhiteSpace(email)) throw new ArgumentException("Author email required.", nameof(authorEmail));
+
                 // Stage everything (including deletions/renames)
                 Commands.Stage(repo, "*");
-                // Optionally guard against empty commit
+
                 var hasStaged = repo.RetrieveStatus(new StatusOptions { IncludeUntracked = false })
                     .Any(e => (e.State & (FileStatus.NewInIndex | FileStatus.ModifiedInIndex | FileStatus.DeletedFromIndex | FileStatus.RenamedInIndex)) != 0);
                 if (!hasStaged) throw new LibGit2Sharp.EmptyCommitException("No staged changes to commit.");
 
-                var sig = new Signature(authorName, authorEmail, DateTimeOffset.Now);
+                var sig = repo.Config.BuildSignature(DateTimeOffset.Now); // throws if user.name/email not configured
                 repo.Commit(message, sig, sig, new CommitOptions { AllowEmptyCommit = false });
             }, ct);
         }

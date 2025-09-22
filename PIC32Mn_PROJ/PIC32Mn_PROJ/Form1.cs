@@ -11,6 +11,7 @@ using System.Windows.Forms; // WinForms
 using System.Windows.Forms.Integration; // ElementHost
 using MessageBox = System.Windows.Forms.MessageBox; // disambiguate
 using DataFormats = System.Windows.Forms.DataFormats;
+using LibGit2Sharp;
 
 namespace PIC32Mn_PROJ
 {
@@ -558,13 +559,17 @@ namespace PIC32Mn_PROJ
             if (string.IsNullOrEmpty(message)) { MessageBox.Show("Enter a commit message."); return; }
             try
             {
-                // For author info, prompt using CommitDialog for now
                 using var dlg = new CommitDialog(message);
                 if (dlg.ShowDialog(this) != DialogResult.OK) return;
-                await _gitSvc.CommitAsync(_gitRepoRoot, dlg.Message, dlg.AuthorName, dlg.AuthorEmail);
+                // Stage all and commit to reduce user errors that cause EmptyCommitException
+                await _gitSvc.CommitAllAsync(_gitRepoRoot, dlg.Message, dlg.AuthorName, dlg.AuthorEmail);
                 txtGitCommit.Clear();
                 MessageBox.Show("Commit complete.", "Git", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 await Git_LoadStatusAsync();
+            }
+            catch (LibGit2Sharp.EmptyCommitException)
+            {
+                MessageBox.Show("Nothing to commit (working tree clean or nothing staged).", "Git", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
