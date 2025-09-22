@@ -12,6 +12,9 @@ using System.Windows.Forms.Integration; // ElementHost
 using MessageBox = System.Windows.Forms.MessageBox; // disambiguate
 using DataFormats = System.Windows.Forms.DataFormats;
 using LibGit2Sharp;
+using System;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace PIC32Mn_PROJ
 {
@@ -87,6 +90,9 @@ namespace PIC32Mn_PROJ
         private const string HK_Pull = "Pull";
         private const string HK_Push = "Push";
 
+        private SplitContainer splitTabs;
+        private TabControl tabControlRight;
+
         public Form1(
             ISettingsService settings,
             IDialogService dialogs,
@@ -119,9 +125,15 @@ namespace PIC32Mn_PROJ
         {
             // Ensure form sees shortcuts before child controls
             this.KeyPreview = true;
-            // Add a global message filter to catch keys from hosted controls (e.g., WPF)
             _hotkeyFilter = new GlobalHotkeyFilter(this);
             System.Windows.Forms.Application.AddMessageFilter(_hotkeyFilter);
+
+            BuildRightPaneWithConsole();
+            InitTabSplit();
+
+            // Subscribe to tab drag begin to ensure right panel is visible as a drop target
+            TabDragDropManager.BeginDrag -= OnTabBeginDrag;
+            TabDragDropManager.BeginDrag += OnTabBeginDrag;
 
             // Restore paths via settings service
             var savedPath = _settings.ProjectPath;
@@ -135,14 +147,11 @@ namespace PIC32Mn_PROJ
             {
                 mirror_projectPath = savedMirror;
                 _treeSvc.Populate(treeView_Right, mirror_projectPath);
-                ShowProjectTab();
-            }
-            else
-            {
-                HideProjectTab();
             }
 
-            // Minimal AvalonEdit instance retained for features that still depend on it (e.g., New file templates)
+            HideProjectTab();
+
+            // Minimal AvalonEdit instance for templates
             TextEditor avalonEditor = new TextEditor
             {
                 Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.White),
@@ -161,15 +170,12 @@ namespace PIC32Mn_PROJ
             this.avalonEditor = avalonEditor;
             avalonEditor.TextChanged += (s, e2) => { saveNeeded = true; };
 
-            // Build right pane split with integrated console
-            BuildRightPaneWithConsole();
-
             // Subscribe to editor service events
             _editorSvc.Opened += OnEditorOpened;
             _editorSvc.Saved += OnEditorSaved;
             _editorSvc.Closed += OnEditorClosed;
 
-            // Tree menus and handlers (left tree methods in Form1.ProjectTree.cs)
+            // Tree menus and handlers
             SetupTreeViewContextMenu();
             treeView_Project.NodeMouseClick += treeView_Project_NodeMouseClick;
             treeView_Project.KeyDown += treeView_Project_KeyDown;
@@ -188,8 +194,18 @@ namespace PIC32Mn_PROJ
 
             _highlightingSvc.ApplyBaseC(avalonEditor);
 
+            // Ensure the Git tab UI is created before wiring it up/moving it
+            InitializeGitTabDesigner();
+
             // Add Git menu items now that _gitSvc is available
             InitializeGitMenu();
+
+            // Allow clicking the Git menu header to open the Git tab
+            if (gitToolStripMenuItem != null)
+            {
+                gitToolStripMenuItem.Click -= GitMenu_Click;
+                gitToolStripMenuItem.Click += GitMenu_Click;
+            }
 
             // Add context menu to Git tab to allow closing it
             if (tabPage_Git != null)
@@ -199,9 +215,31 @@ namespace PIC32Mn_PROJ
                 tabPage_Git.ContextMenuStrip = cmGit;
             }
 
+            // Move Git tab to the right panel from the start (panel stays hidden until opened)
+            MoveGitTabToRight();
+
             // Wire Git tab handlers and refresh
             WireGitTabEvents();
             _ = Git_RefreshAllAsync();
+        }
+
+        private void GitMenu_Click(object? sender, EventArgs e)
+        {
+            Git_ShowTab();
+        }
+
+        private void MoveGitTabToRight()
+        {
+            if (tabPage_Git == null) return;
+            // Ensure split and right tab control exist
+            if (splitTabs == null) InitTabSplit();
+            if (tabControlRight == null) return;
+
+            // Remove from left if present, then add to right
+            if (tabControl1 != null && tabControl1.TabPages.Contains(tabPage_Git))
+                tabControl1.TabPages.Remove(tabPage_Git);
+            if (!tabControlRight.TabPages.Contains(tabPage_Git))
+                tabControlRight.TabPages.Add(tabPage_Git);
         }
 
         // Global message filter to catch hotkeys even when focus is in hosted controls
@@ -363,13 +401,31 @@ namespace PIC32Mn_PROJ
 
         private async Task Git_RefreshAllAsync()
         {
-            // Discover repo
+            // Discover repo from multiple candidate roots
             _gitRepoRoot = string.Empty;
-            var start = string.IsNullOrEmpty(projectDirPath) ? Environment.CurrentDirectory : projectDirPath;
-            if (_gitSvc.TryDiscoverRepo(start, out var info) && info != null)
+
+            string?[] candidates = new[]
             {
-                _gitRepoRoot = info.Root;
-                _gitCurrentBranch = info.CurrentBranch;
+                string.IsNullOrWhiteSpace(projectDirPath) ? null : projectDirPath,
+                string.IsNullOrWhiteSpace(mirror_projectPath) ? null : mirror_projectPath,
+                Environment.CurrentDirectory
+            };
+
+            (string Root, string Branch)? found = null;
+            foreach (var start in candidates)
+            {
+                if (string.IsNullOrWhiteSpace(start)) continue;
+                if (_gitSvc.TryDiscoverRepo(start, out var info) && info != null)
+                {
+                    found = (info.Root, info.CurrentBranch);
+                    break;
+                }
+            }
+
+            if (found != null)
+            {
+                _gitRepoRoot = found.Value.Root;
+                _gitCurrentBranch = found.Value.Branch;
                 SetGitControlsEnabled(true);
                 await Git_LoadBranchesAsync();
                 await Git_LoadStatusAsync();
@@ -377,7 +433,7 @@ namespace PIC32Mn_PROJ
             else
             {
                 SetGitControlsEnabled(false);
-                MessageBox.Show("No git repository found under the current project path.", "Git", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                // Leave UI visible but disabled when no repo is found
             }
         }
 
@@ -606,6 +662,33 @@ namespace PIC32Mn_PROJ
             }
         }
 
+        // File -> Open Right
+        // Replace the whole method in PIC32Mn_PROJ\Form1.cs
+        private void openRightToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using var dialog = new CommonOpenFileDialog
+            {
+                IsFolderPicker = true,
+                Title = "Select the RIGHT (mirror) project folder",
+                InitialDirectory = string.IsNullOrEmpty(mirror_projectPath) ? rootPath : mirror_projectPath
+            };
+
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok && !string.IsNullOrEmpty(dialog.FileName))
+            {
+                var folder = dialog.FileName;
+
+                // Persist and populate right (mirror) project
+                projectDirPathRight = folder;
+                mirror_projectPath = folder;
+                _settings.MirrorProjectPath = mirror_projectPath;
+                _settings.Save();
+                _treeSvc.Populate(treeView_Right, mirror_projectPath);
+
+                // Show the right panel without moving the Projects tab
+                EnsureRightVisible(true);
+            }
+        }
+
         private void closeRightToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Hide Project tab when right project is closed
@@ -771,7 +854,7 @@ namespace PIC32Mn_PROJ
 
         private void treeView_Right_NodeMouseClick(object? sender, TreeNodeMouseClickEventArgs e)
         {
-            if (e.Button != MouseButtons.Right) return;
+            if( e.Button != MouseButtons.Right) return;
             treeView_Right.SelectedNode = e.Node;
             rightContextNode = e.Node;
             rightTreeContextMenu.Show(treeView_Right, e.Location);
@@ -1084,22 +1167,78 @@ namespace PIC32Mn_PROJ
             }
         }
 
-        private void openRightToolStripMenuItem_Click(object sender, EventArgs e)
+        private void InitTabSplit()
         {
-            using var dialog = new CommonOpenFileDialog
+            if (splitTabs != null) return;
+
+            splitTabs = new SplitContainer
             {
-                IsFolderPicker = true,
-                Title = "Select the RIGHT project folder",
-                InitialDirectory = rootPath
+                Dock = DockStyle.Fill,
+                Orientation = Orientation.Vertical,
+                SplitterWidth = 6
             };
-            if (dialog.ShowDialog() == CommonFileDialogResult.Ok && !string.IsNullOrEmpty(dialog.FileName))
+
+            // Move existing left TabControl into Panel1 of the new split (parent is the rightPaneSplit.Panel1)
+            if (rightPaneSplit != null)
             {
-                projectDirPathRight = dialog.FileName;
-                _settings.MirrorProjectPath = projectDirPathRight;
-                _settings.Save();
-                _treeSvc.Populate(treeView_Right, projectDirPathRight);
-                ShowProjectTab();
+                rightPaneSplit.Panel1.Controls.Remove(tabControl1);
+                splitTabs.Panel1.Controls.Add(tabControl1);
+                // Add the split into the same host (rightPaneSplit.Panel1)
+                rightPaneSplit.Panel1.Controls.Add(splitTabs);
             }
+            else
+            {
+                // Fallback (should not happen after reordering): keep previous behavior
+                splitContainer1.Panel2.Controls.Remove(tabControl1);
+                splitTabs.Panel1.Controls.Add(tabControl1);
+                splitContainer1.Panel2.Controls.Add(splitTabs);
+            }
+
+            // Create the right TabControl
+            tabControlRight = new TabControl
+            {
+                Dock = DockStyle.Fill,
+                Font = tabControl1.Font
+            };
+            splitTabs.Panel2.Controls.Add(tabControlRight);
+
+            // Keep right side hidden by default
+            splitTabs.Panel2Collapsed = true;
+
+            // Enable drag/drop between tab strips (optional, but you already have this helper)
+            TabDragDropManager.Enable(tabControl1, isMainHost: true);
+            TabDragDropManager.Enable(tabControlRight, isMainHost: false);
+        }
+
+        private void EnsureRightVisible(bool visible)
+        {
+            if (splitTabs == null) return;
+            splitTabs.Panel2Collapsed = !visible;
+        }
+
+        private void Git_ShowTab()
+        {
+            if (tabPage_Git == null) return;
+            if (splitTabs == null) InitTabSplit();
+            MoveGitTabToRight();
+            EnsureRightVisible(true);
+            if (tabControlRight != null && tabControlRight.TabPages.Contains(tabPage_Git))
+                tabControlRight.SelectedTab = tabPage_Git;
+        }
+
+        private void Git_CloseTab()
+        {
+            if (tabPage_Git == null) return;
+            if (splitTabs == null) return;
+            if (tabControlRight != null && tabControlRight.TabPages.Contains(tabPage_Git))
+            {
+                bool wasSelected = tabControlRight.SelectedTab == tabPage_Git;
+                tabControlRight.TabPages.Remove(tabPage_Git);
+                if (wasSelected && tabControlRight.TabPages.Count > 0)
+                    tabControlRight.SelectedIndex = 0;
+            }
+            // Do NOT auto-collapse the right panel here. Keeping it visible ensures it's always a valid drop target.
+            // Users can explicitly close the right panel via the menu.
         }
 
         protected override void OnFormClosed(FormClosedEventArgs e)
@@ -1109,6 +1248,8 @@ namespace PIC32Mn_PROJ
             _editorSvc.Opened -= OnEditorOpened;
             _editorSvc.Saved -= OnEditorSaved;
             _editorSvc.Closed -= OnEditorClosed;
+            // Unhook static event to avoid leaks
+            TabDragDropManager.BeginDrag -= OnTabBeginDrag;
         }
 
         // Options -> Hotkeys dialog
@@ -1300,76 +1441,76 @@ namespace PIC32Mn_PROJ
                 return f;
             }
         }
-      
-        // --- Helpers added to remove build-time missing method errors ---
+
+        private void ShowProjectTab()
+        {
+            // Only show the right panel; do not move left-side Projects tab
+            if (splitTabs == null) InitTabSplit();
+            EnsureRightVisible(true);
+        }
+
+        private void HideProjectTab()
+        {
+            // Collapse the right panel if created; keep left-side Projects tab intact
+            EnsureRightVisible(false);
+        }
+
+        // Add this method to your Form1 class
         private void InitializeGitMenu()
         {
             if (gitToolStripMenuItem == null) return;
+
+            // Clear previous items and rebuild from DI-provided hotkeys
             gitToolStripMenuItem.DropDownItems.Clear();
 
-            ToolStripMenuItem AddItem(string text, Keys keys, EventHandler onClick)
+            // Helper to create menu items with optional shortcuts
+            ToolStripMenuItem AddItem(string text, Keys shortcut, EventHandler onClick)
             {
                 var mi = new ToolStripMenuItem(text);
-                if (keys != Keys.None)
-                {
-                    mi.ShortcutKeys = keys;
-                    mi.ShowShortcutKeys = true;
-                }
+                if (shortcut != Keys.None) mi.ShortcutKeys = shortcut;
+                mi.ShowShortcutKeys = shortcut != Keys.None;
                 mi.Click += onClick;
                 gitToolStripMenuItem.DropDownItems.Add(mi);
                 return mi;
             }
 
+            // Open/Close Git Tab
             AddItem("Open Git Tab", _hotkeysSvc.Get(HK_OpenGitTab), (s, e) => Git_ShowTab());
             AddItem("Close Git Tab", _hotkeysSvc.Get(HK_CloseGitTab), (s, e) => Git_CloseTab());
             gitToolStripMenuItem.DropDownItems.Add(new ToolStripSeparator());
-            AddItem("Refresh", Keys.None, async (s, e) => await Git_RefreshAllAsync());
+
+            // Common actions
+            AddItem("Stage Selected", _hotkeysSvc.Get(HK_Stage), async (s, e) => await Git_StageSelectedAsync());
+            var unstage = new ToolStripMenuItem("Unstage Selected");
+            unstage.Click += async (s, e) => await Git_UnstageSelectedAsync();
+            gitToolStripMenuItem.DropDownItems.Add(unstage);
+
+            // Commit
+            AddItem("Commit...", _hotkeysSvc.Get(HK_Commit), async (s, e) => await Git_ButtonCommitAsync());
+            gitToolStripMenuItem.DropDownItems.Add(new ToolStripSeparator());
+
+            // Network actions
             AddItem("Fetch", _hotkeysSvc.Get(HK_Fetch), async (s, e) => await Git_ButtonFetchAsync());
             AddItem("Pull", _hotkeysSvc.Get(HK_Pull), async (s, e) => await Git_ButtonPullAsync());
             AddItem("Push", _hotkeysSvc.Get(HK_Push), async (s, e) => await Git_ButtonPushAsync());
+
+            // Refresh
+            var miRefresh = new ToolStripMenuItem("Refresh Status");
+            miRefresh.Click += async (s, e) => await Git_RefreshAllAsync();
             gitToolStripMenuItem.DropDownItems.Add(new ToolStripSeparator());
-            AddItem("Stage Selected", _hotkeysSvc.Get(HK_Stage), async (s, e) => await Git_StageSelectedAsync());
-            AddItem("Unstage Selected", Keys.None, async (s, e) => await Git_UnstageSelectedAsync());
-            AddItem("Commit", _hotkeysSvc.Get(HK_Commit), async (s, e) => await Git_ButtonCommitAsync());
+            gitToolStripMenuItem.DropDownItems.Add(miRefresh);
         }
 
-        private void ShowProjectTab()
+        private void OnTabBeginDrag()
         {
-            if (tabPage_Projects == null || tabControl1 == null) return;
-            if (!tabControl1.TabPages.Contains(tabPage_Projects))
-                tabControl1.TabPages.Add(tabPage_Projects);
-        }
-
-        private void HideProjectTab()
-        {
-            if (tabPage_Projects == null || tabControl1 == null) return;
-            if (tabControl1.TabPages.Contains(tabPage_Projects))
+            try
             {
-                bool wasSelected = tabControl1.SelectedTab == tabPage_Projects;
-                tabControl1.TabPages.Remove(tabPage_Projects);
-                if (wasSelected && tabControl1.TabPages.Count > 0)
-                    tabControl1.SelectedIndex = 0;
+                // Ensure the right docking target becomes visible during drag
+                if (splitTabs == null) return;
+                if (splitTabs.Panel2Collapsed)
+                    EnsureRightVisible(true);
             }
-        }
-
-        private void Git_ShowTab()
-        {
-            if (tabPage_Git == null || tabControl1 == null) return;
-            if (!tabControl1.TabPages.Contains(tabPage_Git))
-                tabControl1.TabPages.Add(tabPage_Git);
-            tabControl1.SelectedTab = tabPage_Git;
-        }
-
-        private void Git_CloseTab()
-        {
-            if (tabPage_Git == null || tabControl1 == null) return;
-            if (tabControl1.TabPages.Contains(tabPage_Git))
-            {
-                bool wasSelected = tabControl1.SelectedTab == tabPage_Git;
-                tabControl1.TabPages.Remove(tabPage_Git);
-                if (wasSelected && tabControl1.TabPages.Count > 0)
-                    tabControl1.SelectedIndex = 0;
-            }
+            catch { }
         }
     }
 }
